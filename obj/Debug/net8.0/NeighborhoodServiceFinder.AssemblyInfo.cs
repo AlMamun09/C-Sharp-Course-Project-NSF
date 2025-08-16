@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NeighborhoodServiceFinder")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8c88ce84beb3e5345c2b9ea6d30bc43c3405b3e6")]
 [assembly: System.Reflection.AssemblyProductAttribute("NeighborhoodServiceFinder")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NeighborhoodServiceFinder")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
