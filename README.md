@@ -1,85 +1,95 @@
-Neighborhood Service Finder
-A web application designed to connect local users with service providers in their neighborhood. This platform allows users to discover, search, and view profiles of various service providers, while providing a comprehensive dashboard for providers to manage their business and services.
+# 🏘️ Neighborhood Service Finder
 
-Features Implemented (As of August 16, 2025)
-This project has a solid foundation with a complete feature set for administrator-level management of service categories and a fully functional core authentication system.
+**Neighborhood Service Finder** is a web application designed to connect local users with service providers in their neighborhood. This platform allows users to **discover, search, and view profiles of various service providers**, while also giving providers a **comprehensive dashboard** to manage their business and services.
 
-1. Administrator Panel - Service Category Management
-A secure area for administrators to manage the types of services offered on the platform. This feature includes:
+---
 
-Full CRUD Functionality:
+## 🚀 Features Implemented (As of August 16, 2025)
 
-Create: Add new service categories with details like name, description, and display order.
+This project currently includes a solid foundation with administrator-level management of service categories and a fully functional core authentication system.
 
-Read: View all service categories in a single, organized table.
+### 1️⃣ Administrator Panel – Service Category Management
+A secure admin area for managing the types of services offered on the platform.  
 
-Update: Edit the details of any existing category.
+**Full CRUD Functionality:**
+- **Create** – Add new service categories with details like name, description, and display order.
+- **Read** – View all service categories in an organized table.
+- **Update** – Edit details of any existing category.
+- **Delete**  
+  - *Soft Delete*: Toggle "Activate/Deactivate" to hide a category from public view without losing data.  
+  - *Hard Delete*: Permanently delete with a JavaScript confirmation prompt to avoid accidental data loss.
 
-Delete:
+**Advanced Sorting**  
+Categories are sorted by:
+1. Status (active categories appear first).  
+2. `priorityOrder` (custom order).  
+3. Alphabetically by name (for tie-breaking).  
 
-Soft Delete: An "Activate/Deactivate" toggle allows an admin to hide a category from public view without permanently losing the data.
+---
 
-Hard Delete: A permanent delete option is available with a JavaScript confirmation dialog to prevent accidental data loss.
+### 2️⃣ Core Authentication System
+A robust and secure authentication system built with **ASP.NET Core Identity**.  
 
-Advanced Sorting: The main category list is intelligently sorted to improve usability:
+- **Custom User Profiles** – Extended user model with fields like `FirstName`, `LastName`, and `Address`.  
+- **User Registration** – Multi-field registration with backend validation (duplicate email check, password match check, etc.).  
+- **Login & Logout** – Fully functional authentication system.  
+- **Dynamic UI** – Layout adapts to authentication state:  
+  - Signed in → Shows user’s first name + Logout button.  
+  - Signed out → Shows Register/Login links.  
 
-First by status (active categories appear at the top).
+---
 
-Then by the custom priorityOrder.
+### 3️⃣ Project Foundation & Architecture
+- **Technology** – Built with **ASP.NET Core 8**.  
+- **Dual Database Setup**:  
+  - **SQLite** – Local SQL database (`app.db`) for secure Identity data (users, roles, passwords).  
+  - **Google Firestore** – Cloud-based NoSQL database for main application data (service categories, provider profiles, etc.) to ensure scalability and flexibility.  
 
-Finally, alphabetically by name to break any ties.
+---
 
-2. Core Authentication System
-A robust and secure user authentication system built from the ground up using ASP.NET Core Identity.
+## 📌 Future Roadmap (Next Steps)
 
-Custom User Profiles: The standard user model has been extended to include fields critical to the application, such as FirstName, LastName, and Address.
+With the core foundation in place, the next phases will expand functionality for **service providers** and **end-users**.
 
-User Registration: A complete, multi-field registration form with backend validation (e.g., checking for duplicate emails, ensuring passwords match).
+### 🔐 Admin Enhancements
+- Add role-based authorization to secure admin-only pages.  
+- Build **User Management** (list users/providers, block/suspend, delete).  
 
-User Login & Logout: Fully functional login and logout capabilities.
+### 🖼️ Media Management
+- **Cloudinary Integration** for image uploads (profile photos, business galleries).  
 
-Dynamic UI: The main website layout is "authentication-aware," showing the user's first name and a "Logout" button when signed in, and "Register/Login" links when they are not.
+### 🧑‍🔧 Service Provider Module
+- Separate registration for service providers.  
+- Provider dashboard with **business profile CRUD**.  
+- **Service Management** – Add, edit, delete services (e.g., plumber adds "Drain Unblocking").  
 
-3. Project Foundation & Architecture
-Technology: Built on the modern and stable ASP.NET Core 8 framework.
+### 👥 User-Facing Features
+- Public homepage with sorted service categories.  
+- **Search & Filter** providers by service type and location.  
+- Public provider profile pages with details.  
 
-Dual-Database Architecture:
+### 💳 Payments
+- **Stripe Integration** for handling payments:  
+  - Users paying for bookings.  
+  - Providers subscribing to premium plans.  
 
-SQLite: A simple, local SQL database (app.db) is used exclusively for the structured, secure data required by ASP.NET Core Identity (user accounts, passwords, roles).
+---
 
-Google Firestore: A flexible, cloud-based NoSQL database is used for all main application data (Service Categories, Provider Profiles, etc.), allowing for scalability and easy schema changes.
+## 🛠️ Tech Stack
+- **Backend:** ASP.NET Core 8  
+- **Databases:** SQLite (Identity), Google Firestore (Application Data)  
+- **Authentication:** ASP.NET Core Identity  
+- **Future Integrations:** Cloudinary (Media), Stripe (Payments)  
 
-Future Roadmap (Next Steps)
-With the core foundation and admin features in place, the next phases will focus on building out the functionality for Service Providers and end-users.
+---
 
-Secure the Admin Section: Add authorization rules to ensure only users with an "Administrator" role can access the admin pages.
+## 📅 Project Status
+✅ Core authentication complete  
+✅ Admin service category management complete  
+🔜 Service provider + user-facing modules under development  
 
-Cloudinary Integration: Integrate the Cloudinary service to handle all image uploads, starting with profile pictures and business gallery images for service providers.
+---
 
-Service Provider Module:
+## 👨‍💻 Author
+**Abdullah Al Mamun** 
 
-Build the separate registration process for users who want to offer services.
-
-Create the provider-specific dashboard where they can create and manage their public business profile (CRUD).
-
-Implement "Service Management" to allow providers to add, edit, and delete the specific services they offer (e.g., a plumber adding "Drain Unblocking" and "Pipe Repair").
-
-User-Facing Features:
-
-Develop the public homepage to display the sorted list of service categories.
-
-Implement search and filtering functionality so users can find providers by service type or location.
-
-Create the public profile pages to display service provider details.
-
-Stripe Integration:
-
-Integrate the Stripe payment gateway.
-
-Design and build the payment flow (e.g., users paying for a booking, or providers paying for a premium subscription).
-
-Admin User Management:
-
-Build the admin page to list all registered users and service providers.
-
-Implement the "Block/Suspend" and "Delete User" functionalities that we've planned.
