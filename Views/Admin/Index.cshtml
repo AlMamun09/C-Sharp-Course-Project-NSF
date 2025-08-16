@@ -1,0 +1,49 @@
+@* This line tells the page what kind of data to expect: a list of ServiceCategory objects *@
+@model List<NeighborhoodServiceFinder.Models.ServiceCategory>
+
+@{
+    // This sets the title that will appear in the browser tab
+    ViewData["Title"] = "Admin - Service Categories";
+}
+
+<h1>Service Categories</h1>
+
+<p>
+    <a asp-controller="Admin" asp-action="Create">Create New Category</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Category Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @* This is a loop. It will repeat the table row for each category in the list. *@
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.Name</td>
+                <td>@category.Description</td>
+                <td>@(category.IsActive ? "Active" : "Inactive")</td>
+                <td>
+                    @if (category.IsActive)
+                    {
+                        <a asp-action="ToggleStatus" asp-route-id="@category.Id">Deactivate</a>
+                    }
+                    else
+                    {
+                        <a asp-action="ToggleStatus" asp-route-id="@category.Id">Activate</a>
+                    }
+                    |
+                    <a asp-action="Edit" asp-route-id="@category.Id">Edit</a> 
+                    |
+                    <a asp-action="Delete" asp-route-id="@category.Id" onclick="return confirm('Are you sure you want to permanently delete this category?');">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

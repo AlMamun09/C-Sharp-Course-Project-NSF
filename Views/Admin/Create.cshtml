@@ -1,0 +1,39 @@
+@* This tells the page that the form is for a single ServiceCategory object *@
+@model NeighborhoodServiceFinder.Models.ServiceCategory
+
+@{
+    ViewData["Title"] = "Create Category";
+}
+
+<h1>Create New Service Category</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @* This tag helper creates the <form> tag and tells it where to send the data *@
+        <form asp-action="Create">
+            <div class="form-group">
+                <label class="control-label">Category Name</label>
+                @* This creates an <input> tag for the Name property *@
+                <input asp-for="Name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Description</label>
+                <input asp-for="Description" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Display Order</label>
+                <input asp-for="PriorityOrder" class="form-control" />
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    @* This creates a checkbox for the IsActive property *@
+                    <input class="form-check-input" asp-for="IsActive" /> Is this category active?
+                </label>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

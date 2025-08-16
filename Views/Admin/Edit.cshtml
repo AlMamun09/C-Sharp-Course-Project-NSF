@@ -1,0 +1,38 @@
+@model NeighborhoodServiceFinder.Models.ServiceCategory
+
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<h1>Edit Service Category</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            @* This is a hidden field to keep track of the document's ID *@
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group">
+                <label class="control-label">Category Name</label>
+                <input asp-for="Name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Description</label>
+                <input asp-for="Description" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Display Order</label>
+                <input asp-for="PriorityOrder" class="form-control" />
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" /> Is this category active?
+                </label>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Save Changes" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
