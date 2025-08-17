@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NeighborhoodServiceFinder.Data;
+using NeighborhoodServiceFinder.Services;
+using NeighborhoodServiceFinder.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +20,22 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddTransient<DbInitializer>();
+builder.Services.AddSingleton<FirestoreService>();
+// This line reads the "Cloudinary" section from your User Secretsand loads it into the CloudinarySettings class.
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
+// This line registers our CloudinaryService so we can use it in our controllers.
+builder.Services.AddTransient<CloudinaryService>();
 
 var app = builder.Build();
+
+// This section finds the DbInitializer service and runs the seeder
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var dbInitializer = services.GetRequiredService<DbInitializer>();
+    await dbInitializer.SeedAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "Upload Test";
+}
+
+<h1>Upload Test</h1>
+
+<form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label>Select an image to upload:</label>
+        <input type="file" name="file" class="form-control" />
+        <small class="form-text text-muted">For best results, we recommend an image that is at least 500x500 pixels.</small>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Upload Image</button>
+</form>
+
+<hr />
+
+@if (ViewData["ImageUrl"] != null)
+{
+    <h3>Upload Successful!</h3>
+    <p>Image URL: @ViewData["ImageUrl"]</p>
+    <img src="@ViewData["ImageUrl"]" style="width: 300px;" alt="Uploaded Image" />
+}

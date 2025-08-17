@@ -152,3 +152,5 @@ H:\NSF Project\NeighborhoodServiceFinder\bin\Debug\net8.0\Microsoft.AspNetCore.C
 H:\NSF Project\NeighborhoodServiceFinder\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 H:\NSF Project\NeighborhoodServiceFinder\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
 H:\NSF Project\NeighborhoodServiceFinder\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
+H:\NSF Project\NeighborhoodServiceFinder\obj\Debug\net8.0\NeighborhoodServiceFinder.sourcelink.json
+H:\NSF Project\NeighborhoodServiceFinder\bin\Debug\net8.0\CloudinaryDotNet.dll

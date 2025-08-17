@@ -106,5 +106,10 @@ namespace NeighborhoodServiceFinder.Controllers
             // If the form data was not valid, show the form again.
             return View(model);
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("12338ed6-3202-4537-a741-89b65ce3efe6")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("NeighborhoodServiceFinder")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8c88ce84beb3e5345c2b9ea6d30bc43c3405b3e6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+974441cf3eeeba73c7d2b460fdadfc61087de711")]
 [assembly: System.Reflection.AssemblyProductAttribute("NeighborhoodServiceFinder")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NeighborhoodServiceFinder")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
