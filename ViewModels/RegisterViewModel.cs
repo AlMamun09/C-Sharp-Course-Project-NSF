@@ -27,5 +27,8 @@ namespace NeighborhoodServiceFinder.ViewModels
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        [Display(Name = "Profile Picture (Optional)")]
+        public IFormFile? ProfilePicture { get; set; }
     }
 }

@@ -1,0 +1,13 @@
+@{
+    ViewData["Title"] = "Provider Dashboard";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<h1>@ViewData["Title"]</h1>
+<p>Welcome to your business dashboard. From here you can manage your profile and the services you offer.</p>

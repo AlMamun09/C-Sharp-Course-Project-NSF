@@ -1,0 +1,51 @@
+@model NeighborhoodServiceFinder.ViewModels.BecomeProviderViewModel
+
+@{
+    ViewData["Title"] = "Become a Service Provider";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p>Fill out your business details below to start listing your services.</p>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="BecomeProvider" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="BusinessName"></label>
+                <input asp-for="BusinessName" class="form-control" />
+                <span asp-validation-for="BusinessName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="BusinessPhoneNumber"></label>
+                <input asp-for="BusinessPhoneNumber" class="form-control" />
+                <span asp-validation-for="BusinessPhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="BusinessAddress"></label>
+                <input asp-for="BusinessAddress" class="form-control" />
+                <span asp-validation-for="BusinessAddress" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="BusinessDescription"></label>
+                <textarea asp-for="BusinessDescription" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="BusinessDescription" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ProfilePicture"></label>
+                <input asp-for="ProfilePicture" class="form-control" />
+                <small class="form-text text-muted">For best results, we recommend a square image that is at least
+                    500x500 pixels.</small>
+                <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+            </div>
+            <br />
+            <button type="submit" class="btn btn-success">Submit Application</button>
+        </form>
+    </div>
+</div>

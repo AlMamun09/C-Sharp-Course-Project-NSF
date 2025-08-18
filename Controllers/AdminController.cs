@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization; 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NeighborhoodServiceFinder.Services;
 using System.Threading.Tasks;
@@ -6,6 +6,8 @@ using Google.Cloud.Firestore;
 using NeighborhoodServiceFinder.Models;
 using Microsoft.AspNetCore.Identity;
 using NeighborhoodServiceFinder.Data;
+using NeighborhoodServiceFinder.ViewModels;
+using System.Linq;
 
 namespace NeighborhoodServiceFinder.Controllers
 {
@@ -107,30 +109,59 @@ namespace NeighborhoodServiceFinder.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult UserManagement()
+        // Updated UserManagement method
+        public async Task<IActionResult> UserManagement(string activeTab = "providers")
         {
-            // Use the UserManager to get a list of all users from the database.
-            var users = _userManager.Users.ToList();
+            var currentAdminId = _userManager.GetUserId(User);
+            var allUsers = _userManager.Users.Where(u => u.Id != currentAdminId).ToList();
+            var viewModel = new UserManagementViewModel();
 
-            // Pass the list of users to the view.
-            return View(users);
+            foreach (var user in allUsers)
+            {
+                if (await _userManager.IsInRoleAsync(user, "ServiceProvider"))
+                {
+                    viewModel.ServiceProviders.Add(user);
+                }
+                else
+                {
+                    viewModel.RegularUsers.Add(user);
+                }
+            }
+
+            // Pass the active tab name to the view
+            ViewBag.ActiveTab = activeTab;
+
+            return View(viewModel);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> DeleteUser(string id)
+        // This action shows the details of a specific user
+        // Updated UserDetails method
+        public async Task<IActionResult> UserDetails(string id, string activeTab)
         {
-            // 1. Find the user in the database by their unique ID.
             var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
 
-            // 2. If the user was found...
+            // Pass the active tab name to the view
+            ViewBag.ActiveTab = activeTab;
+
+            return View(user);
+        }
+
+        // Updated DeleteUser method
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string id, string activeTab)
+        {
+            var user = await _userManager.FindByIdAsync(id);
             if (user != null)
             {
-                // 3. ...delete them.
                 var result = await _userManager.DeleteAsync(user);
             }
 
-            // 4. Redirect the admin back to the user list page.
-            return RedirectToAction("UserManagement");
+            // Redirect back to the UserManagement page, passing the active tab name along
+            return RedirectToAction("UserManagement", new { activeTab = activeTab });
         }
     }
 }

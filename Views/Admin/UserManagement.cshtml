@@ -1,5 +1,4 @@
-@using NeighborhoodServiceFinder.Data
-@model List<ApplicationUser>
+@model NeighborhoodServiceFinder.ViewModels.UserManagementViewModel
 
 @{
     ViewData["Title"] = "User Management";
@@ -7,41 +6,106 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                First Name
-            </th>
-            <th>
-                Last Name
-            </th>
-            <th>
-                Email
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>
-                    @user.FirstName
-                </td>
-                <td>
-                    @user.LastName
-                </td>
-                <td>
-                    @user.Email
-                </td>
-                <td>
-                    <form asp-action="DeleteUser" asp-route-id="@user.Id" method="post"
-                        onsubmit="return confirm('Are you sure you want to permanently delete this user?');">
-                        <button type="submit" class="btn btn-link text-danger p-0">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<!-- Tab Navigation -->
+<ul class="nav nav-tabs" id="userTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="providers-tab" data-bs-toggle="tab" data-bs-target="#providers"
+            type="button" role="tab">Service Providers (@Model.ServiceProviders.Count)</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button"
+            role="tab">Regular Users (@Model.RegularUsers.Count)</button>
+    </li>
+</ul>
+
+<!-- Tab Content -->
+<div class="tab-content" id="userTabsContent">
+    <!-- Service Providers Pane -->
+    <div class="tab-pane fade show active" id="providers" role="tabpanel">
+        <table class="table table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>Business Name</th>
+                    <th>Contact Name</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.ServiceProviders)
+                {
+                    <tr>
+                        <td>@user.BusinessName</td>
+                        <td>@user.FirstName @user.LastName</td>
+                        <td>@user.Email</td>
+                        <td>
+                            <a asp-action="UserDetails" asp-route-id="@user.Id" asp-route-activeTab="providers"
+                                class="btn btn-sm btn-info">Details</a> |
+                            <form asp-action="DeleteUser" asp-route-id="@user.Id" asp-route-activeTab="providers"
+                                method="post"
+                                onsubmit="return confirm('Are you sure you want to permanently delete this user?');"
+                                style="display:inline;">
+                                <button type="submit" class="btn btn-link text-danger p-0">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Regular Users Pane -->
+    <div class="tab-pane fade" id="users" role="tabpanel">
+        <table class="table table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.RegularUsers)
+                {
+                    <tr>
+                        <td>@user.FirstName</td>
+                        <td>@user.LastName</td>
+                        <td>@user.Email</td>
+                        <td>@user.Address</td>
+                        <td>
+                            <a asp-action="UserDetails" asp-route-id="@user.Id" asp-route-activeTab="users"
+                                class="btn btn-sm btn-info">Details</a> |
+                            <form asp-action="DeleteUser" asp-route-id="@user.Id" asp-route-activeTab="users" method="post"
+                                onsubmit="return confirm('Are you sure you want to permanently delete this user?');"
+                                style="display:inline;">
+                                <button type="submit" class="btn btn-link text-danger p-0">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the active tab name from the ViewBag
+            const activeTabId = '@ViewBag.ActiveTab';
+
+            if (activeTabId) {
+                // Find the tab button that corresponds to the active tab name
+                const tabToActivate = document.querySelector(`#userTabs button[data-bs-target="#${activeTabId}"]`);
+
+                if (tabToActivate) {
+                    // Use Bootstrap's built-in Tab object to show the correct tab
+                    const tab = new bootstrap.Tab(tabToActivate);
+                    tab.show();
+                }
+            }
+        });
+    </script>
+}

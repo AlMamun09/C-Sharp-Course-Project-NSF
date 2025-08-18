@@ -1,0 +1,59 @@
+@model NeighborhoodServiceFinder.Data.ApplicationUser
+
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<h1>@Model.FirstName @Model.LastName</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+        {
+            <img src="@Model.ProfilePictureUrl" class="img-fluid rounded mb-3" alt="Profile Picture" />
+        }
+        else
+        {
+            <div class="border rounded bg-light d-flex align-items-center justify-content-center mb-3" style="height: 300px; width: 300px;">
+                <span>No Profile Picture</span>
+            </div>
+        }
+    </div>
+    <div class="col-md-8">
+        <h3>Account Information</h3>
+        <dl class="row">
+            <dt class="col-sm-4">Full Name</dt>
+            <dd class="col-sm-8">@Model.FirstName @Model.LastName</dd>
+
+            <dt class="col-sm-4">Email</dt>
+            <dd class="col-sm-8">@Model.Email</dd>
+
+            <dt class="col-sm-4">Personal Address</dt>
+            <dd class="col-sm-8">@Model.Address</dd>
+        </dl>
+
+        @* This section only shows up if the user is a service provider *@
+        @if (!string.IsNullOrEmpty(Model.BusinessName))
+        {
+            <h3 class="mt-4">Business Information</h3>
+            <dl class="row">
+                <dt class="col-sm-4">Business Name</dt>
+                <dd class="col-sm-8">@Model.BusinessName</dd>
+
+                <dt class="col-sm-4">Business Phone</dt>
+                <dd class="col-sm-8">@Model.BusinessPhoneNumber</dd>
+
+                <dt class="col-sm-4">Business Address</dt>
+                <dd class="col-sm-8">@Model.BusinessAddress</dd>
+
+                <dt class="col-sm-4">Business Description</dt>
+                <dd class="col-sm-8">@Model.BusinessDescription</dd>
+            </dl>
+        }
+        
+        <div class="mt-4">
+            <a asp-action="UserManagement" asp-route-activeTab="@ViewBag.ActiveTab" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+</div>
