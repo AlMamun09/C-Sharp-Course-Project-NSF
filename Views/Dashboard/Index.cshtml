@@ -1,3 +1,7 @@
+@using Microsoft.AspNetCore.Identity
+@using NeighborhoodServiceFinder.Data
+@inject UserManager<ApplicationUser> UserManager
+
 @{
     ViewData["Title"] = "My Dashboard";
 }
@@ -9,5 +13,15 @@
 <hr />
 
 <div>
-    <a asp-action="BecomeProvider" class="btn btn-primary">Become a Service Provider</a>
+    <a asp-action="EditUserProfile" class="btn btn-info">Edit My Profile</a>
+
+    @if (User.IsInRole("ServiceProvider"))
+    {
+        <a asp-controller="ServiceProvider" asp-action="Index" class="btn btn-success">Provider Dashboard</a>
+    }
+    else
+    {
+        <a asp-action="BecomeProvider" class="btn btn-primary">Become a Service Provider</a>
+    }
 </div>
+

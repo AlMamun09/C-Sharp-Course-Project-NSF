@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using NeighborhoodServiceFinder.Data;
 using NeighborhoodServiceFinder.ViewModels;
+using System;
 using System.Threading.Tasks;
 using NeighborhoodServiceFinder.Services;
 
@@ -12,12 +14,18 @@ namespace NeighborhoodServiceFinder.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly CloudinaryService _cloudinaryService;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, CloudinaryService cloudinaryService)
+        public AccountController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            CloudinaryService cloudinaryService,
+            ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _cloudinaryService = cloudinaryService;
+            _logger = logger;
         }
 
         // --- REGULAR USER REGISTRATION ---
@@ -32,40 +40,51 @@ namespace NeighborhoodServiceFinder.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Handle the optional profile picture upload
-                string profilePictureUrl = string.Empty;
-                if (model.ProfilePicture != null)
+                try
                 {
-                    var uploadResult = await _cloudinaryService.UploadProfileImageAsync(model.ProfilePicture);
-                    if (uploadResult.Error == null)
+                    string profilePictureUrl = string.Empty;
+                    if (model.ProfilePicture != null)
                     {
+                        var uploadResult = await _cloudinaryService.UploadProfileImageAsync(model.ProfilePicture);
+                        if (uploadResult.Error != null)
+                        {
+                            ModelState.AddModelError(string.Empty, "Error uploading profile picture. Please try again.");
+                            return View(model);
+                        }
                         profilePictureUrl = uploadResult.SecureUrl.ToString();
                     }
-                }
 
-                var user = new ApplicationUser
-                {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Address = model.Address,
-                    ProfilePictureUrl = profilePictureUrl // Save the URL
-                };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(user, "User");
-                    // Store a success message that will be displayed on the next page
-                    TempData["SuccessMessage"] = "Registration successful! Please log in to continue.";
-                    // Redirect to the Login page instead of the homepage
-                    return RedirectToAction("Login");
+                    var user = new ApplicationUser
+                    {
+                        UserName = model.Email,
+                        Email = model.Email,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        Address = model.Address,
+                        ProfilePictureUrl = profilePictureUrl
+                    };
+
+                    var result = await _userManager.CreateAsync(user, model.Password);
+
+                    if (result.Succeeded)
+                    {
+                        await _userManager.AddToRoleAsync(user, "User");
+                        TempData["SuccessMessage"] = "Registration successful! Please log in to continue.";
+                        return RedirectToAction("Login");
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
-                foreach (var error in result.Errors)
+                catch (Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    _logger.LogError(ex, "An unexpected error occurred during registration.");
+                    ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
                 }
             }
+
             return View(model);
         }
 
@@ -85,19 +104,15 @@ namespace NeighborhoodServiceFinder.Controllers
 
                 if (result.Succeeded)
                 {
-                    // Login was successful, now let's find the user to check their role.
                     var user = await _userManager.FindByEmailAsync(model.Email);
-                    if (user != null)
+                    // Check if the user is an Admin.
+                    if (user != null && await _userManager.IsInRoleAsync(user, "Admin"))
                     {
-                        // Check if the user is in the "Admin" role.
-                        if (await _userManager.IsInRoleAsync(user, "Admin"))
-                        {
-                            // If they are an admin, redirect to the Admin controller's Index page.
-                            return RedirectToAction("Index", "Admin");
-                        }
+                        // If so, redirect to the Admin panel.
+                        return RedirectToAction("Index", "Admin");
                     }
 
-                    // For all other successful logins (Users, ServiceProviders), redirect to the user dashboard.
+                    // For ALL other users (Regular and ServiceProviders), redirect to the main dashboard.
                     return RedirectToAction("Index", "Dashboard");
                 }
                 else

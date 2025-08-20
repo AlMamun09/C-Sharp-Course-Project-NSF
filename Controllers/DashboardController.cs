@@ -28,26 +28,31 @@ namespace NeighborhoodServiceFinder.Controllers
             return View();
         }
 
-        // --- NEW ACTIONS for Becoming a Provider ---
-
-        // This GET action shows the empty form.
+        // --- ACTIONS for Becoming a Provider ---
         [HttpGet]
-        public IActionResult BecomeProvider()
+        public async Task<IActionResult> BecomeProvider()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            var model = new BecomeProviderViewModel
+            {
+                BusinessName = user.BusinessName ?? string.Empty,
+                BusinessPhoneNumber = user.BusinessPhoneNumber ?? string.Empty,
+                BusinessAddress = user.BusinessAddress ?? string.Empty,
+                BusinessDescription = user.BusinessDescription ?? string.Empty,
+                CurrentProfilePictureUrl = user.ProfilePictureUrl
+            };
+            return View(model);
         }
 
-        // This POST action processes the submitted form data.
         [HttpPost]
         public async Task<IActionResult> BecomeProvider(BecomeProviderViewModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                if (user == null)
-                {
-                    return NotFound();
-                }
+                if (user == null) return NotFound();
 
                 if (model.ProfilePicture != null)
                 {
@@ -58,7 +63,6 @@ namespace NeighborhoodServiceFinder.Controllers
                     }
                 }
 
-                // Update the user's details with all the business info
                 user.BusinessName = model.BusinessName;
                 user.BusinessPhoneNumber = model.BusinessPhoneNumber;
                 user.BusinessAddress = model.BusinessAddress;
@@ -68,13 +72,70 @@ namespace NeighborhoodServiceFinder.Controllers
                 await _userManager.AddToRoleAsync(user, "ServiceProvider");
                 await _signInManager.RefreshSignInAsync(user);
 
-                // Store a success message that will be displayed on the next page
                 TempData["SuccessMessage"] = "Congratulations! You are now registered as a Service Provider.";
-
-                // Redirect to the new ServiceProvider dashboard
                 return RedirectToAction("Index", "ServiceProvider");
             }
+            return View(model);
+        }
 
+        // --- NEW ACTIONS for Editing a Regular User's Profile ---
+
+        // This GET action shows the pre-filled edit form for a regular user.
+        [HttpGet]
+        public async Task<IActionResult> EditUserProfile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            var model = new EditUserViewModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Address = user.Address,
+                CurrentProfilePictureUrl = user.ProfilePictureUrl
+            };
+
+            return View(model);
+        }
+
+        // This POST action processes the submitted changes for a regular user.
+        [HttpPost]
+        public async Task<IActionResult> EditUserProfile(EditUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) return NotFound();
+
+                // Handle optional new profile picture upload
+                if (model.ProfilePicture != null)
+                {
+                    var uploadResult = await _cloudinaryService.UploadProfileImageAsync(model.ProfilePicture);
+                    if (uploadResult.Error == null)
+                    {
+                        user.ProfilePictureUrl = uploadResult.SecureUrl.ToString();
+                    }
+                }
+
+                // Update user properties
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.Address = model.Address;
+
+                // Save changes to the database
+                var result = await _userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    // Redirect back to the main dashboard
+                    return RedirectToAction("Index");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
             return View(model);
         }
     }

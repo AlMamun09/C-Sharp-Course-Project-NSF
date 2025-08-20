@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NeighborhoodServiceFinder")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+687c91786be8ad6f9f7d2539df18fcf740088b29")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a49fc292b71b884e9ea41a9fa725aa861075cb51")]
 [assembly: System.Reflection.AssemblyProductAttribute("NeighborhoodServiceFinder")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NeighborhoodServiceFinder")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

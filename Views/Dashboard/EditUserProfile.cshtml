@@ -1,0 +1,54 @@
+@model NeighborhoodServiceFinder.ViewModels.EditUserViewModel
+
+@{
+    ViewData["Title"] = "Edit My Profile";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p>Update your personal information below.</p>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="EditUserProfile" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="FirstName"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="LastName"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Address"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                @if (!string.IsNullOrEmpty(Model.CurrentProfilePictureUrl))
+                {
+                    <label>Current Profile Picture</label>
+                    <div>
+                        <img src="@Model.CurrentProfilePictureUrl" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;" class="mb-2" alt="Current Profile Picture"/>
+                    </div>
+                }
+                <label asp-for="ProfilePicture" class="control-label mt-2"></label>
+                <input asp-for="ProfilePicture" class="form-control" />
+                <small class="form-text text-muted">Upload a new image to replace your current one.</small>
+                <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Save Changes</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

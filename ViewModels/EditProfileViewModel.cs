@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace NeighborhoodServiceFinder.ViewModels
 {
-    public class BecomeProviderViewModel
+    public class EditProfileViewModel
     {
         [Required]
         [Display(Name = "Business Name")]
@@ -23,9 +23,9 @@ namespace NeighborhoodServiceFinder.ViewModels
         [Display(Name = "About Your Business (Description)")]
         public string BusinessDescription { get; set; } = string.Empty;
 
-        [Display(Name = "Profile Picture")]
+        [Display(Name = "Upload New Profile Picture")]
         public IFormFile? ProfilePicture { get; set; }
-        
+
         public string? CurrentProfilePictureUrl { get; set; }
     }
 }
