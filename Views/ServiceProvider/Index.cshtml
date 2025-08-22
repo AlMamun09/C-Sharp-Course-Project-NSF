@@ -13,7 +13,10 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Your Business Profile</h1>
-    <a asp-action="EditProfile" class="btn btn-primary">Edit Profile</a>
+    <div>
+        <a asp-action="MyServices" class="btn btn-success">Manage My Services</a>
+        <a asp-controller="Dashboard" asp-action="EditUserProfile" class="btn btn-primary">Edit My Profile</a>
+    </div>
 </div>
 <hr />
 

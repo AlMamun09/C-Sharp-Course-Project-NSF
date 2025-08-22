@@ -1,0 +1,43 @@
+@model List<NeighborhoodServiceFinder.Models.ServiceCategoryRequest>
+
+@{
+    ViewData["Title"] = "Pending Category Requests";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p>Review the following new service category requests submitted by providers.</p>
+<hr />
+
+@if (!Model.Any())
+{
+    <p>There are currently no pending category requests.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Suggested Name</th>
+                <th>Description</th>
+                <th>Requested By</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var request in Model)
+            {
+                <tr>
+                    <td>@request.CategoryName</td>
+                    <td>@request.CategoryDescription</td>
+                    <td>@request.RequestedByName</td>
+                    <td>@request.CreatedAt.ToDateTime().ToShortDateString()</td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-success">Approve</a>
+                        <a href="#" class="btn btn-sm btn-danger">Deny</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

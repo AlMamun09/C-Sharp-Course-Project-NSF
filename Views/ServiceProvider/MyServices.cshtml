@@ -1,0 +1,44 @@
+@model List<NeighborhoodServiceFinder.Models.ProviderService>
+
+@{
+    ViewData["Title"] = "My Services";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>@ViewData["Title"]</h1>
+    <div>
+        <a asp-action="AddNewService" class="btn btn-primary">Add New Service</a>
+        <a asp-action="RequestNewCategory" class="btn btn-secondary">Request New Category</a>
+    </div>
+</div>
+<hr />
+
+@if (!Model.Any())
+{
+    <p>You have not added any services yet. Click "Add New Service" to get started.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Service Name</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var service in Model)
+            {
+                <tr>
+                    <td>@service.ServiceName</td>
+                    <td>$@service.Price @service.PricingUnit</td>
+                    <td>
+                        <a href="#">Edit</a> |
+                        <a href="#">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -134,6 +134,16 @@ namespace NeighborhoodServiceFinder.Controllers
             return View(viewModel);
         }
 
+        // This GET action shows the list of pending category requests
+        public async Task<IActionResult> CategoryRequests()
+        {
+            // Fetch all pending requests from Firestore
+            var requests = await _firestoreService.GetPendingCategoryRequestsAsync();
+
+            // Pass the list of requests to the new view
+            return View(requests);
+        }
+
         // This action shows the details of a specific user
         // Updated UserDetails method
         public async Task<IActionResult> UserDetails(string id, string activeTab)
