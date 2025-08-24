@@ -1,0 +1,30 @@
+@if (TempData["SuccessMessage"] != null)
+{
+    <!-- This is the container where the toast will appear -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <!-- This is the toast notification itself -->
+        <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                @TempData["SuccessMessage"]
+            </div>
+        </div>
+    </div>
+
+    <!-- This script will find and show the toast -->
+    <script>
+        // This event listener now waits for the entire page (including scripts like Bootstrap) to load
+        window.addEventListener('load', function () {
+            const toastEl = document.getElementById('successToast');
+            if (toastEl) {
+                const toast = new bootstrap.Toast(toastEl, {
+                    delay: 5000 // The toast will disappear after 5 seconds
+                });
+                toast.show();
+            }
+        });
+    </script>
+}

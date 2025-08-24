@@ -13,6 +13,7 @@ namespace NeighborhoodServiceFinder.Services
         private const string ServiceCategoriesCollection = "serviceCategories";
         private const string ProviderServicesCollection = "providerServices"; // New collection name
         private const string CategoryRequestsCollection = "serviceCategoryRequests";
+        private const string NotificationsCollection = "notifications";
 
         public FirestoreService()
         {
@@ -122,6 +123,58 @@ namespace NeighborhoodServiceFinder.Services
                 requests.Add(document.ConvertTo<ServiceCategoryRequest>());
             }
             return requests;
+        }
+
+        // Gets a single service category request by its ID
+        public async Task<ServiceCategoryRequest?> GetCategoryRequestByIdAsync(string id)
+        {
+            DocumentReference docRef = _db.Collection(CategoryRequestsCollection).Document(id);
+            DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
+            if (snapshot.Exists)
+            {
+                return snapshot.ConvertTo<ServiceCategoryRequest>();
+            }
+            return null;
+        }
+
+        // Updates the status of a specific category request
+        public async Task UpdateCategoryRequestStatusAsync(string id, string status)
+        {
+            DocumentReference docRef = _db.Collection(CategoryRequestsCollection).Document(id);
+            // Update only the 'status' field
+            await docRef.UpdateAsync("status", status);
+        }
+
+        // --- NEW Notification Methods ---
+
+        // Creates a new notification for a specific user
+        public async Task CreateNotificationAsync(Notification notification)
+        {
+            CollectionReference collectionRef = _db.Collection(NotificationsCollection);
+            await collectionRef.AddAsync(notification);
+        }
+
+        // Gets all unread notifications for a specific user
+        public async Task<List<Notification>> GetUnreadNotificationsAsync(string userId)
+        {
+            CollectionReference collectionRef = _db.Collection(NotificationsCollection);
+            // Create a query to find all notifications for this user that are not yet read
+            Query query = collectionRef.WhereEqualTo("userId", userId).WhereEqualTo("isRead", false);
+            QuerySnapshot snapshot = await query.GetSnapshotAsync();
+
+            List<Notification> notifications = new List<Notification>();
+            foreach (var document in snapshot.Documents)
+            {
+                notifications.Add(document.ConvertTo<Notification>());
+            }
+            return notifications;
+        }
+
+        // Marks a specific notification as read so it doesn't show again
+        public async Task MarkNotificationAsReadAsync(string notificationId)
+        {
+            DocumentReference docRef = _db.Collection(NotificationsCollection).Document(notificationId);
+            await docRef.UpdateAsync("isRead", true);
         }
     }
 }

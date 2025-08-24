@@ -4,12 +4,6 @@
     ViewData["Title"] = "Provider Dashboard";
 }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        @TempData["SuccessMessage"]
-    </div>
-}
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Your Business Profile</h1>
@@ -52,3 +46,10 @@
         <p>@Model.BusinessDescription</p>
     </div>
 </div>
+
+@section Scripts {
+@{
+    // This renders a special partial view that handles the toast notifications.
+    await Html.RenderPartialAsync("_NotificationToastPartial", (List<NeighborhoodServiceFinder.Models.Notification>)ViewBag.Notifications);
+}
+}

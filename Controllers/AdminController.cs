@@ -160,6 +160,59 @@ namespace NeighborhoodServiceFinder.Controllers
             return View(user);
         }
 
+        // This POST action handles the "Approve" button click
+        [HttpPost]
+        public async Task<IActionResult> ApproveCategoryRequest(string requestId)
+        {
+            var request = await _firestoreService.GetCategoryRequestByIdAsync(requestId);
+
+            if (request != null && request.Status == "Pending")
+            {
+                var newCategory = new ServiceCategory
+                {
+                    Name = request.CategoryName,
+                    Description = request.CategoryDescription,
+                    IsActive = true,
+                    PriorityOrder = 99
+                };
+                await _firestoreService.AddCategoryAsync(newCategory);
+                await _firestoreService.UpdateCategoryRequestStatusAsync(requestId, "Approved");
+
+                // --- NEW NOTIFICATION LOGIC ---
+                var notification = new Notification
+                {
+                    UserId = request.RequestedById,
+                    Message = $"Congratulations! Your request for the new category '{request.CategoryName}' has been approved."
+                };
+                await _firestoreService.CreateNotificationAsync(notification);
+
+                TempData["SuccessMessage"] = $"Category '{request.CategoryName}' has been approved and is now available.";
+            }
+            return RedirectToAction("CategoryRequests");
+        }
+
+        // This POST action handles the "Deny" button click
+        [HttpPost]
+        public async Task<IActionResult> DenyCategoryRequest(string requestId)
+        {
+            var request = await _firestoreService.GetCategoryRequestByIdAsync(requestId);
+            if (request != null && request.Status == "Pending")
+            {
+                await _firestoreService.UpdateCategoryRequestStatusAsync(requestId, "Denied");
+
+                // --- NEW NOTIFICATION LOGIC ---
+                var notification = new Notification
+                {
+                    UserId = request.RequestedById,
+                    Message = $"We're sorry, but your request for the new category '{request.CategoryName}' has been denied at this time."
+                };
+                await _firestoreService.CreateNotificationAsync(notification);
+
+                TempData["SuccessMessage"] = $"Category request '{request.CategoryName}' has been denied.";
+            }
+            return RedirectToAction("CategoryRequests");
+        }
+
         // Updated DeleteUser method
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string id, string activeTab)

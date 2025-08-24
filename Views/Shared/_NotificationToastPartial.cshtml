@@ -1,0 +1,41 @@
+@model List<NeighborhoodServiceFinder.Models.Notification>
+
+@if (Model != null && Model.Any())
+{
+    <!-- Container for all notification toasts -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        @foreach (var notification in Model)
+        {
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-notification-id="@notification.Id">
+                <div class="toast-header bg-info text-white">
+                    <strong class="me-auto">Notification</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    @notification.Message
+                </div>
+            </div>
+        }
+    </div>
+
+    <script>
+        window.addEventListener('load', function () {
+            // Find all the notification toasts on the page
+            const toastElements = document.querySelectorAll('.toast[data-notification-id]');
+
+            toastElements.forEach(toastEl => {
+                const toast = new bootstrap.Toast(toastEl, {
+                    delay: 10000 // Show notifications for 10 seconds
+                });
+                toast.show();
+
+                // After a toast is hidden, send a request to mark it as read
+                toastEl.addEventListener('hidden.bs.toast', function () {
+                    const notificationId = this.getAttribute('data-notification-id');
+                    // We will build this controller action next
+                    fetch(`/ServiceProvider/MarkNotificationAsRead/${notificationId}`, { method: 'POST' });
+                });
+            });
+        });
+    </script>
+}

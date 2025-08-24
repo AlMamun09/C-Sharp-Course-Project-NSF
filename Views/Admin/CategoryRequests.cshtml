@@ -32,9 +32,17 @@ else
                     <td>@request.CategoryDescription</td>
                     <td>@request.RequestedByName</td>
                     <td>@request.CreatedAt.ToDateTime().ToShortDateString()</td>
-                    <td>
-                        <a href="#" class="btn btn-sm btn-success">Approve</a>
-                        <a href="#" class="btn btn-sm btn-danger">Deny</a>
+                    <td class="d-flex">
+                        <form asp-action="ApproveCategoryRequest" method="post" class="me-1">
+                            <input type="hidden" name="requestId" value="@request.Id" />
+                            <button type="submit" class="btn btn-sm btn-success"
+                                onclick="return confirm('Are you sure you want to approve this category?');">Approve</button>
+                        </form>
+                        <form asp-action="DenyCategoryRequest" method="post">
+                            <input type="hidden" name="requestId" value="@request.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Are you sure you want to deny this category?');">Deny</button>
+                        </form>
                     </td>
                 </tr>
             }

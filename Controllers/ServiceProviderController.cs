@@ -33,7 +33,19 @@ namespace NeighborhoodServiceFinder.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound("Unable to load user.");
+            if (user == null)
+            {
+                return NotFound("Unable to load user.");
+            }
+
+            // --- NEW NOTIFICATION LOGIC ---
+            // 1. Fetch any unread notifications for this user.
+            var notifications = await _firestoreService.GetUnreadNotificationsAsync(user.Id);
+
+            // 2. Pass the list of notifications to the view using the ViewBag.
+            ViewBag.Notifications = notifications;
+
+            // 3. Pass the user object to the view as the main model.
             return View(user);
         }
 
@@ -236,6 +248,17 @@ namespace NeighborhoodServiceFinder.Controllers
 
             // If the form data was not valid, show the form again with the errors
             return View(model);
+        }
+
+        // This is an API-style action called by JavaScript in the background.
+        [HttpPost]
+        public async Task<IActionResult> MarkNotificationAsRead(string id)
+        {
+            // Call our service to update the 'isRead' flag in Firestore.
+            await _firestoreService.MarkNotificationAsReadAsync(id);
+
+            // Return a simple "OK" response since this isn't a full page navigation.
+            return Ok();
         }
     }
 }
