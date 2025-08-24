@@ -56,5 +56,23 @@ namespace NeighborhoodServiceFinder.Services
             }
             return uploadResult;
         }
+
+        public async Task<DeletionResult> DeleteImageAsync(string imageUrl)
+        {
+            // Cloudinary URLs contain a unique "Public ID" for each image.
+            // We need to extract this ID from the full URL.
+            // Example URL: http://res.cloudinary.com/cloud-name/image/upload/v12345/public_id.jpg
+            // The public ID is the last part of the path before the file extension.
+            var uri = new System.Uri(imageUrl);
+            var publicId = System.IO.Path.GetFileNameWithoutExtension(uri.AbsolutePath);
+
+            var deletionParams = new DeletionParams(publicId);
+
+            // Send the delete command to Cloudinary
+            var result = await _cloudinary.DestroyAsync(deletionParams);
+
+            return result;
+        }
+
     }
 }

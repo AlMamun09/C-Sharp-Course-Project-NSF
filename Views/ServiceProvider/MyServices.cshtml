@@ -32,10 +32,16 @@ else
             {
                 <tr>
                     <td>@service.ServiceName</td>
-                    <td>$@service.Price @service.PricingUnit</td>
-                    <td>
-                        <a href="#">Edit</a> |
-                        <a href="#">Delete</a>
+                    <td>TK @service.Price @service.PricingUnit</td>
+                    <td class="d-flex align-items-center">
+                        <a asp-action="ServiceDetails" asp-route-id="@service.Id" class="btn btn-sm btn-info">Details</a>
+                        <span class="mx-2">|</span>
+                        <a asp-action="EditService" asp-route-id="@service.Id">Edit</a>
+                        <span class="mx-1">|</span>
+                        <form asp-action="DeleteService" asp-route-id="@service.Id" method="post"
+                            onsubmit="return confirm('Are you sure you want to permanently delete this service?');">
+                            <button type="submit" class="btn btn-link text-danger p-0">Delete</button>
+                        </form>
                     </td>
                 </tr>
             }

@@ -113,6 +113,28 @@ namespace NeighborhoodServiceFinder.Controllers
             return View(services);
         }
 
+        // This GET action shows the full details of a single service
+        [HttpGet]
+        public async Task<IActionResult> ServiceDetails(string id)
+        {
+            // 1. Fetch the service from Firestore
+            var service = await _firestoreService.GetProviderServiceByIdAsync(id);
+            if (service == null)
+            {
+                return NotFound();
+            }
+
+            // 2. Security Check: Ensure the service belongs to the current user
+            var currentUserId = _userManager.GetUserId(User);
+            if (service.ProviderId != currentUserId)
+            {
+                return Forbid(); // Block access if the user is not the owner
+            }
+
+            // 3. Pass the service object to the new view
+            return View(service);
+        }
+
         // This GET action prepares and shows the empty form
         [HttpGet]
         public async Task<IActionResult> AddNewService()
@@ -197,6 +219,9 @@ namespace NeighborhoodServiceFinder.Controllers
                 // 5. Save the new service to Firestore
                 await _firestoreService.AddNewServiceAsync(newService);
 
+                // --- SUCCESS MESSAGE ---
+                TempData["SuccessMessage"] = $"Your new service '{newService.ServiceName}' has been added successfully.";
+
                 // 6. Redirect to the list of services
                 return RedirectToAction("MyServices");
             }
@@ -260,5 +285,132 @@ namespace NeighborhoodServiceFinder.Controllers
             // Return a simple "OK" response since this isn't a full page navigation.
             return Ok();
         }
+
+
+        // --- Edit Services ---
+        // This GET action shows the pre-filled edit form for a service
+        [HttpGet]
+        public async Task<IActionResult> EditService(string id)
+        {
+            var service = await _firestoreService.GetProviderServiceByIdAsync(id);
+            if (service == null)
+            {
+                return NotFound();
+            }
+
+            // Security Check: Ensure the service belongs to the current user
+            var currentUserId = _userManager.GetUserId(User);
+            if (service.ProviderId != currentUserId)
+            {
+                return Forbid(); // Or RedirectToAction("AccessDenied", "Account");
+            }
+
+            var model = new EditServiceViewModel
+            {
+                Id = service.Id,
+                ServiceName = service.ServiceName,
+                Description = service.Description,
+                Price = service.Price,
+                PricingUnit = service.PricingUnit,
+                CurrentImageUrls = service.ImageUrls
+            };
+
+            return View(model);
+        }
+
+        // This POST action processes the submitted changes for a service
+        [HttpPost]
+        public async Task<IActionResult> EditService(EditServiceViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var serviceToUpdate = await _firestoreService.GetProviderServiceByIdAsync(model.Id);
+                if (serviceToUpdate == null)
+                {
+                    return NotFound();
+                }
+
+                var currentUserId = _userManager.GetUserId(User);
+                if (serviceToUpdate.ProviderId != currentUserId)
+                {
+                    return Forbid();
+                }
+
+                // --- NEW LOGIC to handle image deletion ---
+                if (model.ImagesToDelete != null)
+                {
+                    foreach (var imageUrl in model.ImagesToDelete)
+                    {
+                        // 1. Delete the image from Cloudinary
+                        await _cloudinaryService.DeleteImageAsync(imageUrl);
+
+                        // 2. Remove the URL from our service's list of images
+                        serviceToUpdate.ImageUrls.Remove(imageUrl);
+                    }
+                }
+
+                // Handle new gallery image uploads (this logic is unchanged)
+                if (model.NewGalleryImages != null)
+                {
+                    foreach (var file in model.NewGalleryImages)
+                    {
+                        var uploadResult = await _cloudinaryService.UploadGalleryImageAsync(file);
+                        if (uploadResult.Error == null)
+                        {
+                            serviceToUpdate.ImageUrls.Add(uploadResult.SecureUrl.ToString());
+                        }
+                    }
+                }
+
+                // Update other properties (this logic is unchanged)
+                serviceToUpdate.Description = model.Description;
+                serviceToUpdate.Price = model.Price;
+                serviceToUpdate.PricingUnit = model.PricingUnit;
+
+                // Save all changes to Firestore
+                await _firestoreService.UpdateProviderServiceAsync(serviceToUpdate);
+
+                TempData["SuccessMessage"] = "Your service has been updated successfully.";
+                return RedirectToAction("MyServices");
+            }
+
+            // If the model is not valid, we must re-populate the CurrentImageUrls
+            // so the page can be displayed correctly.
+            var service = await _firestoreService.GetProviderServiceByIdAsync(model.Id);
+            if (service != null)
+            {
+                model.CurrentImageUrls = service.ImageUrls;
+            }
+
+            return View(model);
+        }
+
+        // This POST action handles the deletion of a service
+        [HttpPost]
+        public async Task<IActionResult> DeleteService(string id)
+        {
+            // 1. Fetch the service to be deleted from Firestore
+            var serviceToDelete = await _firestoreService.GetProviderServiceByIdAsync(id);
+            if (serviceToDelete == null)
+            {
+                return NotFound();
+            }
+
+            // 2. Security Check: Ensure the service belongs to the current user
+            var currentUserId = _userManager.GetUserId(User);
+            if (serviceToDelete.ProviderId != currentUserId)
+            {
+                return Forbid(); // Block the request if the user is not the owner
+            }
+
+            // 3. Call the service to permanently delete the document
+            await _firestoreService.DeleteProviderServiceAsync(id);
+
+            // 4. Set a success message and redirect back to the list
+            TempData["SuccessMessage"] = $"Service '{serviceToDelete.ServiceName}' was successfully deleted.";
+            return RedirectToAction("MyServices");
+        }
+
+
     }
 }

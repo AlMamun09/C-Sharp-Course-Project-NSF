@@ -176,5 +176,32 @@ namespace NeighborhoodServiceFinder.Services
             DocumentReference docRef = _db.Collection(NotificationsCollection).Document(notificationId);
             await docRef.UpdateAsync("isRead", true);
         }
+
+        // Gets a single provider service by its unique ID
+        public async Task<ProviderService?> GetProviderServiceByIdAsync(string serviceId)
+        {
+            DocumentReference docRef = _db.Collection(ProviderServicesCollection).Document(serviceId);
+            DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
+            if (snapshot.Exists)
+            {
+                return snapshot.ConvertTo<ProviderService>();
+            }
+            return null;
+        }
+
+        // Updates an existing provider service in the database
+        public async Task UpdateProviderServiceAsync(ProviderService service)
+        {
+            DocumentReference docRef = _db.Collection(ProviderServicesCollection).Document(service.Id);
+            // Use SetAsync with MergeAll to update the document without overwriting fields
+            await docRef.SetAsync(service, SetOptions.MergeAll);
+        }
+
+        // Deletes a specific provider service from the database
+        public async Task DeleteProviderServiceAsync(string serviceId)
+        {
+            DocumentReference docRef = _db.Collection(ProviderServicesCollection).Document(serviceId);
+            await docRef.DeleteAsync();
+        }
     }
 }
