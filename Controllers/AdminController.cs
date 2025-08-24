@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using NeighborhoodServiceFinder.Services;
-using System.Threading.Tasks;
-using Google.Cloud.Firestore;
-using NeighborhoodServiceFinder.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using NeighborhoodServiceFinder.Data;
+using NeighborhoodServiceFinder.Models;
+using NeighborhoodServiceFinder.Services;
 using NeighborhoodServiceFinder.ViewModels;
 using System.Linq;
+using System.Threading.Tasks;
+using Google.Cloud.Firestore;
 
 namespace NeighborhoodServiceFinder.Controllers
 {
@@ -16,79 +16,135 @@ namespace NeighborhoodServiceFinder.Controllers
     {
         private readonly FirestoreService _firestoreService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly CloudinaryService _cloudinaryService; // Add this
 
-        public AdminController(FirestoreService firestoreService, UserManager<ApplicationUser> userManager)
+        // Updated constructor
+        public AdminController(FirestoreService firestoreService, UserManager<ApplicationUser> userManager, CloudinaryService cloudinaryService)
         {
             _firestoreService = firestoreService;
             _userManager = userManager;
+            _cloudinaryService = cloudinaryService; // Add this
         }
 
-        // This is the main admin page that shows the list
+        // --- Service Category Management ---
         public async Task<IActionResult> Index()
         {
             var categories = await _firestoreService.GetAllCategoriesAsync();
             return View(categories);
         }
 
-        // This is the GET method that SHOWS the empty form
+        // Updated GET action to show the new form
+        [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            return View(new CreateCategoryViewModel());
         }
 
-        // This is the POST method that PROCESSES the submitted form
+        // Updated POST action to handle image upload
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ServiceCategory category)
+        public async Task<IActionResult> Create(CreateCategoryViewModel model)
         {
             if (ModelState.IsValid)
             {
-                category.CreatedAt = Timestamp.GetCurrentTimestamp();
-                category.UpdatedAt = Timestamp.GetCurrentTimestamp();
-                await _firestoreService.AddCategoryAsync(category);
-                return RedirectToAction(nameof(Index));
+                string imageUrl = string.Empty;
+                if (model.Image != null)
+                {
+                    // Use the gallery image uploader for a 'fit' transformation
+                    var uploadResult = await _cloudinaryService.UploadGalleryImageAsync(model.Image);
+                    if (uploadResult.Error != null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Error uploading image.");
+                        return View(model);
+                    }
+                    imageUrl = uploadResult.SecureUrl.ToString();
+                }
+
+                var newCategory = new ServiceCategory
+                {
+                    Name = model.Name,
+                    Description = model.Description,
+                    PriorityOrder = model.PriorityOrder,
+                    ImageUrl = imageUrl,
+                    IsActive = model.IsActive
+                };
+
+                await _firestoreService.AddCategoryAsync(newCategory);
+                TempData["SuccessMessage"] = "New category created successfully.";
+                return RedirectToAction("Index");
             }
-            return View(category);
+            return View(model);
         }
 
-        // This method runs when a user goes to a URL like /Admin/Edit/some-id
+        // ADD this new [HttpGet] Edit method
+        [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            // First, we get the specific category from Firestore using the ID from the URL
-            ServiceCategory? category = await _firestoreService.GetCategoryByIdAsync(id);
-
-            // If no category with that ID exists, show a "Not Found" page
+            var category = await _firestoreService.GetCategoryByIdAsync(id);
             if (category == null)
             {
                 return NotFound();
             }
 
-            // If we found the category, pass it to the View
-            return View(category);
+            var model = new EditCategoryViewModel
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description,
+                PriorityOrder = category.PriorityOrder,
+                IsActive = category.IsActive,
+                CurrentImageUrl = category.ImageUrl
+            };
+
+            return View(model);
         }
 
+
+        // ADD this new [HttpPost] Edit method
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, ServiceCategory category)
+        public async Task<IActionResult> Edit(EditCategoryViewModel model)
         {
-            // A quick check to make sure the IDs match
-            if (id != category.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                // Update the timestamp before saving
-                category.UpdatedAt = Timestamp.GetCurrentTimestamp();
+                var categoryToUpdate = await _firestoreService.GetCategoryByIdAsync(model.Id);
+                if (categoryToUpdate == null)
+                {
+                    return NotFound();
+                }
 
-                // Call the service to save the changes
-                await _firestoreService.UpdateCategoryAsync(category);
+                // Handle optional new image upload
+                if (model.NewImage != null)
+                {
+                    var uploadResult = await _cloudinaryService.UploadGalleryImageAsync(model.NewImage);
+                    if (uploadResult.Error != null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Error uploading new image.");
+                        return View(model);
+                    }
+                    categoryToUpdate.ImageUrl = uploadResult.SecureUrl.ToString();
+                }
 
-                // Go back to the main list page
-                return RedirectToAction(nameof(Index));
+                // Update properties
+                categoryToUpdate.Name = model.Name;
+                categoryToUpdate.Description = model.Description;
+                categoryToUpdate.PriorityOrder = model.PriorityOrder;
+                categoryToUpdate.IsActive = model.IsActive;
+                categoryToUpdate.UpdatedAt = Timestamp.GetCurrentTimestamp();
+
+                // Save changes to Firestore
+                await _firestoreService.UpdateCategoryAsync(categoryToUpdate);
+
+                TempData["SuccessMessage"] = "Category updated successfully.";
+                return RedirectToAction("Index");
             }
-            return View(category);
+
+            // If the model is not valid, re-populate the CurrentImageUrl before showing the form again
+            var originalCategory = await _firestoreService.GetCategoryByIdAsync(model.Id);
+            if (originalCategory != null)
+            {
+                model.CurrentImageUrl = originalCategory.ImageUrl;
+            }
+            return View(model);
         }
 
         public async Task<IActionResult> ToggleStatus(string id)

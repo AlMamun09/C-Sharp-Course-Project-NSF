@@ -1,28 +1,30 @@
-using Google.Cloud.Firestore; // We will add this library to our project next
+using Google.Cloud.Firestore;
+using System.Collections.Generic;
 
 namespace NeighborhoodServiceFinder.Models
 {
-    [FirestoreData] // Marks this class as a model for a Firestore collection
+    [FirestoreData]
     public class ServiceCategory
     {
-        [FirestoreDocumentId] // Tells Firestore this is the unique document ID
+        [FirestoreDocumentId]
         public string Id { get; set; } = string.Empty;
 
-        [FirestoreProperty("name")] // Maps this property to the "name" field in the database
+        [FirestoreProperty("name")]
         public string Name { get; set; } = string.Empty;
 
         [FirestoreProperty("description")]
         public string Description { get; set; } = string.Empty;
 
-        [FirestoreProperty("iconUrl")]
-        public string IconUrl { get; set; } = string.Empty;
+        // --- ADD THIS NEW PROPERTY ---
+        [FirestoreProperty("imageUrl")]
+        public string ImageUrl { get; set; } = string.Empty;
 
         [FirestoreProperty("createdAt")]
-        [ServerTimestamp] // This will be set automatically by the Firestore server on creation
+        [ServerTimestamp]
         public Timestamp CreatedAt { get; set; }
 
         [FirestoreProperty("updatedAt")]
-        [ServerTimestamp] // This will be set automatically on every update
+        [ServerTimestamp]
         public Timestamp UpdatedAt { get; set; }
 
         [FirestoreProperty("isActive")]

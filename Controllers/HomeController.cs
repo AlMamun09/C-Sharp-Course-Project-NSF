@@ -1,60 +1,85 @@
-using System.Diagnostics;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NeighborhoodServiceFinder.Data;
 using NeighborhoodServiceFinder.Models;
 using NeighborhoodServiceFinder.Services;
-using Microsoft.AspNetCore.Http;
+using NeighborhoodServiceFinder.ViewModels;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace NeighborhoodServiceFinder.Controllers;
-
-public class HomeController : Controller
+namespace NeighborhoodServiceFinder.Controllers
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly CloudinaryService _cloudinaryService; // Add this
+    public class HomeController : Controller
+    {
+        private readonly ILogger<HomeController> _logger;
+        private readonly FirestoreService _firestoreService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-    // Updated constructor
-    public HomeController(ILogger<HomeController> logger, CloudinaryService cloudinaryService)
-    {
-        _logger = logger;
-        _cloudinaryService = cloudinaryService; // Add this
-    }
-    public IActionResult Index()
-    {
-        return View();
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
-
-    // This action just shows the empty upload form.
-    [HttpGet]
-    public IActionResult UploadTest()
-    {
-        return View();
-    }
-
-    // This action runs when the form is submitted.
-    [HttpPost]
-    public async Task<IActionResult> UploadTest(IFormFile file)
-    {
-        if (file != null)
+        // Updated constructor to include all necessary services
+        public HomeController(
+            ILogger<HomeController> logger,
+            FirestoreService firestoreService,
+            UserManager<ApplicationUser> userManager)
         {
-            // Call our service to upload the file.
-            var uploadResult = await _cloudinaryService.UploadProfileImageAsync(file);
-
-            // The result contains the URL of the uploaded image.
-            // We pass this URL back to the view to be displayed.
-            ViewData["ImageUrl"] = uploadResult.SecureUrl.ToString();
+            _logger = logger;
+            _firestoreService = firestoreService;
+            _userManager = userManager;
         }
 
-        return View();
+        // This is the new, powerful Index action for our homepage
+        public async Task<IActionResult> Index()
+        {
+            // 1. Fetch all active service categories
+            var categories = await _firestoreService.GetAllCategoriesAsync();
+
+            // 2. Fetch a batch of the latest services to feature
+            var latestServices = await _firestoreService.GetRandomServicesAsync(6); // Get 6 services
+
+            var featuredServiceCards = new List<ServiceCardViewModel>();
+
+            // 3. For each service, get its provider's details and build a ServiceCardViewModel
+            foreach (var service in latestServices)
+            {
+                var provider = await _userManager.FindByIdAsync(service.ProviderId);
+                if (provider != null)
+                {
+                    var card = new ServiceCardViewModel
+                    {
+                        ServiceId = service.Id,
+                        ServiceName = service.ServiceName,
+                        Price = service.Price,
+                        PricingUnit = service.PricingUnit,
+                        PrimaryImageUrl = service.ImageUrls.FirstOrDefault(), // Get the first image as the primary one
+                        ProviderBusinessName = provider.BusinessName ?? "N/A",
+                        ProviderProfilePictureUrl = provider.ProfilePictureUrl
+                    };
+                    featuredServiceCards.Add(card);
+                }
+            }
+
+            // 4. Package everything up in our HomeViewModel
+            var viewModel = new HomeViewModel
+            {
+                Categories = categories,
+                FeaturedServices = featuredServiceCards
+            };
+
+            // 5. Pass the complete ViewModel to the view
+            return View(viewModel);
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 }

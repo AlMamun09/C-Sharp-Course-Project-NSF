@@ -203,5 +203,24 @@ namespace NeighborhoodServiceFinder.Services
             DocumentReference docRef = _db.Collection(ProviderServicesCollection).Document(serviceId);
             await docRef.DeleteAsync();
         }
+
+        // Gets a limited number of random services for the homepage
+        public async Task<List<ProviderService>> GetRandomServicesAsync(int limit)
+        {
+            CollectionReference collectionRef = _db.Collection(ProviderServicesCollection);
+
+            // Firestore doesn't have a built-in "random". A common technique is to
+            // order by a random field or, for simplicity here, just take the newest ones.
+            // For a true random, a more complex solution would be needed.
+            Query query = collectionRef.Limit(limit);
+            QuerySnapshot snapshot = await query.GetSnapshotAsync();
+
+            List<ProviderService> services = new List<ProviderService>();
+            foreach (var document in snapshot.Documents)
+            {
+                services.Add(document.ConvertTo<ProviderService>());
+            }
+            return services;
+        }
     }
 }

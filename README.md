@@ -1,105 +1,97 @@
 # 🏘️ Neighborhood Service Finder
 
 **Neighborhood Service Finder** is a web application designed to connect local users with service providers in their neighborhood.  
-This platform allows users to **discover, search, and view profiles of service providers**, while also giving providers a **dashboard to manage their business and services**.  
+This platform allows users to **discover, search, and view service providers**, while also giving providers a **comprehensive dashboard** to manage their business and services.
 
 ---
 
-## 🚀 Features Implemented (As of August 20, 2025)
+## 🔖 Tech Stack & Tools
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)  
+![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)  
+![Google Firestore](https://img.shields.io/badge/Google%20Firestore-F6820D?style=for-the-badge&logo=firebase&logoColor=white)  
+![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)  
+![Stripe](https://img.shields.io/badge/Stripe-626CD9?style=for-the-badge&logo=stripe&logoColor=white)  
 
-This project has a solid foundation with:  
-- A **secure administrator panel**  
-- A **fully functional authentication system** with a polished user experience  
-- Integrated **image handling**  
-- Core **user/provider dashboard functionality**
+---
+
+## 🚀 Features Implemented (As of August 25, 2025)
+
+✅ **Administrator Panel**  
+✅ **Role-Based Authentication**  
+✅ **Custom User & Provider Dashboards**  
+✅ **Service Management with Image Gallery**  
+✅ **Cloudinary Image Handling**  
+✅ **SQLite + Firestore Dual Database Architecture**  
 
 ---
 
 ### 1️⃣ Administrator Panel
-- **Role-Based Security**: Secured with ASP.NET Core Identity Roles. Only admins can access.  
-- **Service Category Management**: Full CRUD (Create, Read, Update, Delete) with soft-delete, hard-delete confirmation, and smart sorting.  
-- **User Management**:  
-  - Tabbed interface to separate "Regular Users" and "Service Providers"  
-  - Admin’s own account is hidden from the list (prevent self-deletion)  
-  - View detailed profiles (including provider business info)  
-  - Permanently delete users  
-  - Stateful UI: remembers active tab after admin actions  
-
----
+- **Role-Based Security:** Admin access protected via ASP.NET Core Identity Roles.  
+- **Service Category Management:**
+  - Full CRUD (Create, Read, Update, Delete) with image uploads.
+  - *Activate/Deactivate* for soft deletes + *Hard Delete* with confirmation.
+  - Smart sorting (by status, priority, and name).
+- **Category Request Management:**
+  - Admins can review and approve/deny category requests from providers.
+  - Approvals create new categories instantly.
+- **User Management:**
+  - Tabbed interface separating "Regular Users" and "Service Providers".
+  - Admin’s own account hidden to prevent accidental self-deletion.
+  - Detailed profile view + permanent delete option.
+  - Stateful UI: remembers active tab after an action.
 
 ### 2️⃣ Core Authentication & User Experience
-- Built with **ASP.NET Core Identity**  
-- **Custom User Profiles** with extended fields:  
-  - Personal details: FirstName, Address, ProfilePictureUrl (optional)  
-  - Business details: BusinessName, BusinessAddress, etc.  
-- **Unified Registration**: One streamlined process for all users  
-- **Login & Logout**: Fully functional and secure  
-- **Role-Based Redirects**:  
-  - Admins → Admin Panel  
-  - Users → User Dashboard  
-- **User Feedback**: Success messages after key actions  
-- **Dynamic UI**: Shows correct links ("Dashboard", "Admin") based on role  
-
----
+- Built with **ASP.NET Core Identity**.  
+- **Custom User Profiles:** Includes optional profile picture + business details.  
+- **Unified Registration & Login:** Single streamlined flow with role-based redirects.  
+- **Dynamic UI & Notifications:**
+  - Layout adapts to user role (Admin, User, Provider).
+  - Modern **toast notifications** for registration, requests, approvals, etc.
 
 ### 3️⃣ User & Service Provider Dashboards
-- **Secure User Dashboard**: Personal area for all logged-in users  
-- **Provider Upgrade Path**: Users can fill out a detailed form to become service providers  
-- **Profile Management (CRUD)**: Both users and providers can edit profile info (with pre-filled forms & image updates)  
-- **Dedicated Provider Dashboard**: A business hub for users with the "ServiceProvider" role  
-
----
+- **Secure User Dashboard:** Manage personal profile (CRUD).  
+- **Provider Upgrade Path:** Users can seamlessly become service providers by completing a business profile.  
+- **Dedicated Provider Dashboard:**
+  - **Profile Management (CRUD):** Edit and manage business details.  
+  - **Service Management (CRUD):** Create, update, delete services with a **multi-image gallery**.  
 
 ### 4️⃣ Image & Media Management
-- Integrated with **Cloudinary**  
-- **Smart Crop (fill, gravity:auto)**: Perfect square, subject-focused profile pictures  
-- **Fit Inside (fit)**: Resizes gallery images without cropping  
-
----
+- **Cloudinary Integration** for all image handling.  
+- **Smart Crop:** Perfectly square, subject-focused profile pictures.  
+- **Fit Inside:** Resizes gallery images while keeping full image visible.  
+- **Image Deletion:** Removes images from both database + Cloudinary.  
 
 ### 5️⃣ Project Foundation & Architecture
-- **Framework**: ASP.NET Core 8  
-- **Dual-Database Architecture**:  
-  - SQLite → Identity (users, roles, passwords)  
-  - Google Firestore → Application data (service categories, etc.)  
+- **Framework:** ASP.NET Core 8  
+- **Databases:**
+  - SQLite → Identity data (users, roles, passwords).
+  - Google Firestore → Application data (categories, services, notifications).  
 
 ---
 
 ## 📌 Future Roadmap (Next Steps)
 
-### 🧑‍🔧 Service Provider Module (Next Up)
-- **Service Management** workflow:  
-  - **Add New Service** → Choose from admin-approved categories, add details (description, price, gallery)  
-  - **Request New Category** → Request unlisted service types (admin approval required)  
-- **Admin Approval Page**: Review/approve/deny new category requests  
-- **Provider Services CRUD**: Full control over services offered by providers  
-
----
+With the **admin and service provider modules complete**, the next phase is building the **public-facing user experience**.
 
 ### 👥 User-Facing Features
-- Public **homepage** with sorted service categories  
-- **Search & Filter** to find providers by service type and location  
-- Public **provider profile pages** with business details, services offered, and gallery  
-
----
+- **Homepage:**
+  - Backend logic for main search bar.  
+  - Interactive category cards linking to results.  
+  - *Load More* functionality with AJAX.  
+- **Search Results Page:** Display service cards matching search or category.  
+- **Public Profiles:** Public-facing service provider profiles with service listings.  
 
 ### 💳 Payments
-- **Stripe Integration** (future):  
-  - User payments for bookings  
-  - Provider subscriptions for premium plans  
-
----
-
-## 🛠️ Tech Stack
-- **Backend**: ASP.NET Core 8  
-- **Databases**: SQLite (Identity), Google Firestore (App Data)  
-- **Authentication**: ASP.NET Core Identity  
-- **Image Management**: Cloudinary  
-- **Future Integration**: Stripe (Payments)  
+- **Stripe Integration:** Implement "Hire Me" button for:
+  - Direct service bookings.  
+  - Provider subscriptions.  
 
 ---
 
 ## 👨‍💻 Author
 **Abdullah Al Mamun**  
+[![GitHub](https://img.shields.io/badge/GitHub-000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/)  
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/)  
+[![Portfolio](https://img.shields.io/badge/Portfolio-FF5722?style=for-the-badge&logo=firefox&logoColor=white)](#)  
 
 ---

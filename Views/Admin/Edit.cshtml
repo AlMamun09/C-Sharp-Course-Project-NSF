@@ -1,37 +1,61 @@
-@model NeighborhoodServiceFinder.Models.ServiceCategory
+@model NeighborhoodServiceFinder.ViewModels.EditCategoryViewModel
 
 @{
     ViewData["Title"] = "Edit Category";
 }
 
-<h1>Edit Service Category</h1>
+<h1>@ViewData["Title"]</h1>
+<h4>@Model.Name</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            @* This is a hidden field to keep track of the document's ID *@
+    <div class="col-md-6">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            @* Hidden field to keep track of the category ID *@
             <input type="hidden" asp-for="Id" />
 
-            <div class="form-group">
-                <label class="control-label">Category Name</label>
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+            <div class="form-group mb-3">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="PriorityOrder" class="control-label"></label>
+                <input asp-for="PriorityOrder" class="form-control" type="number" />
+                <span asp-validation-for="PriorityOrder" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label class="control-label">Current Image</label>
+                @if (!string.IsNullOrEmpty(Model.CurrentImageUrl))
+                {
+                    <div>
+                        <img src="@Model.CurrentImageUrl" style="max-width: 200px; max-height: 200px;" class="img-thumbnail mb-2" />
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No image has been uploaded for this category.</p>
+                }
+                <label asp-for="NewImage" class="control-label mt-2"></label>
+                <input asp-for="NewImage" class="form-control" type="file" />
+                <span asp-validation-for="NewImage" class="text-danger"></span>
+            </div>
+
+            <div class="form-group form-check mb-3">
+                <input class="form-check-input" asp-for="IsActive" />
+                <label class="form-check-label" asp-for="IsActive"></label>
+            </div>
+
             <div class="form-group">
-                <label class="control-label">Description</label>
-                <input asp-for="Description" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Display Order</label>
-                <input asp-for="PriorityOrder" class="form-control" />
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> Is this category active?
-                </label>
-            </div>
-            <br />
-            <div class="form-group">
-                <input type="submit" value="Save Changes" class="btn btn-primary" />
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>

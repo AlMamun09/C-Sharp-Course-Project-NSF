@@ -1,8 +1,110 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model NeighborhoodServiceFinder.ViewModels.HomeViewModel
+
+@{
+    ViewData["Title"] = "Find Local Services";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Section 1: Hero with Search Bar -->
+<div class="container text-center my-5">
+    <h1 class="display-4 fw-bold">Find the Perfect Local Pro</h1>
+    <p class="lead mb-4">Get help with any project, from home repairs to custom work.</p>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form asp-controller="Home" asp-action="Search" method="get" class="d-flex">
+                <input type="search" name="query" class="form-control form-control-lg me-2" placeholder="What service do you need today?" aria-label="Search">
+                <button class="btn btn-primary btn-lg" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
 </div>
+
+<!-- Section 2: Interactive Service Categories Scroller (New Design) -->
+<div class="container my-5">
+    <h2 class="text-center mb-4">Browse by Category</h2>
+    <div class="category-scroller-wrapper">
+        <div class="category-scroller" id="category-scroller">
+            <div class="category-track">
+                @foreach (var category in Model.Categories)
+                {
+                    <a href="#" class="visual-category-card">
+                        <div class="card-title-overlay">
+                            <h5>@category.Name</h5>
+                        </div>
+                        <div class="card-image-container">
+                            <img src="@(string.IsNullOrEmpty(category.ImageUrl) ? "https://placehold.co/400x300/003554/FFF?text=Service" : category.ImageUrl)" class="card-image" alt="@category.Name">
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+        <button class="scroll-btn left" id="scroll-left">‹</button>
+        <button class="scroll-btn right" id="scroll-right">›</button>
+    </div>
+</div>
+
+
+<!-- Section 3: Featured Services -->
+<div class="container my-5">
+    <h2 class="text-center mb-4">Featured Services</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        @foreach (var service in Model.FeaturedServices)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <img src="@(service.PrimaryImageUrl ?? "https://placehold.co/600x400/003554/FFF?text=No+Image")" class="card-img-top" alt="@service.ServiceName" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@service.ServiceName</h5>
+                        <p class="card-text small text-muted">by @service.ProviderBusinessName</p>
+                        <p class="card-text fw-bold fs-5">$@service.Price @service.PricingUnit</p>
+                    </div>
+                    <div class="card-footer bg-white border-0 pb-3">
+                         <a href="#" class="btn btn-primary w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="text-center mt-4">
+        <button class="btn btn-lg btn-outline-secondary">Load More Services</button>
+    </div>
+</div>
+
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const scroller = document.getElementById('category-scroller');
+        const scrollLeftBtn = document.getElementById('scroll-left');
+        const scrollRightBtn = document.getElementById('scroll-right');
+        const cardWidth = 250 + 24; // Card width (250px) + gap (1.5rem = 24px)
+        let autoScrollInterval;
+
+        function scrollRight() {
+            if (scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 1) {
+                scroller.scrollLeft = 0;
+            } else {
+                scroller.scrollLeft += cardWidth;
+            }
+        }
+
+        function startAutoScroll() {
+            autoScrollInterval = setInterval(scrollRight, 3000); // Scroll every 3 seconds
+        }
+
+        function stopAutoScroll() {
+            clearInterval(autoScrollInterval);
+        }
+
+        scrollLeftBtn.addEventListener('click', () => {
+            scroller.scrollLeft -= cardWidth;
+        });
+
+        scrollRightBtn.addEventListener('click', scrollRight);
+
+        scroller.addEventListener('mouseenter', stopAutoScroll);
+        scroller.addEventListener('mouseleave', startAutoScroll);
+
+        startAutoScroll();
+    });
+</script>
+}
