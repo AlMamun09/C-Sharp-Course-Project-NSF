@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace NeighborhoodServiceFinder.Data
+namespace LocalScout.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using NeighborhoodServiceFinder.Data;
-using NeighborhoodServiceFinder.Services;
-using NeighborhoodServiceFinder.Configuration;
+using LocalScout.Data;
+using LocalScout.Services;
+using LocalScout.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 

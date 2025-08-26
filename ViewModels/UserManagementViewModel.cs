@@ -1,7 +1,7 @@
-using NeighborhoodServiceFinder.Data;
+using LocalScout.Data;
 using System.Collections.Generic;
 
-namespace NeighborhoodServiceFinder.ViewModels
+namespace LocalScout.ViewModels
 {
     public class UserManagementViewModel
     {

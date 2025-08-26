@@ -1,4 +1,4 @@
-namespace NeighborhoodServiceFinder.Configuration
+namespace LocalScout.Configuration
 {
     public class CloudinarySettings
     {

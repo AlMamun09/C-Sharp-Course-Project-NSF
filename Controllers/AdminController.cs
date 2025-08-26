@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NeighborhoodServiceFinder.Data;
-using NeighborhoodServiceFinder.Models;
-using NeighborhoodServiceFinder.Services;
-using NeighborhoodServiceFinder.ViewModels;
+using LocalScout.Data;
+using LocalScout.Models;
+using LocalScout.Services;
+using LocalScout.ViewModels;
 using System.Linq;
 using System.Threading.Tasks;
 using Google.Cloud.Firestore;
 
-namespace NeighborhoodServiceFinder.Controllers
+namespace LocalScout.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller

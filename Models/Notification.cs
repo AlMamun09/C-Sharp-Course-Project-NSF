@@ -1,6 +1,6 @@
 using Google.Cloud.Firestore;
 
-namespace NeighborhoodServiceFinder.Models
+namespace LocalScout.Models
 {
     [FirestoreData]
     public class Notification

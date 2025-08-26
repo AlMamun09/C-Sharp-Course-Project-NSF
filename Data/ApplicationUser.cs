@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace NeighborhoodServiceFinder.Data
+namespace LocalScout.Data
 {
     public class ApplicationUser : IdentityUser
     {

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace NeighborhoodServiceFinder.ViewModels
+namespace LocalScout.ViewModels
 {
     public class RequestNewCategoryViewModel
     {

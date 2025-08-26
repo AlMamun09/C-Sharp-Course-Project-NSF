@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using NeighborhoodServiceFinder.Data;
+using LocalScout.Data;
 
 #nullable disable
 
-namespace NeighborhoodServiceFinder.Migrations
+namespace LocalScout.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250816065856_InitialCreate")]

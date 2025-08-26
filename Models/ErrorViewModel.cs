@@ -1,4 +1,4 @@
-namespace NeighborhoodServiceFinder.Models;
+namespace LocalScout.Models;
 
 public class ErrorViewModel
 {

@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NeighborhoodServiceFinder.Data;
-using NeighborhoodServiceFinder.ViewModels;
+using LocalScout.Data;
+using LocalScout.ViewModels;
 using System;
 using System.Threading.Tasks;
-using NeighborhoodServiceFinder.Services;
+using LocalScout.Services;
 
-namespace NeighborhoodServiceFinder.Controllers
+namespace LocalScout.Controllers
 {
     public class AccountController : Controller
     {

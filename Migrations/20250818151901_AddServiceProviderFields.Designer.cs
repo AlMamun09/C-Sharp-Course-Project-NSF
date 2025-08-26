@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using NeighborhoodServiceFinder.Data;
+using LocalScout.Data;
 
 #nullable disable
 
-namespace NeighborhoodServiceFinder.Migrations
+namespace LocalScout.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250818151901_AddServiceProviderFields")]
@@ -148,7 +148,7 @@ namespace NeighborhoodServiceFinder.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("NeighborhoodServiceFinder.Data.ApplicationUser", b =>
+            modelBuilder.Entity("LocalScout.Data.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -249,7 +249,7 @@ namespace NeighborhoodServiceFinder.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("NeighborhoodServiceFinder.Data.ApplicationUser", null)
+                    b.HasOne("LocalScout.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -258,7 +258,7 @@ namespace NeighborhoodServiceFinder.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("NeighborhoodServiceFinder.Data.ApplicationUser", null)
+                    b.HasOne("LocalScout.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -273,7 +273,7 @@ namespace NeighborhoodServiceFinder.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NeighborhoodServiceFinder.Data.ApplicationUser", null)
+                    b.HasOne("LocalScout.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -282,7 +282,7 @@ namespace NeighborhoodServiceFinder.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("NeighborhoodServiceFinder.Data.ApplicationUser", null)
+                    b.HasOne("LocalScout.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

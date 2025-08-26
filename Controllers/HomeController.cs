@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NeighborhoodServiceFinder.Data;
-using NeighborhoodServiceFinder.Models;
-using NeighborhoodServiceFinder.Services;
-using NeighborhoodServiceFinder.ViewModels;
+using LocalScout.Data;
+using LocalScout.Models;
+using LocalScout.Services;
+using LocalScout.ViewModels;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NeighborhoodServiceFinder.Controllers
+namespace LocalScout.Controllers
 {
     public class HomeController : Controller
     {

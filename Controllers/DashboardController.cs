@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NeighborhoodServiceFinder.Data;
-using NeighborhoodServiceFinder.Services;
-using NeighborhoodServiceFinder.ViewModels;
+using LocalScout.Data;
+using LocalScout.Services;
+using LocalScout.ViewModels;
 using System.Threading.Tasks;
 
-namespace NeighborhoodServiceFinder.Controllers
+namespace LocalScout.Controllers
 {
     [Authorize] // Ensures only logged-in users can access this controller
     public class DashboardController : Controller

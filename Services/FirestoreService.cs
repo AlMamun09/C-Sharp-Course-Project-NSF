@@ -1,10 +1,10 @@
 using Google.Cloud.Firestore;
-using NeighborhoodServiceFinder.Models;
+using LocalScout.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NeighborhoodServiceFinder.Services
+namespace LocalScout.Services
 {
     public class FirestoreService
     {

@@ -1,7 +1,7 @@
 using Google.Cloud.Firestore;
 using System.Collections.Generic;
 
-namespace NeighborhoodServiceFinder.Models
+namespace LocalScout.Models
 {
     [FirestoreData]
     public class ServiceCategory

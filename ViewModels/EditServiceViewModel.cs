@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace NeighborhoodServiceFinder.ViewModels
+namespace LocalScout.ViewModels
 {
     public class EditServiceViewModel
     {

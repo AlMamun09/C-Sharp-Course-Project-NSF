@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
-using NeighborhoodServiceFinder.Data;
+using LocalScout.Data;
 using System.Threading.Tasks;
 
-namespace NeighborhoodServiceFinder.Data
+namespace LocalScout.Data
 {
     public class DbInitializer
     {

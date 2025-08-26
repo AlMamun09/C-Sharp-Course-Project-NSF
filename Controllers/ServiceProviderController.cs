@@ -2,12 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using NeighborhoodServiceFinder.Data;
-using NeighborhoodServiceFinder.Services;
-using NeighborhoodServiceFinder.ViewModels;
-using NeighborhoodServiceFinder.Models;
+using LocalScout.Data;
+using LocalScout.Services;
+using LocalScout.ViewModels;
+using LocalScout.Models;
 
-namespace NeighborhoodServiceFinder.Controllers
+namespace LocalScout.Controllers
 {
     [Authorize(Roles = "ServiceProvider, Admin")]
     public class ServiceProviderController : Controller

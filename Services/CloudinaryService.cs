@@ -1,11 +1,11 @@
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Options;
-using NeighborhoodServiceFinder.Configuration;
+using LocalScout.Configuration;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace NeighborhoodServiceFinder.Services
+namespace LocalScout.Services
 {
     public class CloudinaryService
     {

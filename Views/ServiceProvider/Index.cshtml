@@ -1,4 +1,4 @@
-@model NeighborhoodServiceFinder.Data.ApplicationUser
+@model LocalScout.Data.ApplicationUser
 
 @{
     ViewData["Title"] = "Provider Dashboard";
@@ -50,6 +50,6 @@
 @section Scripts {
 @{
     // This renders a special partial view that handles the toast notifications.
-    await Html.RenderPartialAsync("_NotificationToastPartial", (List<NeighborhoodServiceFinder.Models.Notification>)ViewBag.Notifications);
+    await Html.RenderPartialAsync("_NotificationToastPartial", (List<LocalScout.Models.Notification>)ViewBag.Notifications);
 }
 }

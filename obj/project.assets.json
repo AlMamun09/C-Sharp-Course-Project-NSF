@@ -6538,11 +6538,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "H:\\NSF Project\\NeighborhoodServiceFinder\\NeighborhoodServiceFinder.csproj",
-      "projectName": "NeighborhoodServiceFinder",
-      "projectPath": "H:\\NSF Project\\NeighborhoodServiceFinder\\NeighborhoodServiceFinder.csproj",
+      "projectUniqueName": "H:\\NSF Project\\LocalScout\\LocalScout.csproj",
+      "projectName": "LocalScout",
+      "projectPath": "H:\\NSF Project\\LocalScout\\LocalScout.csproj",
       "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-      "outputPath": "H:\\NSF Project\\NeighborhoodServiceFinder\\obj\\",
+      "outputPath": "H:\\NSF Project\\LocalScout\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config"

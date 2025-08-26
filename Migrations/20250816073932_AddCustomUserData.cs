@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace NeighborhoodServiceFinder.Migrations
+namespace LocalScout.Migrations
 {
     /// <inheritdoc />
     public partial class AddCustomUserData : Migration

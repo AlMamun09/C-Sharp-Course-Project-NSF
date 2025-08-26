@@ -1,7 +1,7 @@
-using NeighborhoodServiceFinder.Models;
+using LocalScout.Models;
 using System.Collections.Generic;
 
-namespace NeighborhoodServiceFinder.ViewModels
+namespace LocalScout.ViewModels
 {
     public class HomeViewModel
     {
