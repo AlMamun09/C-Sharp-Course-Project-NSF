@@ -71,6 +71,45 @@ namespace NeighborhoodServiceFinder.Controllers
             return View(viewModel);
         }
 
+        // This action handles the search form submission
+        public async Task<IActionResult> Search(string query)
+        {
+            // 1. Use our service to find all services matching the query
+            var matchingServices = await _firestoreService.SearchServicesAsync(query);
+
+            var resultCards = new List<ServiceCardViewModel>();
+
+            // 2. For each matching service, get its provider's details
+            foreach (var service in matchingServices)
+            {
+                var provider = await _userManager.FindByIdAsync(service.ProviderId);
+                if (provider != null)
+                {
+                    var card = new ServiceCardViewModel
+                    {
+                        ServiceId = service.Id,
+                        ServiceName = service.ServiceName,
+                        Price = service.Price,
+                        PricingUnit = service.PricingUnit,
+                        PrimaryImageUrl = service.ImageUrls.FirstOrDefault(),
+                        ProviderBusinessName = provider.BusinessName ?? "N/A",
+                        ProviderProfilePictureUrl = provider.ProfilePictureUrl
+                    };
+                    resultCards.Add(card);
+                }
+            }
+
+            // 3. Package the query and the results into our new ViewModel
+            var viewModel = new SearchResultsViewModel
+            {
+                Query = query,
+                Results = resultCards
+            };
+
+            // 4. Pass the ViewModel to a new "Search" view
+            return View(viewModel);
+        }
+
         public IActionResult Privacy()
         {
             return View();

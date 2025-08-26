@@ -31,5 +31,6 @@ namespace NeighborhoodServiceFinder.Data
 
         [StringLength(500)]
         public string? BusinessDescription { get; set; }
+
     }
 }

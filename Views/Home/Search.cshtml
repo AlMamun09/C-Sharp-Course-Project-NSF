@@ -1,0 +1,41 @@
+@model NeighborhoodServiceFinder.ViewModels.SearchResultsViewModel
+
+@{
+    ViewData["Title"] = $"Search Results for '{Model.Query}'";
+}
+
+<div class="container my-5">
+    <h1 class="display-5">Search Results</h1>
+    <p class="lead">Showing results for: <strong>"@Model.Query"</strong></p>
+    <hr />
+
+    @if (!Model.Results.Any())
+    {
+        <div class="text-center py-5">
+            <h3>No Services Found</h3>
+            <p>We couldn't find any services matching your search. Try searching for something else.</p>
+            <a asp-action="Index" class="btn btn-primary mt-3">Back to Homepage</a>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+            @foreach (var service in Model.Results)
+            {
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="@(service.PrimaryImageUrl ?? "https://placehold.co/600x400/003554/FFF?text=No+Image")" class="card-img-top" alt="@service.ServiceName" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">@service.ServiceName</h5>
+                            <p class="card-text small text-muted">by @service.ProviderBusinessName</p>
+                            <p class="card-text fw-bold fs-5">$@service.Price @service.PricingUnit</p>
+                        </div>
+                        <div class="card-footer bg-white border-0 pb-3">
+                             <a href="#" class="btn btn-primary w-100">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

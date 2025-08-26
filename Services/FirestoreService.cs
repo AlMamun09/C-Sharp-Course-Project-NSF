@@ -222,5 +222,36 @@ namespace NeighborhoodServiceFinder.Services
             }
             return services;
         }
+
+        // Searches for services based on a query string
+        public async Task<List<ProviderService>> SearchServicesAsync(string query)
+        {
+            CollectionReference collectionRef = _db.Collection(ProviderServicesCollection);
+            QuerySnapshot snapshot = await collectionRef.GetSnapshotAsync();
+
+            List<ProviderService> allServices = new List<ProviderService>();
+            foreach (var document in snapshot.Documents)
+            {
+                allServices.Add(document.ConvertTo<ProviderService>());
+            }
+
+            // --- Simple Text Search Logic ---
+            // Note: For a large-scale application, a dedicated search service like Algolia or Elasticsearch would be more efficient.
+            // For our project, filtering in C# is a perfect and simple solution.
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return allServices; // If the search is empty, return everything
+            }
+
+            string lowerCaseQuery = query.ToLower();
+
+            var filteredServices = allServices
+                .Where(s => s.ServiceName.ToLower().Contains(lowerCaseQuery) ||
+                            s.Description.ToLower().Contains(lowerCaseQuery))
+                .ToList();
+
+            return filteredServices;
+        }
+
     }
 }
