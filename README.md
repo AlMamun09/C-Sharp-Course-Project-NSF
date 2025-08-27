@@ -1,7 +1,7 @@
-# 🏘️ Neighborhood Service Finder
+# 🏘️ Local Scout: Your Neighbourhood Service Finder
 
-**Neighborhood Service Finder** is a web application designed to connect local users with service providers in their neighborhood.  
-This platform allows users to **discover, search, and view service providers**, while also giving providers a **comprehensive dashboard** to manage their business and services.
+**Local Scout** is a web application designed to connect local users with service providers in their neighborhood.  
+This platform allows users to discover, search, and view profiles of service providers, while also giving providers a comprehensive dashboard to manage their business and services.
 
 ---
 
@@ -14,81 +14,125 @@ This platform allows users to **discover, search, and view service providers**, 
 
 ---
 
-## 🚀 Features Implemented (As of August 25, 2025)
+## 🚀 Features Implemented (As of August 27, 2025)
 
 ✅ **Administrator Panel**  
 ✅ **Role-Based Authentication**  
 ✅ **Custom User & Provider Dashboards**  
 ✅ **Service Management with Image Gallery**  
 ✅ **Cloudinary Image Handling**  
-✅ **SQLite + Firestore Dual Database Architecture**  
+✅ **Public Search Functionality**  
+✅ **SQLite + Firestore Dual Database Architecture**
 
 ---
+
+## 📂 Core Modules & Features
 
 ### 1️⃣ Administrator Panel
-- **Role-Based Security:** Admin access protected via ASP.NET Core Identity Roles.  
-- **Service Category Management:**
-  - Full CRUD (Create, Read, Update, Delete) with image uploads.
-  - *Activate/Deactivate* for soft deletes + *Hard Delete* with confirmation.
-  - Smart sorting (by status, priority, and name).
-- **Category Request Management:**
-  - Admins can review and approve/deny category requests from providers.
-  - Approvals create new categories instantly.
-- **User Management:**
-  - Tabbed interface separating "Regular Users" and "Service Providers".
-  - Admin’s own account hidden to prevent accidental self-deletion.
-  - Detailed profile view + permanent delete option.
-  - Stateful UI: remembers active tab after an action.
+- Role-Based Security with ASP.NET Core Identity Roles  
+- Service Category Management (CRUD + image uploads + soft/hard delete + sorting)  
+- Category Request Management (approve/deny new requests)  
+- User Management with safe admin controls and profile views  
 
-### 2️⃣ Core Authentication & User Experience
-- Built with **ASP.NET Core Identity**.  
-- **Custom User Profiles:** Includes optional profile picture + business details.  
-- **Unified Registration & Login:** Single streamlined flow with role-based redirects.  
-- **Dynamic UI & Notifications:**
-  - Layout adapts to user role (Admin, User, Provider).
-  - Modern **toast notifications** for registration, requests, approvals, etc.
+### 2️⃣ Core Authentication & UX
+- ASP.NET Core Identity with custom user profiles  
+- Unified Registration & Login flow  
+- Role-based UI with dynamic notifications  
 
-### 3️⃣ User & Service Provider Dashboards
-- **Secure User Dashboard:** Manage personal profile (CRUD).  
-- **Provider Upgrade Path:** Users can seamlessly become service providers by completing a business profile.  
-- **Dedicated Provider Dashboard:**
-  - **Profile Management (CRUD):** Edit and manage business details.  
-  - **Service Management (CRUD):** Create, update, delete services with a **multi-image gallery**.  
+### 3️⃣ Dashboards
+- User Dashboard for profile management  
+- Provider Upgrade Path for business profiles  
+- Provider Dashboard with service + gallery management  
 
-### 4️⃣ Image & Media Management
-- **Cloudinary Integration** for all image handling.  
-- **Smart Crop:** Perfectly square, subject-focused profile pictures.  
-- **Fit Inside:** Resizes gallery images while keeping full image visible.  
-- **Image Deletion:** Removes images from both database + Cloudinary.  
+### 4️⃣ Public-Facing Features
+- Interactive Homepage (search bar + category carousel)  
+- Dedicated Search Results page  
 
-### 5️⃣ Project Foundation & Architecture
-- **Framework:** ASP.NET Core 8  
-- **Databases:**
-  - SQLite → Identity data (users, roles, passwords).
-  - Google Firestore → Application data (categories, services, notifications).  
+### 5️⃣ Image & Media Management
+- Cloudinary Integration (Smart Crop, Fit Inside, Auto Delete)  
+
+### 6️⃣ Project Architecture
+- Framework: **ASP.NET Core 8**  
+- Databases:  
+  - **SQLite** → Identity (users, roles, passwords)  
+  - **Firestore** → App data (categories, services, notifications)  
 
 ---
 
-## 📌 Future Roadmap (Next Steps)
+## 📌 Future Roadmap
 
-With the **admin and service provider modules complete**, the next phase is building the **public-facing user experience**.
+### User Features
+- Clickable category cards → results page  
+- "View Details" for service cards  
+- Public Provider Profiles (full details + services)  
+- AJAX "Load More Services" on homepage  
 
-### 👥 User-Facing Features
-- **Homepage:**
-  - Backend logic for main search bar.  
-  - Interactive category cards linking to results.  
-  - *Load More* functionality with AJAX.  
-- **Search Results Page:** Display service cards matching search or category.  
-- **Public Profiles:** Public-facing service provider profiles with service listings.  
+### Payments
+- Stripe Integration for bookings + provider subscriptions  
 
-### 💳 Payments
-- **Stripe Integration:** Implement "Hire Me" button for:
-  - Direct service bookings.  
-  - Provider subscriptions.  
+---
+
+## ⚙️ Installation & Setup
+
+Follow these steps to run **Local Scout** locally:
+
+### 1️⃣ Prerequisites
+- [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download)  
+- [SQLite](https://www.sqlite.org/download.html) (pre-installed in most OS)  
+- A [Google Cloud Project](https://console.cloud.google.com/) with Firestore enabled  
+- [Cloudinary Account](https://cloudinary.com/) for media handling  
+- [Stripe Account](https://stripe.com/) for payments  
+
+### 2️⃣ Clone the Repository
+```bash
+git clone https://github.com/yourusername/localscout.git
+cd localscout
+````
+
+### 3️⃣ Configure App Settings
+
+Create or edit `appsettings.json` with your credentials:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=localscout.db"
+  },
+  "Firestore": {
+    "ProjectId": "your-firestore-project-id",
+    "CredentialsFile": "path-to-your-service-account.json"
+  },
+  "Cloudinary": {
+    "CloudName": "your-cloud-name",
+    "ApiKey": "your-api-key",
+    "ApiSecret": "your-api-secret"
+  },
+  "Stripe": {
+    "PublishableKey": "your-publishable-key",
+    "SecretKey": "your-secret-key"
+  }
+}
+```
+
+### 4️⃣ Apply Migrations (for Identity in SQLite)
+
+```bash
+dotnet ef database update
+```
+
+### 5️⃣ Run the Project
+
+```bash
+dotnet run
+```
+
+The app will be available at:
+👉 [https://localhost:5001](https://localhost:5001)
 
 ---
 
 ## 👨‍💻 Author
-**Abdullah Al Mamun**  
 
----
+**Abdullah Al Mamun**
+
+```

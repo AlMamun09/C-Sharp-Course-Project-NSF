@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LocalScout")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c759ec6b098ab5e69bd5014b41c1c713beac76de")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5f62581b4a8755983de8799abfcec4bf5c4a8b98")]
 [assembly: System.Reflection.AssemblyProductAttribute("LocalScout")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LocalScout")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
