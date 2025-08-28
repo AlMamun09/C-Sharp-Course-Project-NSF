@@ -110,6 +110,52 @@ namespace LocalScout.Controllers
             return View(viewModel);
         }
 
+        // This action shows all services for a given category
+        public async Task<IActionResult> ServicesByCategory(string id)
+        {
+            // 1. Get the details of the category that was clicked
+            var category = await _firestoreService.GetCategoryByIdAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            // 2. Use our new service method to find all services in this category
+            var servicesInCategory = await _firestoreService.GetServicesByCategoryIdAsync(id);
+
+            var serviceCards = new List<ServiceCardViewModel>();
+
+            // 3. For each service, get its provider's details and build a ServiceCardViewModel
+            foreach (var service in servicesInCategory)
+            {
+                var provider = await _userManager.FindByIdAsync(service.ProviderId);
+                if (provider != null)
+                {
+                    var card = new ServiceCardViewModel
+                    {
+                        ServiceId = service.Id,
+                        ServiceName = service.ServiceName,
+                        Price = service.Price,
+                        PricingUnit = service.PricingUnit,
+                        PrimaryImageUrl = service.ImageUrls.FirstOrDefault(),
+                        ProviderBusinessName = provider.BusinessName ?? "N/A",
+                        ProviderProfilePictureUrl = provider.ProfilePictureUrl
+                    };
+                    serviceCards.Add(card);
+                }
+            }
+
+            // 4. Package the category name and the results into our new ViewModel
+            var viewModel = new CategoryServicesViewModel
+            {
+                CategoryName = category.Name,
+                Services = serviceCards
+            };
+
+            // 5. Pass the ViewModel to a new "ServicesByCategory" view
+            return View(viewModel);
+        }
+
         public IActionResult Privacy()
         {
             return View();

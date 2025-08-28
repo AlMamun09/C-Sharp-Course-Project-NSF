@@ -104,3 +104,91 @@ body {
 .scroll-btn.right {
     right: 0;
 }
+
+/* Styles for the new, modern service card */
+.service-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 1rem;
+    overflow: hidden;
+    background-color: white;
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.service-card-img-container {
+    height: 200px;
+    overflow: hidden;
+}
+
+.service-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.service-card-body {
+    padding: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.service-card-title {
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.service-card-provider {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6c757d; /* Bootstrap's text-muted color */
+    margin-bottom: 1rem;
+}
+
+.service-card-provider-img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.service-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto; /* Pushes the footer to the bottom */
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.service-card-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--prussian-blue); /* Using your color palette */
+}
+
+.service-card-price .unit {
+    font-size: 0.9rem;
+    font-weight: normal;
+    color: #6c757d;
+}
+
+.btn-booking {
+    background-color: #f58634; /* A nice orange color like the example */
+    color: white;
+    font-weight: bold;
+    border: none;
+}
+
+.btn-booking:hover {
+    background-color: #e06f20;
+    color: white;
+}

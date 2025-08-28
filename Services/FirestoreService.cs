@@ -253,5 +253,21 @@ namespace LocalScout.Services
             return filteredServices;
         }
 
+        // Gets all services belonging to a specific category ID
+        public async Task<List<ProviderService>> GetServicesByCategoryIdAsync(string categoryId)
+        {
+            CollectionReference collectionRef = _db.Collection(ProviderServicesCollection);
+            // Create a query to find all services where the 'serviceCategoryId' field matches
+            Query query = collectionRef.WhereEqualTo("serviceCategoryId", categoryId);
+            QuerySnapshot snapshot = await query.GetSnapshotAsync();
+
+            List<ProviderService> services = new List<ProviderService>();
+            foreach (var document in snapshot.Documents)
+            {
+                services.Add(document.ConvertTo<ProviderService>());
+            }
+            return services;
+        }
+
     }
 }
