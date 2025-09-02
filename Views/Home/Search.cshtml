@@ -36,27 +36,38 @@
             @foreach (var service in Model.Results)
             {
                 <div class="col">
-                    <div class="service-card h-100">
-                        <div class="service-card-img-container">
-                            <img src="@(service.PrimaryImageUrl ?? "https://placehold.co/600x400/eee/ccc?text=No+Image")"
-                                class="service-card-img" alt="@service.ServiceName">
-                        </div>
-                        <div class="service-card-body">
-                            <h5 class="service-card-title">@service.ServiceName</h5>
-                            <div class="service-card-provider">
-                                <img src="@(service.ProviderProfilePictureUrl ?? "https://placehold.co/40x40/eee/ccc?text=P")"
-                                    class="service-card-provider-img" alt="@service.ProviderBusinessName">
-                                <span>@service.ProviderBusinessName</span>
+                    <!-- The entire card is now wrapped in a link to the details page -->
+                    <a asp-action="ServiceDetails" asp-route-id="@service.ServiceId" class="card-link-wrapper">
+                        <div class="service-card h-100">
+                            <div class="service-card-img-container">
+                                <img src="@(service.PrimaryImageUrl ?? "https://placehold.co/600x400/eee/ccc?text=No+Image")"
+                                    class="service-card-img" alt="@service.ServiceName">
                             </div>
-
-                            <div class="service-card-footer">
-                                <div class="service-card-price">
-                                    @service.Price Taka<span class="unit">/@service.PricingUnit</span>
+                            <div class="service-card-body">
+                                <div>
+                                    <h5 class="service-card-title">@service.ServiceName</h5>
+                                    <div class="service-card-provider">
+                                        <img src="@(service.ProviderProfilePictureUrl ?? "https://placehold.co/40x40/eee/ccc?text=P")"
+                                            class="service-card-provider-img" alt="@service.ProviderBusinessName">
+                                        <span>@service.ProviderBusinessName</span>
+                                    </div>
+                                    <ul class="list-unstyled text-muted small mt-3">
+                                        <li class="mb-2"><i class="fa-solid fa-calendar-check me-2"></i>Joined
+                                            @service.JoinedDate.ToString("MMM dd, yyyy")</li>
+                                        <li class="mb-2"><i class="fa-solid fa-location-dot me-2"></i>@service.Location</li>
+                                        <li class="mb-2"><i class="fa-solid fa-clock me-2"></i>@service.BusinessHours</li>
+                                    </ul>
                                 </div>
-                                <a href="#" class="btn btn-booking">View Details</a>
+                                <div class="service-card-footer">
+                                    <div class="service-card-price">
+                                        $@service.Price <span class="unit">/@service.PricingUnit</span>
+                                    </div>
+                                    <!-- The button is now "Book Now" -->
+                                    <div class="btn btn-booking">Book Now</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             }
         </div>

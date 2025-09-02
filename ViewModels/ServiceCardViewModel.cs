@@ -9,5 +9,8 @@ namespace LocalScout.ViewModels
         public string? PrimaryImageUrl { get; set; }
         public string ProviderBusinessName { get; set; } = string.Empty;
         public string? ProviderProfilePictureUrl { get; set; }
+        public string? Location { get; set; } // Will hold the BusinessAddress
+        public string? BusinessHours { get; set; }
+        public DateTimeOffset JoinedDate { get; set; } // To show when the provider registered
     }
 }

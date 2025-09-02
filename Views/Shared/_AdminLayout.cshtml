@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="d-flex admin-wrapper">
+        <!-- Sidebar Navigation -->
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-white admin-sidebar">
+            <!-- UPDATED HEADER: Title on left, Back to Site button on right -->
+            <div class="d-flex justify-content-between align-items-center mb-3 mb-md-0 me-md-auto w-100">
+                <a asp-controller="Admin" asp-action="Index" class="d-flex align-items-center text-white text-decoration-none">
+                    <span class="fs-4">Local Scout Admin</span>
+                </a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-light btn-sm" title="Back to Main Site">
+                    <i class="fa-solid fa-house"></i>
+                </a>
+            </div>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li></li>
+                    <a asp-controller="Admin" asp-action="UserManagement" class="nav-link text-white">
+                        <i class="fa-solid fa-users me-2"></i> User Management
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a asp-controller="Admin" asp-action="Index" class="nav-link text-white">
+                        <i class="fa-solid fa-tags me-2"></i> Category Management
+                    </a>
+                </li>                
+                <li>
+                    <a asp-controller="Admin" asp-action="CategoryRequests" class="nav-link text-white">
+                        <i class="fa-solid fa-inbox me-2"></i> Category Requests
+                    </a>
+                </li>
+            </ul>
+            <hr>
+            <!-- UPDATED FOOTER: Replaced dropdown with a direct Sign Out button -->
+            <form asp-controller="Account" asp-action="Logout" method="post">
+                <button type="submit" class="nav-link text-white w-100 text-start">
+                    <i class="fa-solid fa-right-from-bracket me-2"></i> Sign Out
+                </button>
+            </form>
+        </div>
+
+        <!-- Main Content Area -->
+        <main class="flex-grow-1 p-4 admin-content">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

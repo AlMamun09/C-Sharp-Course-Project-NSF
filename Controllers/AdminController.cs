@@ -29,7 +29,8 @@ namespace LocalScout.Controllers
         // --- Service Category Management ---
         public async Task<IActionResult> Index()
         {
-            var categories = await _firestoreService.GetAllCategoriesAsync();
+            // Change it to this
+            var categories = await _firestoreService.GetAllCategoriesForAdminAsync();
             return View(categories);
         }
 
@@ -273,14 +274,57 @@ namespace LocalScout.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string id, string activeTab)
         {
+            // 1. Find the user to be deleted.
             var user = await _userManager.FindByIdAsync(id);
-            if (user != null)
+            if (user == null)
             {
-                var result = await _userManager.DeleteAsync(user);
+                return NotFound();
             }
 
-            // Redirect back to the UserManagement page, passing the active tab name along
+            // 2. Check if the user is a Service Provider to perform cleanup.
+            if (await _userManager.IsInRoleAsync(user, "ServiceProvider"))
+            {
+                // 3. Get all services created by this provider from Firestore.
+                var servicesToDelete = await _firestoreService.GetServicesByProviderIdAsync(user.Id);
+
+                foreach (var service in servicesToDelete)
+                {
+                    // 4. For each service, delete all its gallery images from Cloudinary.
+                    if (service.ImageUrls.Any())
+                    {
+                        foreach (var imageUrl in service.ImageUrls)
+                        {
+                            await _cloudinaryService.DeleteImageAsync(imageUrl);
+                        }
+                    }
+
+                    // 5. After its images are gone, delete the service document from Firestore.
+                    await _firestoreService.DeleteProviderServiceAsync(service.Id);
+                }
+
+                // 6. Delete the provider's main profile picture from Cloudinary.
+                if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
+                {
+                    await _cloudinaryService.DeleteImageAsync(user.ProfilePictureUrl);
+                }
+            }
+
+            // 7. Finally, delete the user account from the SQLite database.
+            var result = await _userManager.DeleteAsync(user);
+
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = $"User '{user.FirstName} {user.LastName}' and all their associated data have been successfully deleted.";
+            }
+            else
+            {
+                // If for some reason the final delete fails, show an error.
+                TempData["ErrorMessage"] = "There was an error deleting the user account.";
+            }
+
+            // 8. Redirect back to the user management page.
             return RedirectToAction("UserManagement", new { activeTab = activeTab });
         }
+
     }
 }

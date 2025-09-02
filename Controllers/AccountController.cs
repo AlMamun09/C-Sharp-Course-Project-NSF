@@ -61,7 +61,8 @@ namespace LocalScout.Controllers
                         FirstName = model.FirstName,
                         LastName = model.LastName,
                         Address = model.Address,
-                        ProfilePictureUrl = profilePictureUrl
+                        ProfilePictureUrl = profilePictureUrl,
+                        CreatedAt = DateTimeOffset.UtcNow
                     };
 
                     var result = await _userManager.CreateAsync(user, model.Password);
@@ -105,14 +106,22 @@ namespace LocalScout.Controllers
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByEmailAsync(model.Email);
-                    // Check if the user is an Admin.
-                    if (user != null && await _userManager.IsInRoleAsync(user, "Admin"))
+                    if (user != null)
                     {
-                        // If so, redirect to the Admin panel.
-                        return RedirectToAction("Index", "Admin");
+                        // Check roles in order of importance
+                        if (await _userManager.IsInRoleAsync(user, "Admin"))
+                        {
+                            return RedirectToAction("Index", "Admin");
+                        }
+                        // NEW: Check if the user is a Service Provider
+                        if (await _userManager.IsInRoleAsync(user, "ServiceProvider"))
+                        {
+                            // If so, send them directly to their provider dashboard
+                            return RedirectToAction("Index", "ServiceProvider");
+                        }
                     }
 
-                    // For ALL other users (Regular and ServiceProviders), redirect to the main dashboard.
+                    // Default redirect for regular users
                     return RedirectToAction("Index", "Dashboard");
                 }
                 else

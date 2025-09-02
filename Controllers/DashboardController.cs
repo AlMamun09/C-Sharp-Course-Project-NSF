@@ -67,6 +67,7 @@ namespace LocalScout.Controllers
                 user.BusinessPhoneNumber = model.BusinessPhoneNumber;
                 user.BusinessAddress = model.BusinessAddress;
                 user.BusinessDescription = model.BusinessDescription;
+                user.BusinessHours = model.BusinessHours;
 
                 await _userManager.UpdateAsync(user);
                 await _userManager.AddToRoleAsync(user, "ServiceProvider");

@@ -4,48 +4,62 @@
     ViewData["Title"] = "Pending Category Requests";
 }
 
-<h1>@ViewData["Title"]</h1>
-<p>Review the following new service category requests submitted by providers.</p>
-<hr />
+<!-- New Non-Scrolling Header Section -->
+<div class="admin-content-header">
+    <h1>@ViewData["Title"]</h1>
+    <p class="text-muted mb-0">Review the following new service category requests submitted by providers.</p>
+</div>
 
-@if (!Model.Any())
-{
-    <p>There are currently no pending category requests.</p>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Suggested Name</th>
-                <th>Description</th>
-                <th>Requested By</th>
-                <th>Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var request in Model)
-            {
-                <tr>
-                    <td>@request.CategoryName</td>
-                    <td>@request.CategoryDescription</td>
-                    <td>@request.RequestedByName</td>
-                    <td>@request.CreatedAt.ToDateTime().ToShortDateString()</td>
-                    <td class="d-flex">
-                        <form asp-action="ApproveCategoryRequest" method="post" class="me-1">
-                            <input type="hidden" name="requestId" value="@request.Id" />
-                            <button type="submit" class="btn btn-sm btn-success"
-                                onclick="return confirm('Are you sure you want to approve this category?');">Approve</button>
-                        </form>
-                        <form asp-action="DenyCategoryRequest" method="post">
-                            <input type="hidden" name="requestId" value="@request.Id" />
-                            <button type="submit" class="btn btn-sm btn-danger"
-                                onclick="return confirm('Are you sure you want to deny this category?');">Deny</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<!-- New Scrollable Main Content Section -->
+<div class="admin-content-main">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <h4>No Pending Requests</h4>
+            <p>There are currently no new category requests to review.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-container">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Suggested Name</th>
+                        <th>Description</th>
+                        <th>Requested By</th>
+                        <th>Date</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var request in Model)
+                    {
+                        <tr>
+                            <td>@request.CategoryName</td>
+                            <td>@request.CategoryDescription</td>
+                            <td>@request.RequestedByName</td>
+                            <td>@request.CreatedAt.ToDateTime().ToShortDateString()</td>
+                            <td class="text-end">
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <form asp-action="ApproveCategoryRequest" method="post" onsubmit="return confirm('Are you sure you want to approve this category?');">
+                                        <input type="hidden" name="requestId" value="@request.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-success" title="Approve">
+                                            <i class="fa-solid fa-check"></i> Approve
+                                        </button>
+                                    </form>
+                                    <form asp-action="DenyCategoryRequest" method="post" onsubmit="return confirm('Are you sure you want to deny this category?');">
+                                        <input type="hidden" name="requestId" value="@request.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Deny">
+                                            <i class="fa-solid fa-ban"></i> Deny
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

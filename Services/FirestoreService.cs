@@ -25,7 +25,7 @@ namespace LocalScout.Services
         public async Task<List<ServiceCategory>> GetAllCategoriesAsync()
         {
             CollectionReference collectionRef = _db.Collection(ServiceCategoriesCollection);
-            Query query = collectionRef.OrderByDescending("isActive").OrderBy("priorityOrder").OrderBy("name");
+            Query query = collectionRef.WhereEqualTo("isActive", true).OrderBy("priorityOrder").OrderBy("name");
             QuerySnapshot snapshot = await query.GetSnapshotAsync();
 
             List<ServiceCategory> categories = new List<ServiceCategory>();
@@ -33,6 +33,22 @@ namespace LocalScout.Services
             {
                 ServiceCategory category = document.ConvertTo<ServiceCategory>();
                 categories.Add(category);
+            }
+            return categories;
+        }
+
+        // Gets ALL service categories for the admin panel, sorting them by status
+        public async Task<List<ServiceCategory>> GetAllCategoriesForAdminAsync()
+        {
+            CollectionReference collectionRef = _db.Collection(ServiceCategoriesCollection);
+            // This query gets ALL categories but sorts them so inactive ones are last.
+            Query query = collectionRef.OrderByDescending("isActive").OrderBy("priorityOrder").OrderBy("name");
+            QuerySnapshot snapshot = await query.GetSnapshotAsync();
+
+            List<ServiceCategory> categories = new List<ServiceCategory>();
+            foreach (DocumentSnapshot document in snapshot.Documents)
+            {
+                categories.Add(document.ConvertTo<ServiceCategory>());
             }
             return categories;
         }

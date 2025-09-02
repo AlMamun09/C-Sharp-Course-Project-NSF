@@ -54,7 +54,10 @@ namespace LocalScout.Controllers
                         PricingUnit = service.PricingUnit,
                         PrimaryImageUrl = service.ImageUrls.FirstOrDefault(), // Get the first image as the primary one
                         ProviderBusinessName = provider.BusinessName ?? "N/A",
-                        ProviderProfilePictureUrl = provider.ProfilePictureUrl
+                        ProviderProfilePictureUrl = provider.ProfilePictureUrl,
+                        Location = provider.BusinessAddress,
+                        BusinessHours = provider.BusinessHours,
+                        JoinedDate = provider.CreatedAt
                     };
                     featuredServiceCards.Add(card);
                 }
@@ -93,7 +96,10 @@ namespace LocalScout.Controllers
                         PricingUnit = service.PricingUnit,
                         PrimaryImageUrl = service.ImageUrls.FirstOrDefault(),
                         ProviderBusinessName = provider.BusinessName ?? "N/A",
-                        ProviderProfilePictureUrl = provider.ProfilePictureUrl
+                        ProviderProfilePictureUrl = provider.ProfilePictureUrl,
+                        Location = provider.BusinessAddress,
+                        BusinessHours = provider.BusinessHours,
+                        JoinedDate = provider.CreatedAt
                     };
                     resultCards.Add(card);
                 }
@@ -139,7 +145,10 @@ namespace LocalScout.Controllers
                         PricingUnit = service.PricingUnit,
                         PrimaryImageUrl = service.ImageUrls.FirstOrDefault(),
                         ProviderBusinessName = provider.BusinessName ?? "N/A",
-                        ProviderProfilePictureUrl = provider.ProfilePictureUrl
+                        ProviderProfilePictureUrl = provider.ProfilePictureUrl,
+                        Location = provider.BusinessAddress,
+                        BusinessHours = provider.BusinessHours,
+                        JoinedDate = provider.CreatedAt
                     };
                     serviceCards.Add(card);
                 }
@@ -153,6 +162,39 @@ namespace LocalScout.Controllers
             };
 
             // 5. Pass the ViewModel to a new "ServicesByCategory" view
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> ServiceDetails(string id)
+        {
+            // 1. Fetch the main service the user clicked on
+            var mainService = await _firestoreService.GetProviderServiceByIdAsync(id);
+            if (mainService == null)
+            {
+                return NotFound();
+            }
+
+            // 2. Fetch the provider's details using the ID from the service
+            var provider = await _userManager.FindByIdAsync(mainService.ProviderId);
+            if (provider == null)
+            {
+                return NotFound();
+            }
+
+            // 3. Fetch ALL services offered by this provider
+            var allProviderServices = await _firestoreService.GetServicesByProviderIdAsync(provider.Id);
+
+            // 4. Create a list of "other" services, excluding the one we're currently viewing
+            var otherServices = allProviderServices.Where(s => s.Id != id).ToList();
+
+            // 5. Package everything into our new ViewModel
+            var viewModel = new ServiceDetailsViewModel
+            {
+                MainService = mainService,
+                Provider = provider,
+                OtherServices = otherServices
+            };
+
             return View(viewModel);
         }
 

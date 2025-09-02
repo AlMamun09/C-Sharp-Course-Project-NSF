@@ -32,5 +32,10 @@ namespace LocalScout.Data
         [StringLength(500)]
         public string? BusinessDescription { get; set; }
 
+        [StringLength(100)]
+        public string? BusinessHours { get; set; }
+
+        public DateTimeOffset CreatedAt { get; set; }
+
     }
 }

@@ -7,12 +7,32 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
-        </li>
+        @if (User.IsInRole("Admin"))
+        {
+            // If the user is an Admin, show a link to the Admin Panel
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index">Admin Panel</a>
+            </li>
+        }
+        else if (User.IsInRole("ServiceProvider"))
+        {
+            // If the user is a Service Provider, show a link to the Provider Dashboard
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="ServiceProvider" asp-action="Index">Provider Dashboard</a>
+            </li>
+        }
+        else
+        {
+            // For all other users (just "User" role), show a link to the User Dashboard
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+            </li>
+        }
+
         <li class="nav-item">
             <a class="nav-link text-dark" title="Manage">Hello @UserManager.GetUserAsync(User).Result?.FirstName!</a>
         </li>
+
         <li class="nav-item">
             <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post">
                 <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>

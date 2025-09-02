@@ -1,3 +1,6 @@
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
 html {
   font-size: 14px;
 }
@@ -21,11 +24,110 @@ body {
   margin-bottom: 60px;
 }
 
-/* Styles for the new visual category scroller */
+
+/* =========================================
+   CUSTOM BRAND STYLES
+   ========================================= */
+
+/* 1. Define the Color Palette as CSS Variables */
+:root {
+    --picton-blue: #00a6fb;
+    --steel-blue: #0582ca;
+    --lapis-lazuli: #006494;
+    --prussian-blue: #003554;
+    --rich-black: #051923;
+}
+
+/* 2. Set Typography & Link Colors */
+body {
+    color: var(--rich-black); /* Set default text color for the whole site */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--prussian-blue); /* Set color for all headings */
+}
+
+a {
+    color: var(--steel-blue); /* Set color for all hyperlinks */
+}
+
+a:hover {
+    color: var(--lapis-lazuli); /* Darker shade for hover */
+}
+
+/* Ensure navbar links are readable */
+.navbar-light .navbar-nav .nav-link {
+    color: var(--prussian-blue);
+}
+
+.navbar-light .navbar-nav .nav-link:hover {
+    color: var(--steel-blue);
+}
+
+
+/* 3. Override Bootstrap Button Colors */
+
+/* Primary buttons (Create, Register, Add, etc.) */
+.btn-primary {
+    background-color: var(--picton-blue);
+    border-color: var(--picton-blue);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--steel-blue);
+    border-color: var(--steel-blue);
+    color: white;
+}
+
+/* Secondary buttons (Cancel, Back to List) */
+.btn-secondary {
+    background-color: #6c757d; /* Default Bootstrap grey for secondary actions */
+    border-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+    color: white;
+}
+
+
+/* Success buttons (Save Changes, Submit Application) */
+.btn-success {
+    background-color: var(--lapis-lazuli);
+    border-color: var(--lapis-lazuli);
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: var(--prussian-blue);
+    border-color: var(--prussian-blue);
+    color: white;
+}
+
+/* Info buttons (Details) */
+.btn-info {
+    background-color: var(--steel-blue);
+    border-color: var(--steel-blue);
+    color: white;
+}
+
+.btn-info:hover {
+    background-color: var(--lapis-lazuli);
+    border-color: var(--lapis-lazuli);
+    color: white;
+}
+
+
+/* =========================================
+   EYE-CATCHING CATEGORY SCROLLER STYLES
+   ========================================= */
 .category-scroller-wrapper {
     position: relative;
     width: 100%;
-    padding: 0 25px; /* Add padding so side buttons don't overlap content */
+    padding: 0 25px;
 }
 
 .category-scroller {
@@ -37,27 +139,32 @@ body {
 .category-track {
     display: flex;
     flex-wrap: nowrap;
-    gap: 1.5rem; /* Space between cards */
-    padding-bottom: 1rem;
+    gap: 1.5rem;
+    padding: 1rem 0; /* Add padding so shadows don't get cut off */
 }
 
-/* This is the new card style based on your screenshot */
+/* The eye-catching card style */
 .visual-category-card {
-    flex: 0 0 250px; /* Set a fixed width for each card */
+    flex: 0 0 250px;
     width: 250px;
     height: 200px;
     border-radius: 1rem;
     overflow: hidden;
     position: relative;
-    color: black;
-    background-color: var(--prussian-blue); /* Using your color palette! */
-    transition: transform 0.2s ease-in-out;
+    color: white;
     text-decoration: none;
+    background: linear-gradient(180deg, var(--lapis-lazuli) 0%, var(--prussian-blue) 100%);
+    border: 1px solid var(--lapis-lazuli);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
 }
 
+/* The dynamic hover effect */
 .visual-category-card:hover {
-    transform: translateY(-5px);
-    color: black;
+    transform: translateY(-8px);
+    color: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: var(--picton-blue); /* The "glow" effect */
 }
 
 .visual-category-card .card-title-overlay {
@@ -65,6 +172,7 @@ body {
     font-weight: bold;
     text-align: center;
     font-size: 1.25rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .visual-category-card .card-image-container {
@@ -75,15 +183,22 @@ body {
     height: 120px;
     border-radius: 0.75rem;
     overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .visual-category-card .card-image {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures the image covers the container */
+    object-fit: cover;
 }
 
+/* This rule is more specific and will win the specificity war */
+.visual-category-card h5 {
+    color: white;
+}
 
+/* Scroll button styles */
 .scroll-btn {
     position: absolute;
     top: 50%;
@@ -105,7 +220,9 @@ body {
     right: 0;
 }
 
-/* Styles for the new, modern service card */
+/* =========================================
+   MODERN SERVICE CARD STYLES
+   ========================================= */
 .service-card {
     border: 1px solid #e0e0e0;
     border-radius: 1rem;
@@ -114,11 +231,6 @@ body {
     transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
     display: flex;
     flex-direction: column;
-}
-
-.service-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .service-card-img-container {
@@ -149,7 +261,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #6c757d; /* Bootstrap's text-muted color */
+    color: #6c757d;
     margin-bottom: 1rem;
 }
 
@@ -172,7 +284,7 @@ body {
 .service-card-price {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--prussian-blue); /* Using your color palette */
+    color: var(--prussian-blue);
 }
 
 .service-card-price .unit {
@@ -182,13 +294,132 @@ body {
 }
 
 .btn-booking {
-    background-color: #f58634; /* A nice orange color like the example */
-    color: white;
+    background-color: var(--picton-blue);
+    color: white !important; /* Use important to override link color */
     font-weight: bold;
     border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
 }
 
 .btn-booking:hover {
-    background-color: #e06f20;
+    background-color: var(--steel-blue);
+    color: white !important;
+}
+
+
+/* Makes the wrapper for the clickable card work correctly */
+.card-link-wrapper {
+    display: block;
+    text-decoration: none;
+    color: inherit; /* Ensures card text doesn't turn blue */
+}
+
+/* Re-applies the hover effect when hovering over the link wrapper */
+.card-link-wrapper:hover .service-card {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================
+   ADMIN LAYOUT STYLES
+   ========================================= */
+/* Main wrapper for the admin section */
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar styles (unchanged) */
+.admin-sidebar {
+    width: 280px;
+    background-color: var(--prussian-blue);
     color: white;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0; /* Prevents the sidebar from shrinking */
+}
+
+.admin-sidebar .nav-link {
+    font-size: 1.1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.admin-sidebar .nav-link:hover {
+    background-color: var(--lapis-lazuli);
+}
+
+.admin-sidebar .nav-link.active {
+    background-color: var(--picton-blue); /* Highlight for the active page */
+}
+
+.admin-sidebar .dropdown-item {
+    cursor: pointer;
+}
+
+/* This is the main content area to the right of the sidebar */
+.admin-content {
+    flex-grow: 1; /* Allows this area to take up the remaining space */
+    display: flex;
+    flex-direction: column; /* Stacks the header and main content vertically */
+    max-height: 100vh; /* Prevents the whole area from getting a scrollbar */
+}
+
+/* This is the new, non-scrolling header area at the top */
+.admin-content-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #dee2e6; /* A light line to separate the header */
+    background-color: #fff; /* Ensures it sits on top of content */
+    flex-shrink: 0; /* Prevents the header from shrinking */
+}
+
+/* This is the new, scrollable main content area */
+.admin-content-main {
+    flex-grow: 1; /* Allows this area to take up the remaining vertical space */
+    overflow-y: auto; /* Adds a scrollbar ONLY to this area when needed */
+    padding: 1.5rem;
+}
+
+/* Fix for the admin sidebar signout button styling */
+.admin-sidebar form button.nav-link {
+    background: none; /* Remove the default button background */
+    border: none;     /* Remove the default button border */
+}
+
+/* Style the "Back to Site" button to be more subtle, like a simple icon link */
+.admin-sidebar .btn-outline-light {
+    background-color: transparent;
+    border-color: transparent;
+    color: rgba(255, 255, 255, 0.75); /* A slightly dimmer white */
+    transition: color 0.2s ease-in-out;
+}
+
+.admin-sidebar .btn-outline-light:hover {
+    background-color: transparent;
+    border-color: transparent;
+    color: white; /* Make it bright on hover */
+}
+
+/* =========================================
+   STICKY ADMIN TABLE HEADER STYLES
+   ========================================= */
+
+/* Creates a scrollable container for our tables */
+.table-container {
+    max-height: 75vh; /* Sets the max height to 75% of the viewport height */
+    overflow-y: auto; /* Adds a vertical scrollbar only when needed */
+    border: 1px solid #dee2e6; /* A light border to define the scroll area */
+    border-radius: 0.5rem;
+}
+
+/* The magic for the sticky header */
+.table-hover thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #f8f9fa; /* Matches the table-light background color */
 }

@@ -38,13 +38,17 @@
             </div>
 
             <div class="form-group">
+                <label asp-for="BusinessHours"></label>
+                <input asp-for="BusinessHours" class="form-control" />
+                <span asp-validation-for="BusinessHours" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
                 @if (!string.IsNullOrEmpty(Model.CurrentProfilePictureUrl))
                 {
                     <label>Current Profile Picture</label>
                     <div>
-                        <img src="@Model.CurrentProfilePictureUrl"
-                            style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;" class="mb-2"
-                            alt="Current Profile Picture" />
+                        <img src="@Model.CurrentProfilePictureUrl" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;" class="mb-2" alt="Current Profile Picture"/>
                     </div>
                     <label asp-for="ProfilePicture" class="control-label mt-2">Upload a new picture (optional)</label>
                 }
@@ -53,12 +57,11 @@
                     <label asp-for="ProfilePicture" class="control-label"></label>
                 }
                 <input asp-for="ProfilePicture" class="form-control" />
-                <small class="form-text text-muted">For best results, we recommend a square image that is at least
-                    500x500 pixels.</small>
+                <small class="form-text text-muted">For best results, we recommend a square image that is at least 500x500 pixels.</small>
                 <span asp-validation-for="ProfilePicture" class="text-danger"></span>
             </div>
-
-            <br /><button type="submit" class="btn btn-success">Submit Application</button>
-        </form>
+            <br />
+            <button type="submit" class="btn btn-success">Submit Application</button>
+        </form> @* <-- The closing tag was likely missing *@
     </div>
 </div>
