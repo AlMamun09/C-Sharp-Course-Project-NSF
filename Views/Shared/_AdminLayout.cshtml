@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body>
+<body class="admin-body-lock">
     <div class="d-flex admin-wrapper">
         <!-- Sidebar Navigation -->
         <div class="d-flex flex-column flex-shrink-0 p-3 text-white admin-sidebar">
@@ -23,11 +23,7 @@
             </div>
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
-                <li></li>
-                    <a asp-controller="Admin" asp-action="UserManagement" class="nav-link text-white">
-                        <i class="fa-solid fa-users me-2"></i> User Management
-                    </a>
-                </li>
+                
                 <li class="nav-item">
                     <a asp-controller="Admin" asp-action="Index" class="nav-link text-white">
                         <i class="fa-solid fa-tags me-2"></i> Category Management
@@ -36,6 +32,11 @@
                 <li>
                     <a asp-controller="Admin" asp-action="CategoryRequests" class="nav-link text-white">
                         <i class="fa-solid fa-inbox me-2"></i> Category Requests
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Admin" asp-action="UserManagement" class="nav-link text-white">
+                        <i class="fa-solid fa-users me-2"></i> User Management
                     </a>
                 </li>
             </ul>

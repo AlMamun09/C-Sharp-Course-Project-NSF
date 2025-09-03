@@ -69,9 +69,6 @@ The platform allows users to discover, search, and view profiles of service prov
 
 ## 📌 Future Roadmap
 
-### 🛠️ UI/UX Enhancements & Bug Fixes
-- Fix Admin Panel layout: implement fixed sidebar + header to avoid double scrollbars.  
-
 ### 👥 User-Facing Features
 - Enhance service cards with business hours, provider’s location, and joined date.  
 - Add **“Load More”** functionality with AJAX on homepage services.  

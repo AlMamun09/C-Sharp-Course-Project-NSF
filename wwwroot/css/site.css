@@ -323,103 +323,89 @@ a:hover {
 }
 
 /* =========================================
-   ADMIN LAYOUT STYLES
+   FINAL ADMIN LAYOUT STYLES (FIXED)
    ========================================= */
-/* Main wrapper for the admin section */
-.admin-wrapper {
-    display: flex;
-    min-height: 100vh;
+
+/* This new class will lock the body scrollbar on admin pages */
+body.admin-body-lock {
+    overflow: hidden;
 }
 
-/* Sidebar styles (unchanged) */
+/* --- 1. The Fixed Sidebar --- */
 .admin-sidebar {
     width: 280px;
+    height: 100vh; /* Full viewport height */
+    position: fixed; /* This locks the sidebar to the screen */
+    top: 0;
+    left: 0;
+    z-index: 1030; /* High z-index to stay on top */
     background-color: var(--prussian-blue);
     color: white;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    flex-shrink: 0; /* Prevents the sidebar from shrinking */
 }
 
+/* --- 2. The Main Content Area --- */
+.admin-content {
+    /* Push the content to the right to make space for the fixed sidebar */
+    margin-left: 280px; 
+    width: calc(100% - 280px); /* Take up the remaining width */
+    height: 100vh; /* Full viewport height */
+    display: flex;
+    flex-direction: column;
+}
+
+/* The non-scrolling header at the top */
+.admin-content-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    background-color: #fff;
+    flex-shrink: 0; /* Prevents the header from shrinking */
+}
+
+/* The scrollable main content area */
+.admin-content-main {
+    flex-grow: 1;
+    overflow-y: auto; /* This will be the ONE and ONLY scrollbar */
+    padding: 1.5rem;
+    padding-top: 0rem;
+}
+
+/* The sticky table header will now work perfectly inside this new scrollable area */
+.table-hover thead th {
+    position: sticky;
+    top: -1px; /* A small offset to prevent visual glitches */
+    z-index: 10;
+    background-color: #f8f9fa; /* Matches the table-light color */
+}
+
+
+/* --- Sidebar Button & Link Styles (Unchanged) --- */
 .admin-sidebar .nav-link {
     font-size: 1.1rem;
     border-radius: 0.5rem;
     margin-bottom: 0.5rem;
     transition: background-color 0.2s ease-in-out;
 }
-
 .admin-sidebar .nav-link:hover {
     background-color: var(--lapis-lazuli);
 }
-
 .admin-sidebar .nav-link.active {
-    background-color: var(--picton-blue); /* Highlight for the active page */
+    background-color: var(--picton-blue);
 }
-
-.admin-sidebar .dropdown-item {
-    cursor: pointer;
-}
-
-/* This is the main content area to the right of the sidebar */
-.admin-content {
-    flex-grow: 1; /* Allows this area to take up the remaining space */
-    display: flex;
-    flex-direction: column; /* Stacks the header and main content vertically */
-    max-height: 100vh; /* Prevents the whole area from getting a scrollbar */
-}
-
-/* This is the new, non-scrolling header area at the top */
-.admin-content-header {
-    padding: 1.5rem;
-    border-bottom: 1px solid #dee2e6; /* A light line to separate the header */
-    background-color: #fff; /* Ensures it sits on top of content */
-    flex-shrink: 0; /* Prevents the header from shrinking */
-}
-
-/* This is the new, scrollable main content area */
-.admin-content-main {
-    flex-grow: 1; /* Allows this area to take up the remaining vertical space */
-    overflow-y: auto; /* Adds a scrollbar ONLY to this area when needed */
-    padding: 1.5rem;
-}
-
-/* Fix for the admin sidebar signout button styling */
 .admin-sidebar form button.nav-link {
-    background: none; /* Remove the default button background */
-    border: none;     /* Remove the default button border */
+    background: none;
+    border: none;
 }
-
-/* Style the "Back to Site" button to be more subtle, like a simple icon link */
 .admin-sidebar .btn-outline-light {
     background-color: transparent;
     border-color: transparent;
-    color: rgba(255, 255, 255, 0.75); /* A slightly dimmer white */
+    color: rgba(255, 255, 255, 0.75);
     transition: color 0.2s ease-in-out;
 }
-
 .admin-sidebar .btn-outline-light:hover {
     background-color: transparent;
     border-color: transparent;
-    color: white; /* Make it bright on hover */
-}
-
-/* =========================================
-   STICKY ADMIN TABLE HEADER STYLES
-   ========================================= */
-
-/* Creates a scrollable container for our tables */
-.table-container {
-    max-height: 75vh; /* Sets the max height to 75% of the viewport height */
-    overflow-y: auto; /* Adds a vertical scrollbar only when needed */
-    border: 1px solid #dee2e6; /* A light border to define the scroll area */
-    border-radius: 0.5rem;
-}
-
-/* The magic for the sticky header */
-.table-hover thead th {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background-color: #f8f9fa; /* Matches the table-light background color */
+    color: white;
 }
