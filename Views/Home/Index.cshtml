@@ -76,7 +76,14 @@
                             </div>
                             <div class="service-card-footer">
                                 <div class="service-card-price">
-                                    $@service.Price <span class="unit">/@service.PricingUnit</span>
+                                    @if (service.IsNegotiable)
+                                    {
+                                        <span class="fw-bold">Negotiable</span>
+                                    }
+                                    else
+                                    {
+                                        <span>TK @service.Price</span> <span class="unit">/ @service.PricingUnit</span>
+                                    }
                                 </div>
                                 <!-- The button is now "Book Now" -->
                                 <div class="btn btn-booking">Book Now</div>

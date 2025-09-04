@@ -27,6 +27,10 @@ namespace LocalScout.Models
         [FirestoreProperty("pricingUnit")]
         public string PricingUnit { get; set; } = string.Empty; // e.g., "per hour", "per day", "per project"
 
+        // --- ADD THIS NEW PROPERTY ---
+        [FirestoreProperty("isNegotiable")]
+        public bool IsNegotiable { get; set; }
+
         [FirestoreProperty("imageUrls")]
         public List<string> ImageUrls { get; set; } = new List<string>(); // List of Cloudinary URLs
 

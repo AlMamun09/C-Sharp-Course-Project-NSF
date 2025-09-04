@@ -27,16 +27,25 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
-            <div class="row">
-                <div class="col-md-6 form-group mb-3">
-                    <label asp-for="Price" class="control-label"></label>
-                    <input asp-for="Price" class="form-control" />
-                    <span asp-validation-for="Price" class="text-danger"></span>
-                </div>
-                <div class="col-md-6 form-group mb-3">
-                    <label asp-for="PricingUnit" class="control-label"></label>
-                    <input asp-for="PricingUnit" class="form-control" />
-                    <span asp-validation-for="PricingUnit" class="text-danger"></span>
+            <!-- The new "Negotiable" checkbox -->
+            <div class="form-group form-check mb-3">
+                <input class="form-check-input" asp-for="IsNegotiable" />
+                <label class="form-check-label" asp-for="IsNegotiable"></label>
+            </div>
+
+            <!-- This is the container for the pricing fields -->
+            <div id="price-container">
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="Price" class="control-label"></label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="PricingUnit" class="control-label"></label>
+                        <input asp-for="PricingUnit" class="form-control" />
+                        <span asp-validation-for="PricingUnit" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
 
@@ -58,15 +67,28 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Find the dropdown menu by its ID
-            const categoryDropdown = document.getElementById('SelectedServiceCategoryId');
+            const isNegotiableCheckbox = document.getElementById('IsNegotiable');
+            const priceContainer = document.getElementById('price-container');
 
+            function togglePriceFields() {
+                if (isNegotiableCheckbox.checked) {
+                    priceContainer.style.display = 'none';
+                } else {
+                    priceContainer.style.display = 'block';
+                }
+            }
+
+            // Run on page load
+            togglePriceFields();
+
+            // Run whenever the checkbox is clicked
+            isNegotiableCheckbox.addEventListener('change', togglePriceFields);
+            
+            // --- Logic for the category dropdown (unchanged) ---
+            const categoryDropdown = document.getElementById('SelectedServiceCategoryId');
             if (categoryDropdown) {
-                // Add an event listener that fires whenever the selection changes
                 categoryDropdown.addEventListener('change', function () {
-                    // Check if the selected value is our special 'request_new' value
                     if (this.value === 'request_new') {
-                        // If it is, redirect the user to the new page
                         window.location.href = '@Url.Action("RequestNewCategory", "ServiceProvider")';
                     }
                 });

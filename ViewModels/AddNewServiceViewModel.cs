@@ -5,28 +5,52 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LocalScout.ViewModels
 {
-    public class AddNewServiceViewModel
+    // 1. Implement the IValidatableObject interface
+    public class AddNewServiceViewModel : IValidatableObject
     {
-        [Required]
+        // Properties from your AddNewService.cshtml view
         [Display(Name = "Service Category")]
         public string SelectedServiceCategoryId { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(500, MinimumLength = 20)]
         public string Description { get; set; } = string.Empty;
 
-        [Required]
-        [Range(0.01, 100000.00)]
+        // 2. REMOVE validation attributes from here
         public double Price { get; set; }
 
-        [Required]
-        [Display(Name = "Pricing Unit (e.g., per hour, per project)")]
-        public string PricingUnit { get; set; } = string.Empty;
+        // And from here
+        [Display(Name = "Pricing Unit")]
+        public string? PricingUnit { get; set; }
 
-        [Display(Name = "Gallery Images (Optional)")]
+        [Display(Name = "Price is Negotiable")]
+        public bool IsNegotiable { get; set; }
+
+        [Display(Name = "Gallery Images")]
         public List<IFormFile>? GalleryImages { get; set; }
 
-        // This property will hold the list of categories for the dropdown
         public IEnumerable<SelectListItem> ServiceCategories { get; set; } = new List<SelectListItem>();
+
+
+        // 3. Add this method to handle custom validation logic
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            // This logic now controls the validation for price fields.
+            // It only runs if the 'IsNegotiable' checkbox is NOT checked.
+            if (!IsNegotiable)
+            {
+                if (string.IsNullOrWhiteSpace(PricingUnit))
+                {
+                    yield return new ValidationResult(
+                        "The Pricing Unit (e.g., per hour, per project) field is required.",
+                        new[] { nameof(PricingUnit) });
+                }
+
+                if (Price < 0.01 || Price > 100000)
+                {
+                    yield return new ValidationResult(
+                        "The field Price must be between 0.01 and 100000.",
+                        new[] { nameof(Price) });
+                }
+            }
+        }
     }
 }

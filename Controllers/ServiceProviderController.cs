@@ -213,7 +213,8 @@ namespace LocalScout.Controllers
                     ServiceName = selectedCategory.Name,
                     Description = model.Description,
                     Price = model.Price,
-                    PricingUnit = model.PricingUnit,
+                    PricingUnit = model.PricingUnit ?? string.Empty,
+                    IsNegotiable = model.IsNegotiable,
                     ImageUrls = imageUrls
                 };
 
@@ -313,6 +314,7 @@ namespace LocalScout.Controllers
                 Description = service.Description,
                 Price = service.Price,
                 PricingUnit = service.PricingUnit,
+                IsNegotiable = service.IsNegotiable,
                 CurrentImageUrls = service.ImageUrls
             };
 
@@ -366,7 +368,8 @@ namespace LocalScout.Controllers
                 // Update other properties (this logic is unchanged)
                 serviceToUpdate.Description = model.Description;
                 serviceToUpdate.Price = model.Price;
-                serviceToUpdate.PricingUnit = model.PricingUnit;
+                serviceToUpdate.PricingUnit = model.PricingUnit ?? string.Empty;
+                serviceToUpdate.IsNegotiable = model.IsNegotiable;
 
                 // Save all changes to Firestore
                 await _firestoreService.UpdateProviderServiceAsync(serviceToUpdate);

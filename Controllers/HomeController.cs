@@ -35,13 +35,26 @@ namespace LocalScout.Controllers
             // 1. Fetch all active service categories
             var categories = await _firestoreService.GetAllCategoriesAsync();
 
-            // 2. Fetch a batch of the latest services to feature
-            var latestServices = await _firestoreService.GetRandomServicesAsync(6); // Get 6 services
+            // --- NEW LOGIC START ---
+
+            // 2. Create a set of active category IDs for efficient filtering
+            var activeCategoryIds = new HashSet<string>(categories.Select(c => c.Id));
+
+            // 3. Fetch a batch of random services to feature
+            var latestServices = await _firestoreService.GetRandomServicesAsync(12); // Fetch more to ensure we get enough after filtering
+
+            // 4. Filter the services to include only those from active categories
+            var activeLatestServices = latestServices
+                .Where(s => activeCategoryIds.Contains(s.ServiceCategoryId))
+                .Take(6) // Take the final number of services you want to show
+                .ToList();
+
+            // --- NEW LOGIC END ---
 
             var featuredServiceCards = new List<ServiceCardViewModel>();
 
-            // 3. For each service, get its provider's details and build a ServiceCardViewModel
-            foreach (var service in latestServices)
+            // 5. For each ACTIVE service, get its provider's details and build a ServiceCardViewModel
+            foreach (var service in activeLatestServices) // <-- Use the filtered list here
             {
                 var provider = await _userManager.FindByIdAsync(service.ProviderId);
                 if (provider != null)
@@ -52,7 +65,8 @@ namespace LocalScout.Controllers
                         ServiceName = service.ServiceName,
                         Price = service.Price,
                         PricingUnit = service.PricingUnit,
-                        PrimaryImageUrl = service.ImageUrls.FirstOrDefault(), // Get the first image as the primary one
+                        IsNegotiable = service.IsNegotiable,
+                        PrimaryImageUrl = service.ImageUrls.FirstOrDefault(),
                         ProviderBusinessName = provider.BusinessName ?? "N/A",
                         ProviderProfilePictureUrl = provider.ProfilePictureUrl,
                         Location = provider.BusinessAddress,
@@ -63,14 +77,14 @@ namespace LocalScout.Controllers
                 }
             }
 
-            // 4. Package everything up in our HomeViewModel
+            // 6. Package everything up in our HomeViewModel
             var viewModel = new HomeViewModel
             {
                 Categories = categories,
                 FeaturedServices = featuredServiceCards
             };
 
-            // 5. Pass the complete ViewModel to the view
+            // 7. Pass the complete ViewModel to the view
             return View(viewModel);
         }
 
@@ -94,6 +108,7 @@ namespace LocalScout.Controllers
                         ServiceName = service.ServiceName,
                         Price = service.Price,
                         PricingUnit = service.PricingUnit,
+                        IsNegotiable = service.IsNegotiable,
                         PrimaryImageUrl = service.ImageUrls.FirstOrDefault(),
                         ProviderBusinessName = provider.BusinessName ?? "N/A",
                         ProviderProfilePictureUrl = provider.ProfilePictureUrl,
@@ -143,6 +158,7 @@ namespace LocalScout.Controllers
                         ServiceName = service.ServiceName,
                         Price = service.Price,
                         PricingUnit = service.PricingUnit,
+                        IsNegotiable = service.IsNegotiable,
                         PrimaryImageUrl = service.ImageUrls.FirstOrDefault(),
                         ProviderBusinessName = provider.BusinessName ?? "N/A",
                         ProviderProfilePictureUrl = provider.ProfilePictureUrl,

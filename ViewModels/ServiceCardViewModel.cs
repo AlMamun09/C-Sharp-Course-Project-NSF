@@ -11,6 +11,10 @@ namespace LocalScout.ViewModels
         public string? ProviderProfilePictureUrl { get; set; }
         public string? Location { get; set; } // Will hold the BusinessAddress
         public string? BusinessHours { get; set; }
+
+        // --- ADD THIS LINE ---
+        public bool IsNegotiable { get; set; } // To indicate if the price is negotiable
+
         public DateTimeOffset JoinedDate { get; set; } // To show when the provider registered
     }
 }

@@ -13,8 +13,7 @@
     <div class="col-md-8">
         <form asp-action="EditService" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-            @* Hidden field to keep track of the service ID *@
+            
             <input type="hidden" asp-for="Id" />
 
             <div class="form-group mb-3">
@@ -23,16 +22,23 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
-            <div class="row">
-                <div class="col-md-6 form-group mb-3">
-                    <label asp-for="Price" class="control-label"></label>
-                    <input asp-for="Price" class="form-control" />
-                    <span asp-validation-for="Price" class="text-danger"></span>
-                </div>
-                <div class="col-md-6 form-group mb-3">
-                    <label asp-for="PricingUnit" class="control-label"></label>
-                    <input asp-for="PricingUnit" class="form-control" />
-                    <span asp-validation-for="PricingUnit" class="text-danger"></span>
+            <div class="form-group form-check mb-3">
+                <input class="form-check-input" asp-for="IsNegotiable" />
+                <label class="form-check-label" asp-for="IsNegotiable"></label>
+            </div>
+
+            <div id="price-container">
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="Price" class="control-label"></label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="PricingUnit" class="control-label"></label>
+                        <input asp-for="PricingUnit" class="form-control" />
+                        <span asp-validation-for="PricingUnit" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
 
@@ -45,9 +51,7 @@
                         {
                             <div class="col-md-3 mb-3 position-relative">
                                 <img src="@imageUrl" class="img-fluid rounded" alt="Gallery Image" />
-                                <button type="button"
-                                    class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 remove-image-btn"
-                                    data-url="@imageUrl">X</button>
+                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 remove-image-btn" data-url="@imageUrl">X</button>
                             </div>
                         }
                     </div>
@@ -56,7 +60,6 @@
                 {
                     <p class="text-muted">No gallery images have been uploaded for this service yet.</p>
                 }
-                <!-- This hidden div will hold the URLs of images to delete -->
                 <div id="images-to-delete-container"></div>
             </div>
 
@@ -66,7 +69,7 @@
                 <small class="form-text text-muted">You can select multiple new images to add to your gallery.</small>
                 <span asp-validation-for="NewGalleryImages" class="text-danger"></span>
             </div>
-
+            
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Save Changes</button>
                 <a asp-action="MyServices" class="btn btn-secondary">Cancel</a>
@@ -78,23 +81,31 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const deleteContainer = document.getElementById('images-to-delete-container');
+            // --- Logic for the "Negotiable" checkbox ---
+            const isNegotiableCheckbox = document.getElementById('IsNegotiable');
+            const priceContainer = document.getElementById('price-container');
 
+            function togglePriceFields() {
+                if (isNegotiableCheckbox.checked) {
+                    priceContainer.style.display = 'none';
+                } else {
+                    priceContainer.style.display = 'block';
+                }
+            }
+            togglePriceFields();
+            isNegotiableCheckbox.addEventListener('change', togglePriceFields);
+
+            // --- Logic for removing images ---
+            const deleteContainer = document.getElementById('images-to-delete-container');
             document.querySelectorAll('.remove-image-btn').forEach(button => {
                 button.addEventListener('click', function () {
                     const imageUrl = this.getAttribute('data-url');
                     const imageContainer = this.parentElement;
-
-                    // Create a hidden input to hold the URL
                     const hiddenInput = document.createElement('input');
                     hiddenInput.type = 'hidden';
                     hiddenInput.name = 'ImagesToDelete';
                     hiddenInput.value = imageUrl;
-
-                    // Add the hidden input to our container
                     deleteContainer.appendChild(hiddenInput);
-
-                    // Visually remove the image from the page
                     imageContainer.style.display = 'none';
                 });
             });
