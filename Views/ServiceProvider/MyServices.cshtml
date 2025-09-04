@@ -32,7 +32,16 @@ else
             {
                 <tr>
                     <td>@service.ServiceName</td>
-                    <td>TK @service.Price @service.PricingUnit</td>
+                    <td>
+                        @if (service.IsNegotiable)
+                        {
+                            <span>Negotiable</span>
+                        }
+                        else
+                        {
+                            <span>TK @service.Price / @service.PricingUnit</span>
+                        }
+                    </td>
                     <td class="d-flex align-items-center">
                         <a asp-action="ServiceDetails" asp-route-id="@service.Id" class="btn btn-sm btn-info">Details</a>
                         <span class="mx-2">|</span>

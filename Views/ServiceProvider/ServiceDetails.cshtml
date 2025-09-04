@@ -19,13 +19,20 @@
         <p>@Model.Description</p>
 
         <h4 class="mt-4">Pricing</h4>
-        <dl class="row">
-            <dt class="col-sm-3">Rate</dt>
-            <dd class="col-sm-9">$@Model.Price</dd>
+        @if (Model.IsNegotiable)
+        {
+            <p>The price for this service is negotiable.</p>
+        }
+        else
+        {
+            <dl class="row">
+                <dt class="col-sm-3">Rate</dt>
+                <dd class="col-sm-9">TK @Model.Price</dd>
 
-            <dt class="col-sm-3">Unit</dt>
-            <dd class="col-sm-9">@Model.PricingUnit</dd>
-        </dl>
+                <dt class="col-sm-3">Unit</dt>
+                <dd class="col-sm-9">@Model.PricingUnit</dd>
+            </dl>
+        }
     </div>
 </div>
 
