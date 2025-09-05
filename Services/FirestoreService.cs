@@ -1,5 +1,6 @@
 using Google.Cloud.Firestore;
 using LocalScout.Models;
+using LocalScout.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace LocalScout.Services
         private const string ProviderServicesCollection = "providerServices"; // New collection name
         private const string CategoryRequestsCollection = "serviceCategoryRequests";
         private const string NotificationsCollection = "notifications";
+        private const string BookingsCollection = "bookings";
 
         public FirestoreService()
         {
@@ -283,6 +285,176 @@ namespace LocalScout.Services
                 services.Add(document.ConvertTo<ProviderService>());
             }
             return services;
+        }
+
+        // --- PAGINATION METHODS ---
+
+        // Method for category and latest services (uses cursor pagination)
+        public async Task<PaginatedServiceResult> GetServicesPaginatedAsync(string? categoryId, int pageSize, string? lastDocumentId)
+        {
+            Query query = _db.Collection(ProviderServicesCollection);
+
+            // Apply category filter if provided
+            if (!string.IsNullOrEmpty(categoryId))
+            {
+                query = query.WhereEqualTo("serviceCategoryId", categoryId);
+            }
+
+            // Always order by creation date to have a consistent order for pagination
+            query = query.OrderByDescending("createdAt");
+
+            // If lastDocumentId is provided, start the new query after that document
+            if (!string.IsNullOrEmpty(lastDocumentId))
+            {
+                DocumentSnapshot lastDocument = await _db.Collection(ProviderServicesCollection).Document(lastDocumentId).GetSnapshotAsync();
+                if (lastDocument.Exists)
+                {
+                    query = query.StartAfter(lastDocument);
+                }
+            }
+
+            // We fetch one more than the page size to check if there are more pages
+            query = query.Limit(pageSize + 1);
+            QuerySnapshot snapshot = await query.GetSnapshotAsync();
+
+            var services = new List<ProviderService>();
+            foreach (var document in snapshot.Documents)
+            {
+                services.Add(document.ConvertTo<ProviderService>());
+            }
+
+            string? newLastDocumentId = null;
+            bool hasMore = services.Count > pageSize;
+
+            // If we have more services than the page size, remove the extra one
+            if (hasMore)
+            {
+                services.RemoveAt(pageSize);
+                newLastDocumentId = services.LastOrDefault()?.Id;
+            }
+
+            return new PaginatedServiceResult
+            {
+                Services = services,
+                LastDocumentId = newLastDocumentId,
+                HasMorePages = hasMore
+            };
+        }
+
+
+        // Method for search (uses in-memory pagination)
+        public async Task<PaginatedServiceResult> SearchServicesPaginatedAsync(string? query, int pageSize, int pageNumber)
+        {
+            // NOTE: This search fetches all documents first, then filters in C#.
+            // For a large-scale app, a dedicated search service like Algolia is better.
+            // For this project, this is a perfectly functional approach.
+            CollectionReference collectionRef = _db.Collection(ProviderServicesCollection);
+            QuerySnapshot snapshot = await collectionRef.GetSnapshotAsync();
+
+            List<ProviderService> allServices = snapshot.Documents.Select(doc => doc.ConvertTo<ProviderService>()).ToList();
+
+            List<ProviderService> filteredServices;
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                filteredServices = allServices;
+            }
+            else
+            {
+                string lowerCaseQuery = query.ToLower();
+                filteredServices = allServices
+                    .Where(s => s.ServiceName.ToLower().Contains(lowerCaseQuery) ||
+                                s.Description.ToLower().Contains(lowerCaseQuery))
+                    .ToList();
+            }
+
+            // Apply pagination to the filtered list
+            var paginatedServices = filteredServices.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            bool hasMore = filteredServices.Count > pageNumber * pageSize;
+
+            return new PaginatedServiceResult
+            {
+                Services = paginatedServices,
+                HasMorePages = hasMore,
+                LastDocumentId = null // Not used for this pagination type
+            };
+        }
+
+        // --- BOOKING MANAGEMENT METHODS ---
+
+        // Creates a new booking document in Firestore
+        public async Task<string> CreateBookingAsync(Booking booking)
+        {
+            DocumentReference docRef = await _db.Collection(BookingsCollection).AddAsync(booking);
+            return docRef.Id;
+        }
+
+        // Gets a single booking by its ID
+        public async Task<Booking?> GetBookingByIdAsync(string bookingId)
+        {
+            DocumentReference docRef = _db.Collection(BookingsCollection).Document(bookingId);
+            DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
+            if (snapshot.Exists)
+            {
+                return snapshot.ConvertTo<Booking>();
+            }
+            return null;
+        }
+
+        // Gets all bookings for a specific customer
+        public async Task<List<Booking>> GetBookingsForUserAsync(string customerId)
+        {
+            Query query = _db.Collection(BookingsCollection)
+                .WhereEqualTo("customerId", customerId)
+                .OrderByDescending("createdAt");
+            QuerySnapshot snapshot = await query.GetSnapshotAsync();
+            return snapshot.Documents.Select(doc => doc.ConvertTo<Booking>()).ToList();
+        }
+
+        // Gets all bookings for a specific provider
+        public async Task<List<Booking>> GetBookingsForProviderAsync(string providerId)
+        {
+            Query query = _db.Collection(BookingsCollection)
+                .WhereEqualTo("providerId", providerId)
+                .OrderByDescending("createdAt");
+            QuerySnapshot snapshot = await query.GetSnapshotAsync();
+            return snapshot.Documents.Select(doc => doc.ConvertTo<Booking>()).ToList();
+        }
+
+        // A flexible method to update a booking's status and optionally add a reason
+        public async Task UpdateBookingAsync(string bookingId, Dictionary<string, object> updates)
+        {
+            DocumentReference docRef = _db.Collection(BookingsCollection).Document(bookingId);
+            await docRef.UpdateAsync(updates);
+        }
+
+
+        // Calculates booking statistics for a specific user
+        public async Task<BookingStatsViewModel> GetBookingStatsForUserAsync(string customerId)
+        {
+            Query query = _db.Collection(BookingsCollection).WhereEqualTo("customerId", customerId);
+            QuerySnapshot snapshot = await query.GetSnapshotAsync();
+
+            var stats = new BookingStatsViewModel();
+            stats.TotalRequested = snapshot.Count;
+
+            foreach (var document in snapshot.Documents)
+            {
+                var booking = document.ConvertTo<Booking>();
+                switch (booking.Status)
+                {
+                    case "Confirmed":
+                        stats.TotalConfirmed++;
+                        break;
+                    case "Completed":
+                        stats.TotalConfirmed++; // A completed booking was also confirmed
+                        stats.TotalCompleted++;
+                        break;
+                    case "CanceledByUser":
+                        stats.TotalCanceled++;
+                        break;
+                }
+            }
+            return stats;
         }
 
     }

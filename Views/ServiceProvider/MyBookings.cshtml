@@ -1,0 +1,147 @@
+@model List<LocalScout.ViewModels.BookingDetailsViewModel>
+@{
+    ViewData["Title"] = "Manage My Bookings";
+}
+
+<!-- Non-Scrolling Header Section -->
+<div class="admin-content-header">
+    <h1>@ViewData["Title"]</h1>
+    <p class="lead mb-0">Review and manage all incoming booking requests for your services.</p>
+</div>
+
+<!-- Scrollable Main Content Section -->
+<div class="admin-content-main">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <h4>No bookings to display.</h4>
+            <p>You have not received any booking requests yet.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row mt-3">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <img src="@(item.CustomerProfilePictureUrl ?? "https://placehold.co/80x80/eee/ccc?text=User")"
+                                         class="img-fluid rounded-circle" style="width: 80px; height: 80px; object-fit: cover;" alt="@item.ProviderBusinessName">
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="card-title mb-2">@item.ServiceName</h5>
+                                        <small class="text-muted">@item.Booking.CreatedAt.ToDateTime().ToString("MMM dd")</small>
+                                    </div>
+                                    <h6 class="card-text mb-1">
+                                        <strong>By:</strong> 
+                                        <a asp-controller="Dashboard" asp-action="MyProfile" asp-route-id="@item.Booking.CustomerId">
+                                            @item.ProviderBusinessName
+                                        </a>
+                                    </h6>
+                                    <p class="card-text mb-1">
+                                        <strong>For:</strong> @item.Booking.BookingDate.ToDateTime().ToString("MMM dd, yyyy 'at' h:mm tt")
+                                    </p>
+                                    <p class="card-text mb-1">
+                                        <strong>Price:</strong>
+                                        @if (item.Booking.IsNegotiable)
+                                        {
+                                            <span class="badge bg-secondary">Negotiable</span>
+                                        }
+                                        else
+                                        {
+                                            <span>TK @item.Booking.TotalPrice</span>
+                                        }
+                                    </p>
+                                    @if (!string.IsNullOrEmpty(item.Booking.CustomerNotes))
+                                    {
+                                        <p class="card-text fst-italic text-muted small mt-2">
+                                            <strong>Notes:</strong> "@item.Booking.CustomerNotes"
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+                             @{
+                                var status = item.Booking.Status;
+                                string badgeClass = "bg-secondary";
+                                string statusText = status;
+
+                                switch (status)
+                                {
+                                    case "PendingApproval":
+                                        badgeClass = "bg-warning text-dark";
+                                        statusText = "Pending";
+                                        break;
+                                    case "Approved":
+                                        badgeClass = "bg-info text-dark";
+                                        statusText = "Approved";
+                                        break;
+                                    case "Confirmed":
+                                        badgeClass = "bg-success";
+                                        statusText = "Confirmed";
+                                        break;
+                                    case "Completed":
+                                        badgeClass = "bg-primary";
+                                        break;
+                                    case "CanceledByUser":
+                                        badgeClass = "bg-danger";
+                                        statusText = "Canceled";
+                                        break;
+                                    case "Rejected":
+                                        badgeClass = "bg-dark";
+                                        statusText = "Rejected";
+                                        break;
+                                }
+                                <span class="badge @badgeClass">@statusText</span>
+                            }
+                            <div>
+                                @if (status == "PendingApproval")
+                                {
+                                    <form asp-controller="Booking" asp-action="ApproveBooking" method="post" class="d-inline">
+                                        <input type="hidden" name="bookingId" value="@item.Booking.Id" />
+                                        <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                    </form>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectModal-@item.Booking.Id">
+                                        Reject
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rejection Modal for this specific booking -->
+                <div class="modal fade" id="rejectModal-@item.Booking.Id" tabindex="-1" aria-labelledby="rejectModalLabel-@item.Booking.Id" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form asp-controller="Booking" asp-action="RejectBooking" method="post">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="rejectModalLabel-@item.Booking.Id">Reject Booking</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>You are rejecting the booking for <strong>@item.ServiceName</strong> requested by <strong>@item.ProviderBusinessName</strong>.</p>
+                                    <input type="hidden" name="bookingId" value="@item.Booking.Id" />
+                                    <div class="form-group">
+                                        <label for="rejectionReason-@item.Booking.Id" class="form-label">Reason for Rejection (Optional):</label>
+                                        <textarea name="reason" id="rejectionReason-@item.Booking.Id" class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-danger">Confirm Rejection</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+

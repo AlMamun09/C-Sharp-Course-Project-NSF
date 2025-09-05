@@ -415,6 +415,41 @@ namespace LocalScout.Controllers
             return RedirectToAction("MyServices");
         }
 
+        // --- NEW ACTION FOR PROVIDER BOOKING MANAGEMENT ---
+        [HttpGet]
+        public async Task<IActionResult> MyBookings()
+        {
+            var providerId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(providerId))
+            {
+                return Challenge();
+            }
+
+            var bookings = await _firestoreService.GetBookingsForProviderAsync(providerId);
+
+            var bookingViewModels = new List<BookingDetailsViewModel>();
+
+            foreach (var booking in bookings)
+            {
+                var customer = await _userManager.FindByIdAsync(booking.CustomerId);
+                var service = await _firestoreService.GetProviderServiceByIdAsync(booking.ServiceId);
+
+                if (customer != null && service != null)
+                {
+                    bookingViewModels.Add(new BookingDetailsViewModel
+                    {
+                        Booking = booking,
+                        // NOTE: We are reusing the ViewModel. Here, "ProviderBusinessName" will hold the CUSTOMER's name for display purposes.
+                        ProviderBusinessName = $"{customer.FirstName} {customer.LastName}",
+                        ServiceName = service.ServiceName,
+                        ServicePrimaryImageUrl = service.ImageUrls.FirstOrDefault(),
+                        CustomerProfilePictureUrl = customer.ProfilePictureUrl 
+                    });
+                }
+            }
+
+            return View(bookingViewModels);
+        }
 
     }
 }

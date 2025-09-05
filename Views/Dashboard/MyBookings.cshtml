@@ -1,0 +1,100 @@
+@model List<LocalScout.ViewModels.BookingDetailsViewModel>
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<!-- Non-Scrolling Header Section -->
+<div class="admin-content-header">
+    <h1>@ViewData["Title"]</h1>
+    <p class="lead mb-0">Here is a history of all the services you have requested.</p>
+</div>
+
+<!-- Scrollable Main Content Section -->
+<div class="admin-content-main">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <h4>You haven't booked any services yet.</h4>
+            <p>Browse our services to get started.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">
+                <i class="fa-solid fa-magnifying-glass me-2"></i> Find Services
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row mt-3">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <img src="@(item.ServicePrimaryImageUrl ?? "https://placehold.co/100x100/eee/ccc?text=Service")"
+                                         class="img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;" alt="@item.Booking.ServiceName">
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5 class="card-title">@item.Booking.ServiceName</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">with @item.ProviderBusinessName</h6>
+                                    <p class="card-text mb-1">
+                                        <small><strong>For:</strong> @item.Booking.BookingDate.ToDateTime().ToString("f")</small>
+                                    </p>
+                                    <p class="card-text">
+                                        <small><strong>Price:</strong> TK @item.Booking.TotalPrice</small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+                            @{
+                                var status = item.Booking.Status;
+                                string badgeClass = "bg-secondary";
+                                string statusText = status;
+
+                                switch (status)
+                                {
+                                    case "PendingApproval":
+                                        badgeClass = "bg-warning text-dark";
+                                        statusText = "Pending";
+                                        break;
+                                    case "Approved":
+                                        badgeClass = "bg-info text-dark";
+                                        statusText = "Awaiting Payment";
+                                        break;
+                                    case "Confirmed":
+                                        badgeClass = "bg-success";
+                                        statusText = "Confirmed";
+                                        break;
+                                    case "Completed":
+                                        badgeClass = "bg-primary";
+                                        break;
+                                    case "CanceledByUser":
+                                        badgeClass = "bg-danger";
+                                        statusText = "Canceled";
+                                        break;
+                                    case "Rejected":
+                                        badgeClass = "bg-danger";
+                                        statusText = "Rejected";
+                                        break;
+                                }
+                                <span class="badge @badgeClass">@statusText</span>
+                            }
+                            <div>
+                                @if (status == "Approved")
+                                {
+                                    <a href="#" class="btn btn-sm btn-success">Pay Now</a>
+                                }
+                                @if (status == "PendingApproval" || status == "Approved" || status == "Confirmed")
+                                {
+                                    <a href="#" class="btn btn-sm btn-outline-danger">Cancel</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+

@@ -6,7 +6,6 @@ using LocalScout.Models;
 using LocalScout.Services;
 using LocalScout.ViewModels;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,8 +16,8 @@ namespace LocalScout.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly FirestoreService _firestoreService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private const int PageSize = 6;
 
-        // Updated constructor to include all necessary services
         public HomeController(
             ILogger<HomeController> logger,
             FirestoreService firestoreService,
@@ -29,130 +28,183 @@ namespace LocalScout.Controllers
             _userManager = userManager;
         }
 
-        // This is the new, powerful Index action for our homepage
+        // --- INITIAL PAGE LOAD ACTIONS ---
+
         public async Task<IActionResult> Index()
         {
-            // 1. Fetch all active service categories
             var categories = await _firestoreService.GetAllCategoriesAsync();
-
-            // --- NEW LOGIC START ---
-
-            // 2. Create a set of active category IDs for efficient filtering
             var activeCategoryIds = new HashSet<string>(categories.Select(c => c.Id));
 
-            // 3. Fetch a batch of random services to feature
-            var latestServices = await _firestoreService.GetRandomServicesAsync(12); // Fetch more to ensure we get enough after filtering
+            // --- NEW LOOPING LOGIC TO ENSURE A FULL PAGE OF ACTIVE SERVICES ---
+            var activeServices = new List<ProviderService>();
+            string? lastDocId = null;
+            bool hasMoreData = true;
 
-            // 4. Filter the services to include only those from active categories
-            var activeLatestServices = latestServices
-                .Where(s => activeCategoryIds.Contains(s.ServiceCategoryId))
-                .Take(6) // Take the final number of services you want to show
-                .ToList();
-
-            // --- NEW LOGIC END ---
-
-            var featuredServiceCards = new List<ServiceCardViewModel>();
-
-            // 5. For each ACTIVE service, get its provider's details and build a ServiceCardViewModel
-            foreach (var service in activeLatestServices) // <-- Use the filtered list here
+            while (activeServices.Count < PageSize && hasMoreData)
             {
-                var provider = await _userManager.FindByIdAsync(service.ProviderId);
-                if (provider != null)
-                {
-                    var card = new ServiceCardViewModel
-                    {
-                        ServiceId = service.Id,
-                        ServiceName = service.ServiceName,
-                        Price = service.Price,
-                        PricingUnit = service.PricingUnit,
-                        IsNegotiable = service.IsNegotiable,
-                        PrimaryImageUrl = service.ImageUrls.FirstOrDefault(),
-                        ProviderBusinessName = provider.BusinessName ?? "N/A",
-                        ProviderProfilePictureUrl = provider.ProfilePictureUrl,
-                        Location = provider.BusinessAddress,
-                        BusinessHours = provider.BusinessHours,
-                        JoinedDate = provider.CreatedAt
-                    };
-                    featuredServiceCards.Add(card);
-                }
+                var paginatedResult = await _firestoreService.GetServicesPaginatedAsync(null, PageSize, lastDocId);
+
+                var filteredPage = paginatedResult.Services
+                    .Where(s => activeCategoryIds.Contains(s.ServiceCategoryId))
+                    .ToList();
+
+                activeServices.AddRange(filteredPage);
+
+                lastDocId = paginatedResult.LastDocumentId;
+                hasMoreData = paginatedResult.HasMorePages;
             }
 
-            // 6. Package everything up in our HomeViewModel
+            var servicesToShow = activeServices.Take(PageSize).ToList();
+            string? nextLastDocumentId = servicesToShow.Count > 0 ? servicesToShow.Last().Id : null;
+            bool hasMorePages = activeServices.Count > PageSize || hasMoreData;
+            // --- END NEW LOGIC ---
+
+            var featuredServiceCards = await MapServicesToCards(servicesToShow);
+
+            ViewBag.HasMorePages = hasMorePages;
+            ViewBag.LastDocumentId = nextLastDocumentId;
+
             var viewModel = new HomeViewModel
             {
                 Categories = categories,
                 FeaturedServices = featuredServiceCards
             };
 
-            // 7. Pass the complete ViewModel to the view
             return View(viewModel);
         }
 
-        // This action handles the search form submission
         public async Task<IActionResult> Search(string query)
         {
-            // 1. Use our service to find all services matching the query
-            var matchingServices = await _firestoreService.SearchServicesAsync(query);
+            var categories = await _firestoreService.GetAllCategoriesAsync();
+            var activeCategoryIds = new HashSet<string>(categories.Select(c => c.Id));
 
-            var resultCards = new List<ServiceCardViewModel>();
+            var paginatedResult = await _firestoreService.SearchServicesPaginatedAsync(query, PageSize, 1);
 
-            // 2. For each matching service, get its provider's details
-            foreach (var service in matchingServices)
-            {
-                var provider = await _userManager.FindByIdAsync(service.ProviderId);
-                if (provider != null)
-                {
-                    var card = new ServiceCardViewModel
-                    {
-                        ServiceId = service.Id,
-                        ServiceName = service.ServiceName,
-                        Price = service.Price,
-                        PricingUnit = service.PricingUnit,
-                        IsNegotiable = service.IsNegotiable,
-                        PrimaryImageUrl = service.ImageUrls.FirstOrDefault(),
-                        ProviderBusinessName = provider.BusinessName ?? "N/A",
-                        ProviderProfilePictureUrl = provider.ProfilePictureUrl,
-                        Location = provider.BusinessAddress,
-                        BusinessHours = provider.BusinessHours,
-                        JoinedDate = provider.CreatedAt
-                    };
-                    resultCards.Add(card);
-                }
-            }
+            // Filter search results to only include those from active categories
+            var activeServices = paginatedResult.Services
+                .Where(s => activeCategoryIds.Contains(s.ServiceCategoryId))
+                .ToList();
 
-            // 3. Package the query and the results into our new ViewModel
+            var resultCards = await MapServicesToCards(activeServices);
+
+            ViewBag.HasMorePages = paginatedResult.HasMorePages;
+            ViewBag.CurrentPage = 1;
+
             var viewModel = new SearchResultsViewModel
             {
                 Query = query,
                 Results = resultCards
             };
 
-            // 4. Pass the ViewModel to a new "Search" view
             return View(viewModel);
         }
 
-        // This action shows all services for a given category
         public async Task<IActionResult> ServicesByCategory(string id)
         {
-            // 1. Get the details of the category that was clicked
+            // This action is implicitly safe, because a user can only get here
+            // by clicking a category from the homepage, and we only show active categories there.
             var category = await _firestoreService.GetCategoryByIdAsync(id);
-            if (category == null)
+            if (category == null || !category.IsActive)
             {
                 return NotFound();
             }
 
-            // 2. Use our new service method to find all services in this category
-            var servicesInCategory = await _firestoreService.GetServicesByCategoryIdAsync(id);
+            var paginatedResult = await _firestoreService.GetServicesPaginatedAsync(id, PageSize, null);
+            var serviceCards = await MapServicesToCards(paginatedResult.Services);
 
+            ViewBag.HasMorePages = paginatedResult.HasMorePages;
+            ViewBag.LastDocumentId = paginatedResult.LastDocumentId;
+
+            var viewModel = new CategoryServicesViewModel
+            {
+                CategoryName = category.Name,
+                Services = serviceCards
+            };
+
+            return View(viewModel);
+        }
+
+        // --- AJAX ENDPOINTS FOR "LOAD MORE" ---
+
+        [HttpGet]
+        public async Task<IActionResult> LoadMoreIndexServices(string? lastDocumentId)
+        {
+            var categories = await _firestoreService.GetAllCategoriesAsync();
+            var activeCategoryIds = new HashSet<string>(categories.Select(c => c.Id));
+
+            var activeServices = new List<ProviderService>();
+            string? lastDocId = lastDocumentId;
+            bool hasMoreData = true;
+
+            while (activeServices.Count < PageSize && hasMoreData)
+            {
+                var paginatedResult = await _firestoreService.GetServicesPaginatedAsync(null, PageSize, lastDocId);
+                var filteredPage = paginatedResult.Services
+                    .Where(s => activeCategoryIds.Contains(s.ServiceCategoryId))
+                    .ToList();
+                activeServices.AddRange(filteredPage);
+                lastDocId = paginatedResult.LastDocumentId;
+                hasMoreData = paginatedResult.HasMorePages;
+            }
+
+            var servicesToShow = activeServices.Take(PageSize).ToList();
+            string? nextLastDocumentId = servicesToShow.Count > 0 ? servicesToShow.Last().Id : null;
+            bool hasMorePages = activeServices.Count > PageSize || hasMoreData;
+
+            var serviceCards = await MapServicesToCards(servicesToShow);
+
+            // Send final pagination data back in headers
+            Response.Headers.Append("X-Has-More-Pages", hasMorePages.ToString());
+            Response.Headers.Append("X-Last-Document-Id", nextLastDocumentId ?? "");
+
+            return PartialView("_ServiceGridPartial", serviceCards);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LoadMoreCategoryServices(string categoryId, string? lastDocumentId)
+        {
+            var paginatedResult = await _firestoreService.GetServicesPaginatedAsync(categoryId, PageSize, lastDocumentId);
+            var serviceCards = await MapServicesToCards(paginatedResult.Services);
+
+            // This action is simple because the category is already active
+            Response.Headers.Append("X-Has-More-Pages", paginatedResult.HasMorePages.ToString());
+            Response.Headers.Append("X-Last-Document-Id", paginatedResult.LastDocumentId ?? "");
+
+            return PartialView("_ServiceGridPartial", serviceCards);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LoadMoreSearchResults(string query, int pageNumber)
+        {
+            var categories = await _firestoreService.GetAllCategoriesAsync();
+            var activeCategoryIds = new HashSet<string>(categories.Select(c => c.Id));
+
+            var paginatedResult = await _firestoreService.SearchServicesPaginatedAsync(query, PageSize, pageNumber);
+
+            var activeServices = paginatedResult.Services
+                .Where(s => activeCategoryIds.Contains(s.ServiceCategoryId))
+                .ToList();
+
+            var resultCards = await MapServicesToCards(activeServices);
+
+            // This check for "hasMore" is against the original paginated result
+            Response.Headers.Append("X-Has-More-Pages", paginatedResult.HasMorePages.ToString());
+
+            return PartialView("_ServiceGridPartial", resultCards);
+        }
+
+
+        // --- HELPER METHOD ---
+        // (This method is unchanged)
+        private async Task<List<ServiceCardViewModel>> MapServicesToCards(List<ProviderService> services)
+        {
             var serviceCards = new List<ServiceCardViewModel>();
-
-            // 3. For each service, get its provider's details and build a ServiceCardViewModel
-            foreach (var service in servicesInCategory)
+            foreach (var service in services)
             {
                 var provider = await _userManager.FindByIdAsync(service.ProviderId);
                 if (provider != null)
                 {
-                    var card = new ServiceCardViewModel
+                    serviceCards.Add(new ServiceCardViewModel
                     {
                         ServiceId = service.Id,
                         ServiceName = service.ServiceName,
@@ -165,52 +217,28 @@ namespace LocalScout.Controllers
                         Location = provider.BusinessAddress,
                         BusinessHours = provider.BusinessHours,
                         JoinedDate = provider.CreatedAt
-                    };
-                    serviceCards.Add(card);
+                    });
                 }
             }
-
-            // 4. Package the category name and the results into our new ViewModel
-            var viewModel = new CategoryServicesViewModel
-            {
-                CategoryName = category.Name,
-                Services = serviceCards
-            };
-
-            // 5. Pass the ViewModel to a new "ServicesByCategory" view
-            return View(viewModel);
+            return serviceCards;
         }
 
+        // --- Other existing actions (ServiceDetails, Privacy, Error) ---
+        // (No changes needed for these methods)
         public async Task<IActionResult> ServiceDetails(string id)
         {
-            // 1. Fetch the main service the user clicked on
             var mainService = await _firestoreService.GetProviderServiceByIdAsync(id);
-            if (mainService == null)
-            {
-                return NotFound();
-            }
-
-            // 2. Fetch the provider's details using the ID from the service
+            if (mainService == null) return NotFound();
             var provider = await _userManager.FindByIdAsync(mainService.ProviderId);
-            if (provider == null)
-            {
-                return NotFound();
-            }
-
-            // 3. Fetch ALL services offered by this provider
+            if (provider == null) return NotFound();
             var allProviderServices = await _firestoreService.GetServicesByProviderIdAsync(provider.Id);
-
-            // 4. Create a list of "other" services, excluding the one we're currently viewing
             var otherServices = allProviderServices.Where(s => s.Id != id).ToList();
-
-            // 5. Package everything into our new ViewModel
             var viewModel = new ServiceDetailsViewModel
             {
                 MainService = mainService,
                 Provider = provider,
                 OtherServices = otherServices
             };
-
             return View(viewModel);
         }
 
@@ -222,7 +250,7 @@ namespace LocalScout.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel { RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

@@ -15,50 +15,48 @@
 
 ---
 
-## 🚀 Features Implemented (As of September 5, 2025)
+## 🚀 Core Features & Functionality (As of September 6, 2025)
+
+### ✅ Unified Dashboard Experience
+- **Consistent UI/UX**: A professional, fixed-sidebar dashboard layout has been implemented for all user roles (Admin, Service Provider, and User), creating a cohesive and application-like feel.
+- **Role-Based Navigation**: Each dashboard sidebar is tailored with links and actions specific to the user's role.
 
 ### ✅ Administrator Panel
-* **Secure Dashboard**: Access protected via ASP.NET Core Identity roles.
-* **Service Category Management**: Full CRUD functionality for service categories, including image uploads, priority ordering, and the ability to toggle a category's active/inactive status.
-* **Category Request Workflow**: Admins can review, approve, or deny new category suggestions submitted by providers.
-* **User Management**: A comprehensive dashboard with a tabbed interface to view and manage Service Providers and Regular Users separately. Admins can view user details and perform secure deletions that cascade to remove all associated provider data (services, images, etc.).
+- **Secure Dashboard**: Access protected via ASP.NET Core Identity roles.
+- **Service Category Management**: Full CRUD functionality for service categories, including image uploads, priority ordering, and toggling active/inactive status.
+- **Category Request Workflow**: Admins can review, approve, or deny new category suggestions submitted by providers, triggering automated notifications.
+- **User Management**: A comprehensive dashboard with a tabbed interface to view and manage Service Providers and Regular Users separately.
 
 ### ✅ Service Provider Portal
-* **Provider Dashboard**: A central hub displaying the provider's business profile.
-* **Profile Management**: Full CRUD functionality for a provider's business profile, including business name, address, hours, description, and profile picture.
-* **Complete Service Management**: Full CRUD for service listings.
-    * **Image Gallery**: Support for multiple image uploads and deletion of specific images.
-    * **Flexible Pricing**: Services can have a fixed price or be marked as "Negotiable," with the UI and validation logic adapting accordingly.
-* **Interactive Notifications**: An automated toast notification system alerts providers when their category requests are approved or denied.
+- **Profile Management**: Full CRUD functionality for a provider's business profile.
+- **Complete Service Management**: Full CRUD for service listings, including:
+    - **Multi-Image Gallery**: Providers can upload multiple images and delete specific ones.
+    - **Flexible Pricing**: Services can have a fixed price or be marked as "Negotiable".
+- **Booking Management**: Providers can view all incoming booking requests on their dashboard, see customer details (including profile picture), and **Approve** or **Reject** requests.
 
-### ✅ Public User Features
-* **Role-Based Authentication**: A unified registration and login system that intelligently redirects users (Admin, Provider, User) to the correct dashboard.
-* **Interactive Homepage**: A modern landing page featuring a prominent search bar and an auto-scrolling visual category browser.
-* **Service Discovery**: Users can find services by searching, browsing categories, or viewing featured services on the homepage.
-* **Detailed Service Pages**: Each service has a full detail page featuring an **image gallery carousel**, description, provider information, and a list of other services from the same provider.
-* **Modern UI/UX**:
-    * **Custom Branding**: A professional and consistent look and feel with a custom color palette and typography.
-    * **Enhanced Service Cards**: Services are displayed on modern cards showing the service image, provider details (name and picture), provider location, business hours, and join date.
-    * **Toast Notifications**: A non-intrusive toast notification system provides feedback for successful actions.
+### ✅ User Dashboard & Public Pages
+- **Interactive Homepage**: A modern landing page featuring a search bar and an auto-scrolling visual category browser.
+- **AJAX-Powered "Load More"**: Service lists on the homepage, search results, and category pages now load dynamically without a full page refresh.
+- **Booking Workflow**: Users can request a service using a user-friendly date/time picker, see the status of their requests ("Pending Approval", "Approved", etc.) on their "My Bookings" page, and receive notifications.
+- **Profile Management**: Users have a dedicated "My Profile" page to view their details and access actions like editing their profile or upgrading to a provider account.
 
 ---
 
 ## 📌 Future Roadmap
 
-### 💳 PRIORITY 1: Booking & Payment System
-* **Booking Workflow**: Implement a complete system for users to book services from providers.
-* **Stripe Integration**: Integrate Stripe to handle payments for bookings securely.
-* **Booking Management**: Add new sections to the User and Provider dashboards to view and manage upcoming and past bookings.
+### 💳 PRIORITY 1: Complete Booking & Payment System
+- **Implement Customer Actions**: Wire up the "Cancel Booking" functionality for users.
+- **Integrate Stripe**: Implement the "Pay Now" feature for approved bookings using Stripe Checkout.
+- **Complete the Lifecycle**: Add functionality for providers to mark a confirmed booking as "Completed".
+- **Payment Confirmation**: Create success/failure pages for payment redirects and update booking status via Stripe Webhooks.
 
 ### ⭐ PRIORITY 2: Trust & Credibility Features
-* **Ratings & Reviews**: Allow users to leave ratings and written reviews for services they have booked.
-* **Provider Ratings**: Display average provider ratings on service cards and provider profiles.
+- **Ratings & Reviews**: Allow users to leave ratings and written reviews for services they have booked.
+- **Public User Profile**: Build the public-facing user profile page that providers can view, including the user's booking statistics (total requested, confirmed, etc.).
 
 ### 📍 PRIORITY 3: Location-Based Discovery
-* **Core Feature**: Replace the "Featured Services" section with "Your Nearest Services".
-* **Geocoding Integration**: Integrate the **LocationIQ** API to convert user and provider addresses into latitude and longitude coordinates upon registration and profile updates.
-* **Distance-Based Sorting**: All service lists (homepage, search results, category pages) will be sorted by proximity to the logged-in user, from nearest to farthest.
-* **Data Model Update**: The `ApplicationUser` model will be updated to store coordinates.
+- **Geocoding Integration**: Integrate the **LocationIQ** API to convert user and provider addresses into latitude and longitude coordinates.
+- **Distance-Based Sorting**: All service lists will be sorted by proximity to the logged-in user.
 
 ---
 

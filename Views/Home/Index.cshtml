@@ -48,54 +48,20 @@
 <!-- Section 3: Featured Services -->
 <div class="container my-5">
     <h2 class="text-center mb-4">Featured Services</h2>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-        @foreach (var service in Model.FeaturedServices)
-        {
-            <div class="col">
-                <!-- The entire card is now wrapped in a link to the details page -->
-                <a asp-action="ServiceDetails" asp-route-id="@service.ServiceId" class="card-link-wrapper">
-                    <div class="service-card h-100">
-                        <div class="service-card-img-container">
-                            <img src="@(service.PrimaryImageUrl ?? "https://placehold.co/600x400/eee/ccc?text=No+Image")"
-                                class="service-card-img" alt="@service.ServiceName">
-                        </div>
-                        <div class="service-card-body">
-                            <div>
-                                <h5 class="service-card-title">@service.ServiceName</h5>
-                                <div class="service-card-provider">
-                                    <img src="@(service.ProviderProfilePictureUrl ?? "https://placehold.co/40x40/eee/ccc?text=P")"
-                                        class="service-card-provider-img" alt="@service.ProviderBusinessName">
-                                    <span>@service.ProviderBusinessName</span>
-                                </div>
-                                <ul class="list-unstyled text-muted small mt-3">
-                                    <li class="mb-2"><i class="fa-solid fa-calendar-check me-2"></i>Joined
-                                        @service.JoinedDate.ToString("MMM dd, yyyy")</li>
-                                    <li class="mb-2"><i class="fa-solid fa-location-dot me-2"></i>@service.Location</li>
-                                    <li class="mb-2"><i class="fa-solid fa-clock me-2"></i>@service.BusinessHours</li>
-                                </ul>
-                            </div>
-                            <div class="service-card-footer">
-                                <div class="service-card-price">
-                                    @if (service.IsNegotiable)
-                                    {
-                                        <span class="fw-bold">Negotiable</span>
-                                    }
-                                    else
-                                    {
-                                        <span>TK @service.Price</span> <span class="unit">/ @service.PricingUnit</span>
-                                    }
-                                </div>
-                                <!-- The button is now "Book Now" -->
-                                <div class="btn btn-booking">Book Now</div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        }
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4" id="services-grid">
+        <partial name="_ServiceGridPartial" model="Model.FeaturedServices" />
     </div>
-    <div class="text-center mt-4">
-        <button class="btn btn-lg btn-outline-secondary">Load More Services</button>
+
+    <div id="load-more-container" class="text-center mt-4">
+        @if (ViewBag.HasMorePages)
+        {
+            <button id="load-more-btn" class="btn btn-primary" data-next-cursor="@ViewBag.LastDocumentId">
+                Load More
+            </button>
+        }
+        <div id="loading-spinner" class="spinner-border" role="status" style="display: none;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
     </div>
 </div>
 
@@ -103,6 +69,7 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // --- CATEGORY SCROLLER SCRIPT (Your existing code) ---
             const scroller = document.getElementById('category-scroller');
             const scrollLeftBtn = document.getElementById('scroll-left');
             const scrollRightBtn = document.getElementById('scroll-right');
@@ -135,6 +102,42 @@
             scroller.addEventListener('mouseleave', startAutoScroll);
 
             startAutoScroll();
+
+            // --- "LOAD MORE" SCRIPT (The new code) ---
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            if (!loadMoreBtn) return;
+
+            const servicesGrid = document.getElementById('services-grid');
+            const loadingSpinner = document.getElementById('loading-spinner');
+
+            loadMoreBtn.addEventListener('click', async function () {
+                loadingSpinner.style.display = 'block';
+                this.style.display = 'none';
+
+                const nextCursor = this.getAttribute('data-next-cursor');
+                const url = `/Home/LoadMoreIndexServices?lastDocumentId=${nextCursor}`;
+
+                try {
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        const html = await response.text();
+                        servicesGrid.insertAdjacentHTML('beforeend', html);
+
+                        const hasMorePages = response.headers.get('X-Has-More-Pages') === 'True';
+                        const newNextCursor = response.headers.get('X-Last-Document-Id');
+
+                        if (hasMorePages) {
+                            this.setAttribute('data-next-cursor', newNextCursor);
+                            this.style.display = 'block';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error fetching more services:', error);
+                    this.style.display = 'block';
+                } finally {
+                    loadingSpinner.style.display = 'none';
+                }
+            });
         });
     </script>
 }

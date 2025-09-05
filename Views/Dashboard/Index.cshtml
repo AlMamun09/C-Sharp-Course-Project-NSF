@@ -4,24 +4,29 @@
 
 @{
     ViewData["Title"] = "My Dashboard";
+    var user = await UserManager.GetUserAsync(User);
 }
 
-<h1>@ViewData["Title"]</h1>
-
-<p>Welcome to your personal dashboard. From here you can manage your profile and services.</p>
-
-<hr />
-
-<div>
-    <a asp-action="EditUserProfile" class="btn btn-info">Edit My Profile</a>
-
-    @if (User.IsInRole("ServiceProvider"))
-    {
-        <a asp-controller="ServiceProvider" asp-action="Index" class="btn btn-success">Provider Dashboard</a>
-    }
-    else
-    {
-        <a asp-action="BecomeProvider" class="btn btn-primary">Become a Service Provider</a>
-    }
+<!-- Non-Scrolling Header Section -->
+<div class="admin-content-header">
+    <h1>Welcome, @user?.FirstName!</h1>
+    <p class="lead mb-0">Manage your profile and bookings from here.</p>
 </div>
 
+<!-- Scrollable Main Content Section -->
+<div class="admin-content-main">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Quick Actions</h5>
+            <p class="card-text">Here are some quick links to get you started.</p>
+            <div class="d-flex gap-2">
+                <a asp-action="MyBookings" class="btn btn-primary">
+                    <i class="fa-solid fa-calendar-check me-2"></i> View My Bookings
+                </a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fa-solid fa-magnifying-glass me-2"></i> Find New Services
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

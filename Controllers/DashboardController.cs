@@ -5,6 +5,7 @@ using LocalScout.Data;
 using LocalScout.Services;
 using LocalScout.ViewModels;
 using System.Threading.Tasks;
+using LocalScout.Models;
 
 namespace LocalScout.Controllers
 {
@@ -14,12 +15,14 @@ namespace LocalScout.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly CloudinaryService _cloudinaryService;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly FirestoreService _firestoreService;
 
-        public DashboardController(UserManager<ApplicationUser> userManager, CloudinaryService cloudinaryService, SignInManager<ApplicationUser> signInManager)
+        public DashboardController(UserManager<ApplicationUser> userManager, CloudinaryService cloudinaryService, SignInManager<ApplicationUser> signInManager, FirestoreService firestoreService)
         {
             _userManager = userManager;
             _cloudinaryService = cloudinaryService;
             _signInManager = signInManager;
+            _firestoreService = firestoreService;
         }
 
         // This action shows the main dashboard page.
@@ -138,6 +141,51 @@ namespace LocalScout.Controllers
                 }
             }
             return View(model);
+        }
+
+        // --- METHOD FOR CUSTOMER BOOKING HISTORY ---
+        [HttpGet]
+        public async Task<IActionResult> MyBookings()
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Challenge();
+            }
+
+            var bookings = await _firestoreService.GetBookingsForUserAsync(currentUser.Id);
+
+            var bookingViewModels = new List<BookingDetailsViewModel>();
+
+            foreach (var booking in bookings)
+            {
+                var provider = await _userManager.FindByIdAsync(booking.ProviderId);
+                var service = await _firestoreService.GetProviderServiceByIdAsync(booking.ServiceId);
+
+                if (provider != null && service != null)
+                {
+                    bookingViewModels.Add(new BookingDetailsViewModel
+                    {
+                        Booking = booking,
+                        ProviderBusinessName = provider.BusinessName ?? $"{provider.FirstName} {provider.LastName}",
+                        ServicePrimaryImageUrl = service.ImageUrls.FirstOrDefault()
+                    });
+                }
+            }
+
+            return View(bookingViewModels);
+        }
+
+        // Add this new action to your DashboardController.cs
+        [HttpGet]
+        public async Task<IActionResult> MyProfile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound("Unable to load user.");
+            }
+            return View(user);
         }
     }
 }

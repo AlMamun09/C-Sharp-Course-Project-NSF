@@ -1,59 +1,74 @@
 @model List<LocalScout.Models.ProviderService>
-
 @{
     ViewData["Title"] = "My Services";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1>@ViewData["Title"]</h1>
-    <div>
-        <a asp-action="AddNewService" class="btn btn-primary">Add New Service</a>
-        <a asp-action="RequestNewCategory" class="btn btn-secondary">Request New Category</a>
+<!-- Non-Scrolling Header Section -->
+<div class="admin-content-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>@ViewData["Title"]</h1>
+        <div>
+            <a asp-action="AddNewService" class="btn btn-primary">
+                <i class="fa-solid fa-plus me-2"></i> Add New Service
+            </a>
+            <a asp-action="RequestNewCategory" class="btn btn-secondary">Request New Category</a>
+        </div>
     </div>
 </div>
-<hr />
 
-@if (!Model.Any())
-{
-    <p>You have not added any services yet. Click "Add New Service" to get started.</p>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Service Name</th>
-                <th>Price</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var service in Model)
-            {
+<!-- Scrollable Main Content Section -->
+<div class="admin-content-main">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <h4>You have not added any services yet.</h4>
+            <p>Click "Add New Service" to get started.</p>
+        </div>
+    }
+    else
+    {
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
                 <tr>
-                    <td>@service.ServiceName</td>
-                    <td>
-                        @if (service.IsNegotiable)
-                        {
-                            <span>Negotiable</span>
-                        }
-                        else
-                        {
-                            <span>TK @service.Price / @service.PricingUnit</span>
-                        }
-                    </td>
-                    <td class="d-flex align-items-center">
-                        <a asp-action="ServiceDetails" asp-route-id="@service.Id" class="btn btn-sm btn-info">Details</a>
-                        <span class="mx-2">|</span>
-                        <a asp-action="EditService" asp-route-id="@service.Id">Edit</a>
-                        <span class="mx-1">|</span>
-                        <form asp-action="DeleteService" asp-route-id="@service.Id" method="post"
-                            onsubmit="return confirm('Are you sure you want to permanently delete this service?');">
-                            <button type="submit" class="btn btn-link text-danger p-0">Delete</button>
-                        </form>
-                    </td>
+                    <th>Service Name</th>
+                    <th>Price</th>
+                    <th class="text-end">Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-}
+            </thead>
+            <tbody>
+                @foreach (var service in Model)
+                {
+                    <tr>
+                        <td>@service.ServiceName</td>
+                        <td>
+                            @if (service.IsNegotiable)
+                            {
+                                <span class="badge bg-secondary">Negotiable</span>
+                            }
+                            else
+                            {
+                                <span>TK @service.Price / @service.PricingUnit</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <div class="d-flex gap-2 justify-content-end">
+                                <a asp-action="ServiceDetails" asp-route-id="@service.Id" class="btn btn-sm btn-outline-info" title="Details">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </a>
+                                <a asp-action="EditService" asp-route-id="@service.Id" class="btn btn-sm btn-outline-primary" title="Edit">
+                                    <i class="fa-solid fa-pencil"></i>
+                                </a>
+                                <form asp-action="DeleteService" asp-route-id="@service.Id" method="post"
+                                      onsubmit="return confirm('Are you sure you want to permanently delete this service?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

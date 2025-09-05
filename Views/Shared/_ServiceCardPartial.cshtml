@@ -1,0 +1,41 @@
+@model LocalScout.ViewModels.ServiceCardViewModel
+
+<div class="col">
+    <a asp-controller="Home" asp-action="ServiceDetails" asp-route-id="@Model.ServiceId" class="card-link-wrapper">
+        <div class="service-card h-100">
+            <div class="service-card-img-container">
+                <img src="@(Model.PrimaryImageUrl ?? "https://placehold.co/600x400/eee/ccc?text=No+Image")"
+                     class="service-card-img" alt="@Model.ServiceName">
+            </div>
+            <div class="service-card-body">
+                <div>
+                    <h5 class="service-card-title">@Model.ServiceName</h5>
+                    <div class="service-card-provider">
+                        <img src="@(Model.ProviderProfilePictureUrl ?? "https://placehold.co/40x40/eee/ccc?text=P")"
+                             class="service-card-provider-img" alt="@Model.ProviderBusinessName">
+                        <span>@Model.ProviderBusinessName</span>
+                    </div>
+                    <ul class="list-unstyled text-muted small mt-3">
+                        <li class="mb-2"><i class="fa-solid fa-calendar-check me-2"></i>Joined
+                            @Model.JoinedDate.ToString("MMM dd, yyyy")</li>
+                        <li class="mb-2"><i class="fa-solid fa-location-dot me-2"></i>@Model.Location</li>
+                        <li class="mb-2"><i class="fa-solid fa-clock me-2"></i>@Model.BusinessHours</li>
+                    </ul>
+                </div>
+                <div class="service-card-footer">
+                    <div class="service-card-price">
+                        @if (Model.IsNegotiable)
+                        {
+                            <span class="fw-bold">Negotiable</span>
+                        }
+                        else
+                        {
+                            <span>TK @Model.Price</span> <span class="unit">/ @Model.PricingUnit</span>
+                        }
+                    </div>
+                    <a asp-controller="Booking" asp-action="Create" asp-route-serviceId="@Model.ServiceId" class="btn btn-booking">Book Now</a>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>

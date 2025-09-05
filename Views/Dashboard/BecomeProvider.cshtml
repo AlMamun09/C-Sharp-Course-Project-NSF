@@ -1,67 +1,98 @@
 @model LocalScout.ViewModels.BecomeProviderViewModel
-
 @{
     ViewData["Title"] = "Become a Service Provider";
 }
 
-<h1>@ViewData["Title"]</h1>
-<p>Fill out your business details below to start listing your services.</p>
-<hr />
-
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="BecomeProvider" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <div class="form-group">
-                <label asp-for="BusinessName"></label>
-                <input asp-for="BusinessName" class="form-control" />
-                <span asp-validation-for="BusinessName" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="BusinessPhoneNumber"></label>
-                <input asp-for="BusinessPhoneNumber" class="form-control" />
-                <span asp-validation-for="BusinessPhoneNumber" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="BusinessAddress"></label>
-                <input asp-for="BusinessAddress" class="form-control" />
-                <span asp-validation-for="BusinessAddress" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="BusinessDescription"></label>
-                <textarea asp-for="BusinessDescription" class="form-control" rows="4"></textarea>
-                <span asp-validation-for="BusinessDescription" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="BusinessHours"></label>
-                <input asp-for="BusinessHours" class="form-control" />
-                <span asp-validation-for="BusinessHours" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                @if (!string.IsNullOrEmpty(Model.CurrentProfilePictureUrl))
-                {
-                    <label>Current Profile Picture</label>
-                    <div>
-                        <img src="@Model.CurrentProfilePictureUrl" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;" class="mb-2" alt="Current Profile Picture"/>
-                    </div>
-                    <label asp-for="ProfilePicture" class="control-label mt-2">Upload a new picture (optional)</label>
-                }
-                else
-                {
-                    <label asp-for="ProfilePicture" class="control-label"></label>
-                }
-                <input asp-for="ProfilePicture" class="form-control" />
-                <small class="form-text text-muted">For best results, we recommend a square image that is at least 500x500 pixels.</small>
-                <span asp-validation-for="ProfilePicture" class="text-danger"></span>
-            </div>
-            <br />
-            <button type="submit" class="btn btn-success">Submit Application</button>
-        </form> @* <-- The closing tag was likely missing *@
-    </div>
+<!-- Non-Scrolling Header Section -->
+<div class="admin-content-header">
+    <h1>@ViewData["Title"]</h1>
+    <p class="lead mb-0">Fill out your business details below to start listing your services.</p>
 </div>
+
+<!-- Scrollable Main Content Section -->
+<div class="admin-content-main">
+    <form asp-action="BecomeProvider" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="row mt-3">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <!-- Business Details Card -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0">Business Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mb-3">
+                            <label asp-for="BusinessName"></label>
+                            <input asp-for="BusinessName" class="form-control" />
+                            <span asp-validation-for="BusinessName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="BusinessDescription"></label>
+                            <textarea asp-for="BusinessDescription" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="BusinessDescription" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="BusinessHours"></label>
+                            <input asp-for="BusinessHours" class="form-control" placeholder="e.g., Mon-Fri, 9 AM - 5 PM" />
+                            <span asp-validation-for="BusinessHours" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact & Location Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Contact & Location</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mb-3">
+                            <label asp-for="BusinessPhoneNumber"></label>
+                            <input asp-for="BusinessPhoneNumber" class="form-control" />
+                            <span asp-validation-for="BusinessPhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="BusinessAddress"></label>
+                            <input asp-for="BusinessAddress" class="form-control" />
+                            <span asp-validation-for="BusinessAddress" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column for Profile Picture -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Business Profile Picture</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        @if (!string.IsNullOrEmpty(Model.CurrentProfilePictureUrl))
+                        {
+                            <img src="@Model.CurrentProfilePictureUrl" class="img-fluid rounded-circle shadow-sm mb-3"
+                                 style="width: 200px; height: 200px; object-fit: cover;" alt="Current Profile Picture" />
+                        }
+                        else
+                        {
+                            <div class="border rounded-circle bg-light d-flex align-items-center justify-content-center mb-3 mx-auto"
+                                 style="width: 200px; height: 200px;">
+                                <i class="fa-solid fa-store fa-4x text-muted"></i>
+                            </div>
+                        }
+                        <label asp-for="ProfilePicture" class="form-label">Upload Picture</label>
+                        <input asp-for="ProfilePicture" class="form-control" type="file" accept="image/*" />
+                        <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-success">
+                <i class="fa-solid fa-paper-plane me-2"></i> Submit Application
+            </button>
+            <a asp-controller="Dashboard" asp-action="MyProfile" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+

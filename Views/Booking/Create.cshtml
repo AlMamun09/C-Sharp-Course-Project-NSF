@@ -1,0 +1,80 @@
+@model LocalScout.ViewModels.CreateBookingViewModel
+@{
+    ViewData["Title"] = "Request a Booking";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p class="lead">You are about to request a booking for the service below. Please select your desired date and time.</p>
+<hr />
+
+<div class="row">
+    <div class="col-md-7">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Service Details</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Service</dt>
+                    <dd class="col-sm-8">@Model.ServiceName</dd>
+
+                    <dt class="col-sm-4">Provider</dt>
+                    <dd class="col-sm-8">@Model.ProviderName</dd>
+
+                    <dt class="col-sm-4">Price</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.IsNegotiable)
+                        {
+                            <span>Negotiable</span>
+                        }
+                        else
+                        {
+                            <span>TK @Model.Price</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="ServiceId" />
+            <input type="hidden" asp-for="ProviderId" />
+            <input type="hidden" asp-for="Price" />
+            <input type="hidden" asp-for="IsNegotiable" />
+
+            <div class="form-group mb-3">
+                <label asp-for="BookingDate" class="form-label fw-bold"></label>
+                <input asp-for="BookingDate" class="form-control" type="text" placeholder="Select Date and Time..." />
+                <span asp-validation-for="BookingDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="CustomerNotes" class="form-label fw-bold"></label>
+                <textarea asp-for="CustomerNotes" class="form-control" rows="4"
+                    placeholder="e.g., Please call before arriving."></textarea>
+                <span asp-validation-for="CustomerNotes" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Submit Booking Request</button>
+                <a asp-controller="Home" asp-action="ServiceDetails" asp-route-id="@Model.ServiceId"
+                    class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // The asp-for="BookingDate" tag helper generates an id of "BookingDate"
+            flatpickr("#BookingDate", {
+                enableTime: true, // This enables the time picker
+                dateFormat: "Y-m-d H:i", // This format is easily understood by the server
+                minDate: "today" // Prevents users from selecting a date in the past
+            });
+        });
+    </script>
+}
