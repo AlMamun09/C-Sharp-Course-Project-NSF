@@ -91,9 +91,10 @@ namespace LocalScout.Controllers
 
         // --- LOGIN AND LOGOUT ---
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string? returnUrl = null)
         {
-            return View();
+            var model = new LoginViewModel { ReturnUrl = returnUrl };
+            return View(model);
         }
 
         [HttpPost]
@@ -105,24 +106,28 @@ namespace LocalScout.Controllers
 
                 if (result.Succeeded)
                 {
+                    // This is the new logic:
+                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+
+                    // This is the old logic, now used as a fallback:
                     var user = await _userManager.FindByEmailAsync(model.Email);
                     if (user != null)
                     {
-                        // Check roles in order of importance
                         if (await _userManager.IsInRoleAsync(user, "Admin"))
                         {
                             return RedirectToAction("Index", "Admin");
                         }
-                        // NEW: Check if the user is a Service Provider
                         if (await _userManager.IsInRoleAsync(user, "ServiceProvider"))
                         {
-                            // If so, send them directly to their provider dashboard
                             return RedirectToAction("Index", "ServiceProvider");
                         }
                     }
 
-                    // Default redirect for regular users
-                    return RedirectToAction("Index", "Dashboard");
+                    // Default redirect for regular users is now MyProfile
+                    return RedirectToAction("MyProfile", "Dashboard");
                 }
                 else
                 {

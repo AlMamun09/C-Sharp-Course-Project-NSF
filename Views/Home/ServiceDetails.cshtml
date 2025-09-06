@@ -94,7 +94,7 @@
                             }
                         </div>
                         <div class="d-grid mt-3">
-                            <a href="#" class="btn btn-booking btn-lg">Book Now</a>
+                            <a asp-controller="Booking" asp-action="Create" asp-route-serviceId="@Model.MainService.Id" class="btn btn-booking">Book Now</a>
                         </div>
                     </div>
                 </div>

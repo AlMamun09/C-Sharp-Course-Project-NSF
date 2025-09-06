@@ -25,12 +25,6 @@ namespace LocalScout.Controllers
             _firestoreService = firestoreService;
         }
 
-        // This action shows the main dashboard page.
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         // --- ACTIONS for Becoming a Provider ---
         [HttpGet]
         public async Task<IActionResult> BecomeProvider()
@@ -47,6 +41,50 @@ namespace LocalScout.Controllers
                 CurrentProfilePictureUrl = user.ProfilePictureUrl
             };
             return View(model);
+        }
+
+        // --- NEW GENERAL-PURPOSE USER PROFILE ACTION ---
+        [HttpGet]
+        public async Task<IActionResult> UserProfile(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var stats = await _firestoreService.GetBookingStatsForUserAsync(id);
+
+            var viewModel = new UserProfileViewModel
+            {
+                UserProfile = user,
+                Stats = stats
+            };
+
+            // Determine which layout to use based on the viewer's role
+            if (User.IsInRole("ServiceProvider"))
+            {
+                ViewData["Layout"] = "_ProviderLayout";
+            }
+            else
+            {
+                ViewData["Layout"] = "_DashboardLayout";
+            }
+
+            return View(viewModel);
+        }
+
+        // This action is now for the user's OWN profile page
+        [HttpGet]
+        public IActionResult MyProfile()
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId == null)
+            {
+                return Challenge();
+            }
+            // Simply redirect to the general UserProfile action with the current user's ID
+            return RedirectToAction("UserProfile", new { id = userId });
         }
 
         [HttpPost]
@@ -174,18 +212,6 @@ namespace LocalScout.Controllers
             }
 
             return View(bookingViewModels);
-        }
-
-        // Add this new action to your DashboardController.cs
-        [HttpGet]
-        public async Task<IActionResult> MyProfile()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound("Unable to load user.");
-            }
-            return View(user);
         }
     }
 }

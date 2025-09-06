@@ -34,8 +34,8 @@ namespace LocalScout.Controllers
         {
             var categories = await _firestoreService.GetAllCategoriesAsync();
             var activeCategoryIds = new HashSet<string>(categories.Select(c => c.Id));
+            var currentUserId = _userManager.GetUserId(User);
 
-            // --- NEW LOOPING LOGIC TO ENSURE A FULL PAGE OF ACTIVE SERVICES ---
             var activeServices = new List<ProviderService>();
             string? lastDocId = null;
             bool hasMoreData = true;
@@ -43,24 +43,24 @@ namespace LocalScout.Controllers
             while (activeServices.Count < PageSize && hasMoreData)
             {
                 var paginatedResult = await _firestoreService.GetServicesPaginatedAsync(null, PageSize, lastDocId);
-
+                
                 var filteredPage = paginatedResult.Services
                     .Where(s => activeCategoryIds.Contains(s.ServiceCategoryId))
+                    .Where(s => s.ProviderId != currentUserId) // <-- FILTER ADDED HERE
                     .ToList();
-
+                
                 activeServices.AddRange(filteredPage);
 
                 lastDocId = paginatedResult.LastDocumentId;
                 hasMoreData = paginatedResult.HasMorePages;
             }
-
+            
             var servicesToShow = activeServices.Take(PageSize).ToList();
             string? nextLastDocumentId = servicesToShow.Count > 0 ? servicesToShow.Last().Id : null;
             bool hasMorePages = activeServices.Count > PageSize || hasMoreData;
-            // --- END NEW LOGIC ---
 
             var featuredServiceCards = await MapServicesToCards(servicesToShow);
-
+            
             ViewBag.HasMorePages = hasMorePages;
             ViewBag.LastDocumentId = nextLastDocumentId;
 
@@ -77,16 +77,17 @@ namespace LocalScout.Controllers
         {
             var categories = await _firestoreService.GetAllCategoriesAsync();
             var activeCategoryIds = new HashSet<string>(categories.Select(c => c.Id));
+            var currentUserId = _userManager.GetUserId(User);
 
             var paginatedResult = await _firestoreService.SearchServicesPaginatedAsync(query, PageSize, 1);
-
-            // Filter search results to only include those from active categories
+            
             var activeServices = paginatedResult.Services
                 .Where(s => activeCategoryIds.Contains(s.ServiceCategoryId))
+                .Where(s => s.ProviderId != currentUserId) // <-- FILTER ADDED HERE
                 .ToList();
-
+            
             var resultCards = await MapServicesToCards(activeServices);
-
+            
             ViewBag.HasMorePages = paginatedResult.HasMorePages;
             ViewBag.CurrentPage = 1;
 
@@ -101,8 +102,6 @@ namespace LocalScout.Controllers
 
         public async Task<IActionResult> ServicesByCategory(string id)
         {
-            // This action is implicitly safe, because a user can only get here
-            // by clicking a category from the homepage, and we only show active categories there.
             var category = await _firestoreService.GetCategoryByIdAsync(id);
             if (category == null || !category.IsActive)
             {
@@ -110,7 +109,13 @@ namespace LocalScout.Controllers
             }
 
             var paginatedResult = await _firestoreService.GetServicesPaginatedAsync(id, PageSize, null);
-            var serviceCards = await MapServicesToCards(paginatedResult.Services);
+            var currentUserId = _userManager.GetUserId(User);
+
+            var filteredServices = paginatedResult.Services
+                .Where(s => s.ProviderId != currentUserId) // <-- FILTER ADDED HERE
+                .ToList();
+
+            var serviceCards = await MapServicesToCards(filteredServices);
 
             ViewBag.HasMorePages = paginatedResult.HasMorePages;
             ViewBag.LastDocumentId = paginatedResult.LastDocumentId;
@@ -124,6 +129,7 @@ namespace LocalScout.Controllers
             return View(viewModel);
         }
 
+
         // --- AJAX ENDPOINTS FOR "LOAD MORE" ---
 
         [HttpGet]
@@ -131,6 +137,7 @@ namespace LocalScout.Controllers
         {
             var categories = await _firestoreService.GetAllCategoriesAsync();
             var activeCategoryIds = new HashSet<string>(categories.Select(c => c.Id));
+            var currentUserId = _userManager.GetUserId(User);
 
             var activeServices = new List<ProviderService>();
             string? lastDocId = lastDocumentId;
@@ -139,9 +146,12 @@ namespace LocalScout.Controllers
             while (activeServices.Count < PageSize && hasMoreData)
             {
                 var paginatedResult = await _firestoreService.GetServicesPaginatedAsync(null, PageSize, lastDocId);
+                
                 var filteredPage = paginatedResult.Services
                     .Where(s => activeCategoryIds.Contains(s.ServiceCategoryId))
+                    .Where(s => s.ProviderId != currentUserId) // <-- FILTER ADDED HERE
                     .ToList();
+
                 activeServices.AddRange(filteredPage);
                 lastDocId = paginatedResult.LastDocumentId;
                 hasMoreData = paginatedResult.HasMorePages;
@@ -152,8 +162,7 @@ namespace LocalScout.Controllers
             bool hasMorePages = activeServices.Count > PageSize || hasMoreData;
 
             var serviceCards = await MapServicesToCards(servicesToShow);
-
-            // Send final pagination data back in headers
+            
             Response.Headers.Append("X-Has-More-Pages", hasMorePages.ToString());
             Response.Headers.Append("X-Last-Document-Id", nextLastDocumentId ?? "");
 
@@ -164,9 +173,14 @@ namespace LocalScout.Controllers
         public async Task<IActionResult> LoadMoreCategoryServices(string categoryId, string? lastDocumentId)
         {
             var paginatedResult = await _firestoreService.GetServicesPaginatedAsync(categoryId, PageSize, lastDocumentId);
-            var serviceCards = await MapServicesToCards(paginatedResult.Services);
+            var currentUserId = _userManager.GetUserId(User);
 
-            // This action is simple because the category is already active
+            var filteredServices = paginatedResult.Services
+                .Where(s => s.ProviderId != currentUserId) // <-- FILTER ADDED HERE
+                .ToList();
+            
+            var serviceCards = await MapServicesToCards(filteredServices);
+
             Response.Headers.Append("X-Has-More-Pages", paginatedResult.HasMorePages.ToString());
             Response.Headers.Append("X-Last-Document-Id", paginatedResult.LastDocumentId ?? "");
 
@@ -178,16 +192,17 @@ namespace LocalScout.Controllers
         {
             var categories = await _firestoreService.GetAllCategoriesAsync();
             var activeCategoryIds = new HashSet<string>(categories.Select(c => c.Id));
+            var currentUserId = _userManager.GetUserId(User);
 
             var paginatedResult = await _firestoreService.SearchServicesPaginatedAsync(query, PageSize, pageNumber);
-
+            
             var activeServices = paginatedResult.Services
                 .Where(s => activeCategoryIds.Contains(s.ServiceCategoryId))
+                .Where(s => s.ProviderId != currentUserId) // <-- FILTER ADDED HERE
                 .ToList();
 
             var resultCards = await MapServicesToCards(activeServices);
 
-            // This check for "hasMore" is against the original paginated result
             Response.Headers.Append("X-Has-More-Pages", paginatedResult.HasMorePages.ToString());
 
             return PartialView("_ServiceGridPartial", resultCards);
