@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,11 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
+
 <body class="admin-body-lock">
     <div class="d-flex">
         <div class="d-flex flex-column flex-shrink-0 p-3 text-white admin-sidebar">
             <div class="d-flex justify-content-between align-items-center mb-3 mb-md-0 me-md-auto w-100">
-                <a asp-controller="ServiceProvider" asp-action="Index" class="d-flex align-items-center text-white text-decoration-none">
+                <a asp-controller="ServiceProvider" asp-action="Index"
+                    class="d-flex align-items-center text-white text-decoration-none">
                     <span class="fs-4">Provider Hub</span>
                 </a>
                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-light" title="Back to Main Site">
@@ -33,7 +36,12 @@
                 </li>
                 <li>
                     <a asp-controller="ServiceProvider" asp-action="MyBookings" class="nav-link text-white">
-                        <i class="fa-solid fa-calendar-days me-2"></i> My Bookings
+                        <i class="fa-solid fa-inbox me-2"></i> Client Bookings
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="ServiceProvider" asp-action="MyPurchases" class="nav-link text-white">
+                        <i class="fa-solid fa-shopping-cart me-2"></i> My Purchases
                     </a>
                 </li>
             </ul>
@@ -56,4 +64,5 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

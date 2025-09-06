@@ -1,20 +1,21 @@
 @model List<LocalScout.ViewModels.BookingDetailsViewModel>
+@* ADD THESE TWO LINES TO INJECT THE SERVICE *@
 @using LocalScout.Services
 @inject ITimeZoneConverterService TimeZoneService
 @{
-    ViewData["Title"] = "My Bookings";
+    ViewData["Title"] = "My Purchases";
 }
 
 <div class="admin-content-header">
     <h1>@ViewData["Title"]</h1>
-    <p class="lead mb-0">Here is a history of all the services you have requested.</p>
+    <p class="lead mb-0">Here is a history of all the services you have booked from other providers.</p>
 </div>
 
 <div class="admin-content-main">
     @if (!Model.Any())
     {
         <div class="text-center py-5">
-            <h4>You haven't booked any services yet.</h4>
+            <h4>You haven't purchased any services yet.</h4>
             <p>Browse our services to get started.</p>
             <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">
                 <i class="fa-solid fa-magnifying-glass me-2"></i> Find Services
@@ -32,18 +33,16 @@
                             <div class="d-flex">
                                 <div class="flex-shrink-0">
                                     <img src="@(item.ServicePrimaryImageUrl ?? "https://placehold.co/100x100/eee/ccc?text=Service")"
-                                         class="img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;"
-                                         alt="@item.Booking.ServiceName">
+                                         class="img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;" alt="@item.ServiceName">
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <h5 class="card-title">@item.Booking.ServiceName</h5>
+                                    <h5 class="card-title">@item.ServiceName</h5>
                                     <h6 class="card-subtitle mb-2 text-muted">with @item.ProviderBusinessName</h6>
                                     <p class="card-text mb-1">
                                         <small><strong>For:</strong>
-                                            @TimeZoneService.ConvertToLocalTime(item.Booking.BookingDate.ToDateTime()).ToString("f")
-                                        </small>
+                                            @* THIS IS THE CORRECTED LINE: *@
+                                            @TimeZoneService.ConvertToLocalTime(item.Booking.BookingDate.ToDateTime()).ToString("f")</small>
                                     </p>
-                                    @* THIS IS THE CORRECTED PRICE BLOCK: *@
                                     <p class="card-text">
                                         <small><strong>Price:</strong>
                                             @if (item.Booking.IsNegotiable)
@@ -88,6 +87,7 @@
                                         break;
                                     case "Rejected":
                                         badgeClass = "bg-danger";
+                                        statusText = "Rejected";
                                         break;
                                 }
                                 <span class="badge @badgeClass">@statusText</span>

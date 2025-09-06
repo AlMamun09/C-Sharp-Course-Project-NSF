@@ -71,9 +71,10 @@
         document.addEventListener('DOMContentLoaded', function () {
             // The asp-for="BookingDate" tag helper generates an id of "BookingDate"
             flatpickr("#BookingDate", {
-                enableTime: true, // This enables the time picker
-                dateFormat: "Y-m-d H:i", // This format is easily understood by the server
-                minDate: "today" // Prevents users from selecting a date in the past
+                enableTime: true,
+                dateFormat: "F j, Y h:i K", // e.g., "September 6, 2025 03:30 PM"
+                minDate: "today",
+                time_24hr: false // Use 12-hour format with AM/PM
             });
         });
     </script>

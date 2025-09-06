@@ -1,15 +1,16 @@
 @model List<LocalScout.ViewModels.BookingDetailsViewModel>
+@* ADD THESE TWO LINES TO INJECT THE SERVICE *@
+@using LocalScout.Services
+@inject ITimeZoneConverterService TimeZoneService 
 @{
     ViewData["Title"] = "Manage My Bookings";
 }
 
-<!-- Non-Scrolling Header Section -->
 <div class="admin-content-header">
     <h1>@ViewData["Title"]</h1>
     <p class="lead mb-0">Review and manage all incoming booking requests for your services.</p>
 </div>
 
-<!-- Scrollable Main Content Section -->
 <div class="admin-content-main">
     @if (!Model.Any())
     {
@@ -34,7 +35,8 @@
                                 <div class="flex-grow-1 ms-3">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h5 class="card-title mb-2">@item.ServiceName</h5>
-                                        <small class="text-muted">@item.Booking.CreatedAt.ToDateTime().ToString("MMM dd")</small>
+                                        @* THIS IS THE FIRST CORRECTED LINE *@
+                                        <small class="text-muted">@TimeZoneService.ConvertToLocalTime(item.Booking.CreatedAt.ToDateTime()).ToString("MMM dd")</small>
                                     </div>
                                     <h6 class="card-text mb-1">
                                         <strong>By:</strong> 
@@ -43,7 +45,8 @@
                                         </a>
                                     </h6>
                                     <p class="card-text mb-1">
-                                        <strong>For:</strong> @item.Booking.BookingDate.ToDateTime().ToString("MMM dd, yyyy 'at' h:mm tt")
+                                        <strong>For:</strong> @* THIS IS THE SECOND CORRECTED LINE *@
+                                        @TimeZoneService.ConvertToLocalTime(item.Booking.BookingDate.ToDateTime()).ToString("f")
                                     </p>
                                     <p class="card-text mb-1">
                                         <strong>Price:</strong>
@@ -66,39 +69,39 @@
                             </div>
                         </div>
                         <div class="card-footer bg-light d-flex justify-content-between align-items-center">
-                             @{
-                                var status = item.Booking.Status;
-                                string badgeClass = "bg-secondary";
-                                string statusText = status;
+                                @{
+                                    var status = item.Booking.Status;
+                                    string badgeClass = "bg-secondary";
+                                    string statusText = status;
 
-                                switch (status)
-                                {
-                                    case "PendingApproval":
-                                        badgeClass = "bg-warning text-dark";
-                                        statusText = "Pending";
-                                        break;
-                                    case "Approved":
-                                        badgeClass = "bg-info text-dark";
-                                        statusText = "Approved";
-                                        break;
-                                    case "Confirmed":
-                                        badgeClass = "bg-success";
-                                        statusText = "Confirmed";
-                                        break;
-                                    case "Completed":
-                                        badgeClass = "bg-primary";
-                                        break;
-                                    case "CanceledByUser":
-                                        badgeClass = "bg-danger";
-                                        statusText = "Canceled";
-                                        break;
-                                    case "Rejected":
-                                        badgeClass = "bg-dark";
-                                        statusText = "Rejected";
-                                        break;
+                                    switch (status)
+                                    {
+                                        case "PendingApproval":
+                                            badgeClass = "bg-warning text-dark";
+                                            statusText = "Pending";
+                                            break;
+                                        case "Approved":
+                                            badgeClass = "bg-info text-dark";
+                                            statusText = "Approved";
+                                            break;
+                                        case "Confirmed":
+                                            badgeClass = "bg-success";
+                                            statusText = "Confirmed";
+                                            break;
+                                        case "Completed":
+                                            badgeClass = "bg-primary";
+                                            break;
+                                        case "CanceledByUser":
+                                            badgeClass = "bg-danger";
+                                            statusText = "Canceled";
+                                            break;
+                                        case "Rejected":
+                                            badgeClass = "bg-dark";
+                                            statusText = "Rejected";
+                                            break;
+                                    }
+                                    <span class="badge @badgeClass">@statusText</span>
                                 }
-                                <span class="badge @badgeClass">@statusText</span>
-                            }
                             <div>
                                 @if (status == "PendingApproval")
                                 {
@@ -115,7 +118,6 @@
                     </div>
                 </div>
 
-                <!-- Rejection Modal for this specific booking -->
                 <div class="modal fade" id="rejectModal-@item.Booking.Id" tabindex="-1" aria-labelledby="rejectModalLabel-@item.Booking.Id" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -144,4 +146,3 @@
         </div>
     }
 </div>
-

@@ -15,11 +15,13 @@ namespace LocalScout.Controllers
     {
         private readonly FirestoreService _firestoreService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ITimeZoneConverterService _timeZoneConverterService;
 
-        public BookingController(FirestoreService firestoreService, UserManager<ApplicationUser> userManager)
+        public BookingController(FirestoreService firestoreService, UserManager<ApplicationUser> userManager, ITimeZoneConverterService timeZoneConverterService)
         {
             _firestoreService = firestoreService;
             _userManager = userManager;
+            _timeZoneConverterService = timeZoneConverterService;
         }
 
         // GET: /Booking/Create/{serviceId}
@@ -66,8 +68,11 @@ namespace LocalScout.Controllers
                     return Challenge(); // Should not happen if authorized
                 }
 
-                // Convert DateTime to Firestore Timestamp
-                var bookingTimestamp = Timestamp.FromDateTime(model.BookingDate.ToUniversalTime());
+                // User input (model.BookingDate) is Local (Dhaka) time. We must convert it to UTC for storage.
+                DateTime utcBookingTime = _timeZoneConverterService.ConvertFromLocalToUtc(model.BookingDate);
+
+                // Convert the correct UTC DateTime to a Firestore Timestamp
+                var bookingTimestamp = Timestamp.FromDateTime(utcBookingTime);
 
                 var newBooking = new Booking
                 {
@@ -89,12 +94,13 @@ namespace LocalScout.Controllers
                 var notification = new Notification
                 {
                     UserId = model.ProviderId,
-                    Message = $"You have a new booking request from {currentUser.FirstName} for '{model.ServiceName}'. Please review it."
+                    Message = $"You have a new booking request from {currentUser.FirstName} for '{model.ServiceName}'. Please review it.",
+                    CreatedAt = Timestamp.FromDateTime(DateTime.UtcNow)
                 };
                 await _firestoreService.CreateNotificationAsync(notification);
 
                 TempData["SuccessMessage"] = "Your booking request has been sent to the provider for approval!";
-                return RedirectToAction("Index", "Dashboard");
+                return RedirectToAction("MyBookings", "Dashboard");
             }
 
             // If the model is not valid, return to the form with the validation errors
@@ -119,9 +125,9 @@ namespace LocalScout.Controllers
 
             // Update the booking status to "Approved"
             var updates = new Dictionary<string, object>
-    {
-        { "status", "Approved" }
-    };
+            {
+                { "status", "Approved" }
+            };
             await _firestoreService.UpdateBookingAsync(bookingId, updates);
 
             // Notify the customer that their booking was approved
@@ -131,7 +137,8 @@ namespace LocalScout.Controllers
                 var notification = new Notification
                 {
                     UserId = customer.Id,
-                    Message = $"Good news! Your booking for '{booking.ServiceName}' has been approved. You can now proceed with payment."
+                    Message = $"Good news! Your booking for '{booking.ServiceName}' has been approved. You can now proceed with payment.",
+                    CreatedAt = Timestamp.FromDateTime(DateTime.UtcNow)
                 };
                 await _firestoreService.CreateNotificationAsync(notification);
             }
@@ -156,10 +163,10 @@ namespace LocalScout.Controllers
 
             // Update the booking status and save the rejection reason
             var updates = new Dictionary<string, object>
-    {
-        { "status", "Rejected" },
-        { "rejectionReason", reason }
-    };
+            {
+                { "status", "Rejected" },
+                { "rejectionReason", reason }
+            };
             await _firestoreService.UpdateBookingAsync(bookingId, updates);
 
             // Notify the customer that their booking was rejected
@@ -169,7 +176,8 @@ namespace LocalScout.Controllers
                 var notification = new Notification
                 {
                     UserId = customer.Id,
-                    Message = $"Unfortunately, your booking for '{booking.ServiceName}' has been rejected by the provider."
+                    Message = $"Unfortunately, your booking for '{booking.ServiceName}' has been rejected by the provider.",
+                    CreatedAt = Timestamp.FromDateTime(DateTime.UtcNow)
                 };
                 await _firestoreService.CreateNotificationAsync(notification);
             }

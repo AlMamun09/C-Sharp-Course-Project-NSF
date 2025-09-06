@@ -6,6 +6,7 @@ using LocalScout.Services;
 using LocalScout.ViewModels;
 using System.Threading.Tasks;
 using LocalScout.Models;
+using Google.Cloud.Firestore;
 
 namespace LocalScout.Controllers
 {
@@ -16,13 +17,15 @@ namespace LocalScout.Controllers
         private readonly CloudinaryService _cloudinaryService;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly FirestoreService _firestoreService;
+        private readonly ITimeZoneConverterService _timeZoneConverterService;
 
-        public DashboardController(UserManager<ApplicationUser> userManager, CloudinaryService cloudinaryService, SignInManager<ApplicationUser> signInManager, FirestoreService firestoreService)
+        public DashboardController(UserManager<ApplicationUser> userManager, CloudinaryService cloudinaryService, SignInManager<ApplicationUser> signInManager, FirestoreService firestoreService, ITimeZoneConverterService timeZoneService)
         {
             _userManager = userManager;
             _cloudinaryService = cloudinaryService;
             _signInManager = signInManager;
             _firestoreService = firestoreService;
+            _timeZoneConverterService = timeZoneService;
         }
 
         // --- ACTIONS for Becoming a Provider ---

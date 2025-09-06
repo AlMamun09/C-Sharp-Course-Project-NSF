@@ -443,7 +443,42 @@ namespace LocalScout.Controllers
                         ProviderBusinessName = $"{customer.FirstName} {customer.LastName}",
                         ServiceName = service.ServiceName,
                         ServicePrimaryImageUrl = service.ImageUrls.FirstOrDefault(),
-                        CustomerProfilePictureUrl = customer.ProfilePictureUrl 
+                        CustomerProfilePictureUrl = customer.ProfilePictureUrl
+                    });
+                }
+            }
+
+            return View(bookingViewModels);
+        }
+
+        // Add this new action to your ServiceProviderController.cs
+
+        [HttpGet]
+        public async Task<IActionResult> MyPurchases()
+        {
+            var currentUserId = _userManager.GetUserId(User);
+            if (currentUserId == null)
+            {
+                return Challenge();
+            }
+
+            // We get bookings where the current user is the CUSTOMER
+            var bookings = await _firestoreService.GetBookingsForUserAsync(currentUserId);
+
+            var bookingViewModels = new List<BookingDetailsViewModel>();
+            foreach (var booking in bookings)
+            {
+                var provider = await _userManager.FindByIdAsync(booking.ProviderId);
+                var service = await _firestoreService.GetProviderServiceByIdAsync(booking.ServiceId);
+
+                if (provider != null && service != null)
+                {
+                    bookingViewModels.Add(new BookingDetailsViewModel
+                    {
+                        Booking = booking,
+                        ServiceName = service.ServiceName,
+                        ProviderBusinessName = provider.BusinessName ?? $"{provider.FirstName} {provider.LastName}",
+                        ServicePrimaryImageUrl = service.ImageUrls.FirstOrDefault()
                     });
                 }
             }

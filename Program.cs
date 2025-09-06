@@ -26,6 +26,7 @@ builder.Services.AddSingleton<FirestoreService>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
 // This line registers our CloudinaryService so we can use it in our controllers.
 builder.Services.AddTransient<CloudinaryService>();
+builder.Services.AddSingleton<ITimeZoneConverterService, TimeZoneConverterService>();
 
 var app = builder.Build();
 

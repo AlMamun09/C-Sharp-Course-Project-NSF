@@ -3,13 +3,16 @@
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> UserManager
 
+@* ADD THESE TWO LINES TO INJECT THE SERVICE *@
+@using LocalScout.Services
+@inject ITimeZoneConverterService TimeZoneService
+
 @{
     ViewData["Title"] = $"{Model.UserProfile.FirstName}'s Profile";
     Layout = ViewData["Layout"] as string;
     var isOwner = (await UserManager.GetUserAsync(User))?.Id == Model.UserProfile.Id;
 }
 
-<!-- Non-Scrolling Header Section -->
 <div class="admin-content-header">
     <div class="d-flex justify-content-between align-items-center">
         <div>
@@ -40,36 +43,33 @@
     </div>
 </div>
 
-<!-- Scrollable Main Content Section -->
 <div class="admin-content-main">
-    <!-- Top Row: Profile Info -->
     <div class="row mt-2 mb-2
     ">
-        <!-- Profile Picture Column -->
         <div class="col-lg-4 mb-4">
             <div class="card h-85">
                 <div class="card-body text-center">
                     @if (!string.IsNullOrEmpty(Model.UserProfile.ProfilePictureUrl))
                     {
                         <img src="@Model.UserProfile.ProfilePictureUrl" class="img-fluid rounded-circle shadow-sm mb-3"
-                            style="width: 200px; height: 200px; object-fit: cover;" alt="Profile Picture" />
+                             style="width: 200px; height: 200px; object-fit: cover;" alt="Profile Picture" />
                     }
                     else
                     {
                         <div class="border rounded-circle bg-light d-flex align-items-center justify-content-center mb-3 mx-auto"
-                            style="width: 200px; height: 200px;">
+                             style="width: 200px; height: 200px;">
                             <i class="fa-solid fa-user fa-4x text-muted"></i>
                         </div>
                     }
                     <h4 class="card-title">@Model.UserProfile.FirstName @Model.UserProfile.LastName</h4>
-                    <p class="text-muted">Member Since @Model.UserProfile.CreatedAt.ToString("MMMM yyyy")</p>
+                    
+                    @* THIS IS THE CORRECTED LINE: *@
+                    <p class="text-muted">Member Since @TimeZoneService.ConvertToLocalTime(Model.UserProfile.CreatedAt.UtcDateTime).ToString("MMMM yyyy")</p>
                 </div>
             </div>
         </div>
 
-        <!-- Details Column -->
         <div class="col-lg-8">
-            <!-- Account Details Card -->
             <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">
@@ -90,7 +90,6 @@
                 </div>
             </div>
 
-            <!-- Booking Stats Card -->
             <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">
@@ -120,7 +119,6 @@
             </div>
         </div>
 
-        <!-- Become a Provider Card (Conditional, full-width) -->
         @if (isOwner && !User.IsInRole("ServiceProvider"))
         {
             <div class="card bg-light border-primary mb-">
