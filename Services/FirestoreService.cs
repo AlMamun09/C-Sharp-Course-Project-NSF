@@ -457,5 +457,37 @@ namespace LocalScout.Services
             return stats;
         }
 
+        public async Task<BookingStatsViewModel> GetBookingStatsForProviderAsync(string providerId)
+        {
+            var stats = new BookingStatsViewModel();
+            var query = _db.Collection(BookingsCollection).WhereEqualTo("providerId", providerId);
+            var snapshot = await query.GetSnapshotAsync();
+
+            stats.TotalRequested = snapshot.Count; // Total bookings this provider has ever received
+
+            foreach (var doc in snapshot.Documents)
+            {
+                // Get the "status" field from the document
+                if (doc.TryGetValue("status", out string status))
+                {
+                    if (status == "Confirmed" || status == "Approved")
+                    {
+                        stats.TotalConfirmed++; // Counts jobs that are "ongoing" (approved or paid)
+                    }
+                    else if (status == "Completed")
+                    {
+                        stats.TotalCompleted++;
+                    }
+                    else if (status == "CanceledByUser" || status == "Rejected")
+                    {
+                        stats.TotalCanceled++;
+                    }
+                    // "PendingApproval" is counted in TotalRequested, but we don't show it publicly.
+                    // We'll fetch that count separately for the provider's private view. 
+                }
+            }
+            return stats;
+        }
+
     }
 }

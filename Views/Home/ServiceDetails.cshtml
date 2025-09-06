@@ -1,4 +1,7 @@
 @model LocalScout.ViewModels.ServiceDetailsViewModel
+@* --- ADD THESE LINES TO INJECT THE SERVICE --- *@
+@using LocalScout.Services
+@inject ITimeZoneConverterService TimeZoneService
 
 @{
     // We get the title directly from the model now.
@@ -9,20 +12,15 @@
     @if (Model.MainService != null && Model.Provider != null)
     {
         <div class="row">
-            <!-- Image Gallery Column -->
-            <!-- Image Gallery Column -->
             <div class="col-lg-7">
-                <h2 class="d-lg-none mb-3">@Model.MainService.ServiceName</h2> <!-- Title for mobile -->
-
-                @if (Model.MainService.ImageUrls.Any())
+                <h2 class="d-lg-none mb-3">@Model.MainService.ServiceName</h2> @if (Model.MainService.ImageUrls.Any())
                 {
-                    <!-- BOOTSTRAP CAROUSEL START -->
                     <div id="serviceImageCarousel" class="carousel slide shadow rounded mb-3" data-bs-ride="carousel">
                         <div class="carousel-indicators">
                             @for (int i = 0; i < Model.MainService.ImageUrls.Count; i++)
                             {
                                 <button type="button" data-bs-target="#serviceImageCarousel" data-bs-slide-to="@i"
-                                    class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")"></button>
+                                        class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")"></button>
                             }
                         </div>
                         <div class="carousel-inner rounded">
@@ -30,55 +28,59 @@
                             {
                                 <div class="carousel-item @(i == 0 ? "active" : "")">
                                     <img src="@Model.MainService.ImageUrls[i]" class="d-block w-100"
-                                        style="height: 450px; object-fit: cover;" alt="Service Image @(i + 1)">
+                                         style="height: 450px; object-fit: cover;" alt="Service Image @(i + 1)">
                                 </div>
                             }
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#serviceImageCarousel"
-                            data-bs-slide="prev">
+                                data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Previous</span>
                         </button>
                         <button class="carousel-control-next" type="button" data-bs-target="#serviceImageCarousel"
-                            data-bs-slide="next">
+                                data-bs-slide="next">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Next</span>
                         </button>
                     </div>
-                    <!-- BOOTSTRAP CAROUSEL END -->
-                }
+                    }
                 else
                 {
                     <img src="https://placehold.co/800x600/eee/ccc?text=No+Image" class="img-fluid rounded shadow mb-3"
-                        alt="Primary Service Image">
+                         alt="Primary Service Image">
                 }
                 <hr class="my-4">
                 <h4>About This Service</h4>
                 <p>@Model.MainService.Description</p>
             </div>
 
-            <!-- Details & Booking Column -->
             <div class="col-lg-5">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h2 class="card-title d-none d-lg-block">@Model.MainService.ServiceName</h2>
-                        <!-- Title for desktop -->
-                        <div class="d-flex align-items-center my-3">
-                            <img src="@(Model.Provider.ProfilePictureUrl ?? "https://placehold.co/40x40/eee/ccc?text=P")"
-                                style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;" class="me-3"
-                                alt="@Model.Provider.BusinessName">
-                            <div>
-                                <h5 class="mb-0">@Model.Provider.BusinessName</h5>
-                                <span class="text-muted small">Provider</span>
+                        @* --- CHANGE #1: WRAP THIS WHOLE BLOCK IN AN <a> TAG --- *@
+                        <a asp-controller="ServiceProvider" asp-action="Index" asp-route-id="@Model.Provider.Id" class="text-decoration-none text-dark provider-info-link">
+                            <div class="d-flex align-items-center my-3">
+                                <img src="@(Model.Provider.ProfilePictureUrl ?? "https://placehold.co/40x40/eee/ccc?text=P")"
+                                     style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;" class="me-3"
+                                     alt="@Model.Provider.BusinessName">
+                                <div>
+                                    <h5 class="mb-0">@Model.Provider.BusinessName</h5>
+                                    <span class="text-muted small">Provider</span>
+                                </div>
                             </div>
-                        </div>
+                        </a>
+                        @* --- END OF CHANGE #1 --- *@
+
                         <hr>
                         <ul class="list-unstyled text-muted">
                             <li class="mb-2"><i
                                     class="fa-solid fa-location-dot me-2 fa-fw"></i>@Model.Provider.BusinessAddress</li>
                             <li class="mb-2"><i class="fa-solid fa-clock me-2 fa-fw"></i>@Model.Provider.BusinessHours</li>
+
+                            @* --- CHANGE #2: APPLY TIMEZONE CONVERSION --- *@
                             <li class="mb-2"><i class="fa-solid fa-calendar-check me-2 fa-fw"></i>Joined
-                                @Model.Provider.CreatedAt.ToString("MMM yyyy")</li>
+                                @TimeZoneService.ConvertToLocalTime(Model.Provider.CreatedAt.UtcDateTime).ToString("MMM yyyy")</li>
                         </ul>
                         <hr>
                         <div class="text-end">
@@ -101,11 +103,18 @@
             </div>
         </div>
 
-        <!-- "OTHER SERVICES" SECTION -->
         @if (Model.OtherServices.Any())
         {
             <hr class="my-5">
-            <h2 class="mb-4">More Services from @Model.Provider.BusinessName</h2>
+            
+            @* --- CHANGE #3: MAKE THIS HEADER TITLE A LINK TOO --- *@
+            <h2 class="mb-4">
+                More Services from 
+                <a asp-controller="ServiceProvider" asp-action="Index" asp-route-id="@Model.Provider.Id" class="text-decoration-none">
+                    @Model.Provider.BusinessName
+                </a>
+            </h2>
+            
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 @foreach (var otherService in Model.OtherServices)
                 {
@@ -113,7 +122,7 @@
                         <a asp-action="ServiceDetails" asp-route-id="@otherService.Id" class="card-link-wrapper">
                             <div class="card h-100">
                                 <img src="@(otherService.ImageUrls.FirstOrDefault() ?? "https://placehold.co/600x400/eee/ccc?text=No+Image")"
-                                    class="card-img-top" alt="@otherService.ServiceName" style="height: 180px; object-fit: cover;">
+                                     class="card-img-top" alt="@otherService.ServiceName" style="height: 180px; object-fit: cover;">
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="card-title">@otherService.ServiceName</h5>
                                     <div class="mt-auto d-flex justify-content-between align-items-center">

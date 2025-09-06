@@ -15,34 +15,42 @@
 
 ---
 
-## 🚀 Core Features & Functionality (As of September 6, 2025)
+## 🚀 Core Features & Functionality (As of September 7, 2025)
 
-### ✅ Unified Dashboard Experience
-- **Consistent UI/UX**: A professional, fixed-sidebar dashboard layout has been implemented for all user roles (Admin, Service Provider, and User), creating a cohesive and application-like feel.
-- **Role-Based Navigation**: Each dashboard sidebar is tailored with links and actions specific to the user's role.
+### ✅ Unified Experience & Core Infrastructure
+- **Consistent UI/UX**: A professional, fixed-sidebar dashboard layout has been implemented for all user roles (Admin, Service Provider, and User) with refined headers and spacing.
+- **Role-Based Navigation**: Login redirects are now correctly handled for all roles. Admins, Providers (to their new master dashboard), and Users (to their profile) are sent to the correct location. Logic also correctly handles post-login `returnUrl` redirects.
+- **Full Timezone Conversion**: Implemented a site-wide timezone service. All data is correctly stored as UTC, and all displayed timestamps (booking dates, member since dates, etc.) are correctly converted to GMT+6 (Dhaka Standard Time) before display.
 
 ### ✅ Administrator Panel
 - **Secure Dashboard**: Access protected via ASP.NET Core Identity roles.
-- **Service Category Management**: Full CRUD functionality for service categories, including image uploads, priority ordering, and toggling active/inactive status.
-- **Category Request Workflow**: Admins can review, approve, or deny new category suggestions submitted by providers, triggering automated notifications.
-- **User Management**: A comprehensive dashboard with a tabbed interface to view and manage Service Providers and Regular Users separately.
+- **Service Category Management**: Full CRUD functionality for service categories.
+- **Category Request Workflow**: Admins can review, approve, or deny new category suggestions submitted by providers.
+- **User Management**: A comprehensive dashboard to view and manage all Service Providers and Regular Users.
 
 ### ✅ Service Provider Portal
-- **Profile Management**: Full CRUD functionality for a provider's business profile.
-- **Complete Service Management**: Full CRUD for service listings, including:
-    - **Multi-Image Gallery**: Providers can upload multiple images and delete specific ones.
-    - **Flexible Pricing**: Services can have a fixed price or be marked as "Negotiable".
-- **Booking Management**: Providers can view all incoming booking requests on their dashboard, see customer details (including profile picture), and **Approve** or **Reject** requests.
+- **Unified Master Profile**: Replaced the static dashboard index with a master profile page (`/ServiceProvider/Index/{id}`) that serves as **both** the public-facing profile *and* the private dashboard homepage.
+- **Dynamic Layouts**: The provider profile page intelligently loads the correct layout: the public layout (`_Layout`) for anonymous users, the dashboard layout (`_DashboardLayout`) for logged-in customers, and the full provider sidebar (`_ProviderLayout`) only for the owner.
+- **Public Trust Stats**: The master profile page publicly displays key "Trust Stats" (Total Jobs, Completed, Ongoing, etc.) to build customer confidence.
+- **Redesigned 'My Services' Page**: Replaced the original basic list with a redesigned, modern table that includes service thumbnails and a secure, modal-based confirmation for deleting services.
+- **Booking Management**: Providers can view all incoming booking requests, approve, or reject them.
 
 ### ✅ User Dashboard & Public Pages
+- **Full Site Integration**: All public service cards (on the homepage, search results, and category pages) and the service details page now correctly link to the provider's new master profile page.
 - **Interactive Homepage**: A modern landing page featuring a search bar and an auto-scrolling visual category browser.
-- **AJAX-Powered "Load More"**: Service lists on the homepage, search results, and category pages now load dynamically without a full page refresh.
-- **Booking Workflow**: Users can request a service using a user-friendly date/time picker, see the status of their requests ("Pending Approval", "Approved", etc.) on their "My Bookings" page, and receive notifications.
-- **Profile Management**: Users have a dedicated "My Profile" page to view their details and access actions like editing their profile or upgrading to a provider account.
+- **AJAX-Powered "Load More"**: Service lists load dynamically without a full page refresh.
+- **Profile Management**: Users have a dedicated "My Profile" page (`/Dashboard/MyProfile`) which now serves as their default dashboard homepage.
+- **Booking Workflow**: Users can request services and view the status on their "My Bookings" page.
+- **Bug Fix (Negotiable Price)**: Corrected a display bug where "TK 0" was incorrectly showing for negotiable services in the user's booking list.
 
 ---
 
+## 📌 Current issue
+- **Provider profile from service details page**: When tries to visit providers profile through service details page, shows sidebar also.
+
 ## 📌 Future Roadmap
+
+(Our existing roadmap remains the priority.)
 
 ### 💳 PRIORITY 1: Complete Booking & Payment System
 - **Implement Customer Actions**: Wire up the "Cancel Booking" functionality for users.
@@ -51,12 +59,12 @@
 - **Payment Confirmation**: Create success/failure pages for payment redirects and update booking status via Stripe Webhooks.
 
 ### ⭐ PRIORITY 2: Trust & Credibility Features
-- **Ratings & Reviews**: Allow users to leave ratings and written reviews for services they have booked.
-- **Public User Profile**: Build the public-facing user profile page that providers can view, including the user's booking statistics (total requested, confirmed, etc.).
+- **Ratings & Reviews**: Allow users to leave ratings and written reviews for services they have booked (this will be added to the master provider profile page).
+- **Public User Profile**: Fully build out the `UserProfile` page that providers can view (we have already built the stats section).
 
 ### 📍 PRIORITY 3: Location-Based Discovery
-- **Geocoding Integration**: Integrate the **LocationIQ** API to convert user and provider addresses into latitude and longitude coordinates.
-- **Distance-Based Sorting**: All service lists will be sorted by proximity to the logged-in user.
+- **Geocoding Integration**: Integrate the **LocationIQ** API.
+- **Distance-Based Sorting**: Sort all service lists by proximity.
 
 ---
 

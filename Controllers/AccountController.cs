@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using LocalScout.Data;
 using LocalScout.ViewModels;
-using System;
-using System.Threading.Tasks;
 using LocalScout.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LocalScout.Controllers
 {
@@ -98,43 +96,61 @@ namespace LocalScout.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
+            // Ensure the returnUrl is passed back to the view if login fails
+            ViewData["ReturnUrl"] = returnUrl;
+
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
-                    // This is the new logic:
-                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                    // --- LOGIN REDIRECT LOGIC ---
+
+                    // 1. (FIX FOR ISSUE #5): Handle the returnUrl FIRST.
+                    // If the user was trying to access a protected page, send them back there.
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                     {
-                        return Redirect(model.ReturnUrl);
+                        return Redirect(returnUrl);
                     }
 
-                    // This is the old logic, now used as a fallback:
+                    // 2. If there is no returnUrl, redirect based on role.
                     var user = await _userManager.FindByEmailAsync(model.Email);
-                    if (user != null)
+
+                    if (user == null) // Safety check
                     {
-                        if (await _userManager.IsInRoleAsync(user, "Admin"))
-                        {
-                            return RedirectToAction("Index", "Admin");
-                        }
-                        if (await _userManager.IsInRoleAsync(user, "ServiceProvider"))
-                        {
-                            return RedirectToAction("Index", "ServiceProvider");
-                        }
+                        return RedirectToAction("Index", "Home");
                     }
 
-                    // Default redirect for regular users is now MyProfile
+                    // Admin Redirect
+                    if (await _userManager.IsInRoleAsync(user, "Admin"))
+                    {
+                        return RedirectToAction("Index", "Admin");
+                    }
+
+                    // (THIS IS OUR NEW STEP 5): Service Provider Redirect
+                    if (await _userManager.IsInRoleAsync(user, "ServiceProvider"))
+                    {
+                        // This now correctly redirects to our new master profile/dashboard action at
+                        // ServiceProviderController.Index() (which defaults to the logged-in user)
+                        return RedirectToAction("Index", "ServiceProvider");
+                    }
+
+                    // (FIX FOR ISSUE #4): Default Regular User Redirect
+                    // Send regular users to their profile page, not the empty Dashboard/Index.
                     return RedirectToAction("MyProfile", "Dashboard");
                 }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View(model);
-                }
+
+                // If login failed
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View(model);
             }
+
+            // If model state is invalid
             return View(model);
         }
 

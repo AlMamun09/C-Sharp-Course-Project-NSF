@@ -231,7 +231,8 @@ namespace LocalScout.Controllers
                         ProviderProfilePictureUrl = provider.ProfilePictureUrl,
                         Location = provider.BusinessAddress,
                         BusinessHours = provider.BusinessHours,
-                        JoinedDate = provider.CreatedAt
+                        JoinedDate = provider.CreatedAt,
+                        ProviderId = provider.Id
                     });
                 }
             }

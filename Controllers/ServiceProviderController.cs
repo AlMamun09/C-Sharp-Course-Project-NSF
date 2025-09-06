@@ -6,6 +6,7 @@ using LocalScout.Data;
 using LocalScout.Services;
 using LocalScout.ViewModels;
 using LocalScout.Models;
+using System.Collections.Generic;
 
 namespace LocalScout.Controllers
 {
@@ -29,24 +30,67 @@ namespace LocalScout.Controllers
             _firestoreService = firestoreService;
         }
 
-        // --- Profile Viewing and Editing ---
-        public async Task<IActionResult> Index()
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Index(string id)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            var currentUserId = _userManager.GetUserId(User);
+            string providerId = id;
+            bool isOwner = false;
+
+            if (string.IsNullOrEmpty(providerId))
             {
-                return NotFound("Unable to load user.");
+                if (string.IsNullOrEmpty(currentUserId))
+                {
+                    return Challenge(); // Not logged in and no ID provided.
+                }
+                providerId = currentUserId;
+                isOwner = true;
+            }
+            else
+            {
+                isOwner = (currentUserId == providerId);
             }
 
-            // --- NEW NOTIFICATION LOGIC ---
-            // 1. Fetch any unread notifications for this user.
-            var notifications = await _firestoreService.GetUnreadNotificationsAsync(user.Id);
+            var providerUser = await _userManager.FindByIdAsync(providerId);
+            if (providerUser == null)
+            {
+                return NotFound("Provider not found.");
+            }
 
-            // 2. Pass the list of notifications to the view using the ViewBag.
-            ViewBag.Notifications = notifications;
+            // --- 1. GET DATA (Simpler Version) ---
+            // Get the Public Stats (This method is still needed)
+            var stats = await _firestoreService.GetBookingStatsForProviderAsync(providerId);
 
-            // 3. Pass the user object to the view as the main model.
-            return View(user);
+            // --- 2. BUILD THE MASTER VIEWMODEL ---
+            var viewModel = new ProviderProfileViewModel
+            {
+                ProviderProfile = providerUser,
+                Stats = stats,
+                IsOwner = isOwner
+            };
+
+            // --- 3. DETERMINE WHICH LAYOUT TO USE ---
+            string layoutToUse = "_Layout"; // Default public layout
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                if (isOwner)
+                {
+                    layoutToUse = "_ProviderLayout";
+                }
+                else if (User.IsInRole("Admin"))
+                {
+                    layoutToUse = "_AdminLayout";
+                }
+                else
+                {
+                    layoutToUse = "_DashboardLayout";
+                }
+            }
+
+            ViewData["Layout"] = layoutToUse;
+
+            return View(viewModel);
         }
 
         [HttpGet]
