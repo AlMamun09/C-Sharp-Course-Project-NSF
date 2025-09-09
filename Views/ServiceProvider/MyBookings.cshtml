@@ -1,5 +1,4 @@
 @model List<LocalScout.ViewModels.BookingDetailsViewModel>
-@* ADD THESE TWO LINES TO INJECT THE SERVICE *@
 @using LocalScout.Services
 @inject ITimeZoneConverterService TimeZoneService 
 @{
@@ -35,7 +34,6 @@
                                 <div class="flex-grow-1 ms-3">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h5 class="card-title mb-2">@item.ServiceName</h5>
-                                        @* THIS IS THE FIRST CORRECTED LINE *@
                                         <small class="text-muted">@TimeZoneService.ConvertToLocalTime(item.Booking.CreatedAt.ToDateTime()).ToString("MMM dd")</small>
                                     </div>
                                     <h6 class="card-text mb-1">
@@ -45,19 +43,28 @@
                                         </a>
                                     </h6>
                                     <p class="card-text mb-1">
-                                        <strong>For:</strong> @* THIS IS THE SECOND CORRECTED LINE *@
+                                        <strong>For:</strong>
                                         @TimeZoneService.ConvertToLocalTime(item.Booking.BookingDate.ToDateTime()).ToString("f")
                                     </p>
                                     <p class="card-text mb-1">
-                                        <strong>Price:</strong>
-                                        @if (item.Booking.IsNegotiable)
-                                        {
-                                            <span class="badge bg-secondary">Negotiable</span>
-                                        }
-                                        else
-                                        {
-                                            <span>TK @item.Booking.TotalPrice</span>
-                                        }
+                                        <small><strong>Price:</strong>
+                                            @if (item.Booking.FinalPrice.HasValue)
+                                            {
+                                                // A final price has been set by you, the provider
+                                                <span class="fw-bold text-success">TK @item.Booking.FinalPrice.Value.ToString("N2")</span>
+                                                <span class="badge bg-info text-dark">Final Price</span>
+                                            }
+                                            else if (item.Booking.IsNegotiable)
+                                            {
+                                                // This is a negotiable booking still waiting for a quote
+                                                <span class="badge bg-secondary">Negotiable</span>
+                                            }
+                                            else
+                                            {
+                                                // This is a standard fixed-price booking
+                                                <span>TK @item.Booking.TotalPrice</span>
+                                            }
+                                        </small>
                                     </p>
                                     @if (!string.IsNullOrEmpty(item.Booking.CustomerNotes))
                                     {
@@ -69,46 +76,42 @@
                             </div>
                         </div>
                         <div class="card-footer bg-light d-flex justify-content-between align-items-center">
-                                @{
-                                    var status = item.Booking.Status;
-                                    string badgeClass = "bg-secondary";
-                                    string statusText = status;
-
-                                    switch (status)
-                                    {
-                                        case "PendingApproval":
-                                            badgeClass = "bg-warning text-dark";
-                                            statusText = "Pending";
-                                            break;
-                                        case "Approved":
-                                            badgeClass = "bg-info text-dark";
-                                            statusText = "Approved";
-                                            break;
-                                        case "Confirmed":
-                                            badgeClass = "bg-success";
-                                            statusText = "Confirmed";
-                                            break;
-                                        case "Completed":
-                                            badgeClass = "bg-primary";
-                                            break;
-                                        case "CanceledByUser":
-                                            badgeClass = "bg-danger";
-                                            statusText = "Canceled";
-                                            break;
-                                        case "Rejected":
-                                            badgeClass = "bg-dark";
-                                            statusText = "Rejected";
-                                            break;
-                                    }
-                                    <span class="badge @badgeClass">@statusText</span>
+                            @{
+                                var status = item.Booking.Status;
+                                string badgeClass = "bg-secondary";
+                                string statusText = status;
+                                
+                                switch (status)
+                                {
+                                    case "PendingApproval": badgeClass = "bg-warning text-dark"; statusText = "Pending"; break;
+                                    case "Approved": badgeClass = "bg-info text-dark"; statusText = "Approved"; break;
+                                    case "Confirmed": badgeClass = "bg-success"; statusText = "Confirmed"; break;
+                                    case "Completed": badgeClass = "bg-primary"; break;
+                                    case "CanceledByUser": badgeClass = "bg-danger"; statusText = "Canceled"; break;
+                                    case "Rejected": badgeClass = "bg-dark"; statusText = "Rejected"; break;
                                 }
+                                <span class="badge @badgeClass">@statusText</span>
+                            }
                             <div>
                                 @if (status == "PendingApproval")
                                 {
-                                    <form asp-controller="Booking" asp-action="ApproveBooking" method="post" class="d-inline">
-                                        <input type="hidden" name="bookingId" value="@item.Booking.Id" />
-                                        <button type="submit" class="btn btn-sm btn-success">Approve</button>
-                                    </form>
+                                    @if (!item.Booking.IsNegotiable)
+                                    {
+                                        // Standard, fixed-price booking
+                                        <form asp-controller="Booking" asp-action="ApproveBooking" method="post" class="d-inline">
+                                            <input type="hidden" name="bookingId" value="@item.Booking.Id" />
+                                            <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        // Negotiable booking - show the "Set Price" button that opens the modal
+                                        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#setPriceModal-@item.Booking.Id">
+                                            Approve & Set Price
+                                        </button>
+                                    }
+                                    
+                                    // The Reject button is available for both types of bookings
                                     <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectModal-@item.Booking.Id">
                                         Reject
                                     </button>
@@ -142,6 +145,35 @@
                         </div>
                     </div>
                 </div>
+
+                @if (item.Booking.IsNegotiable)
+                {
+                    <div class="modal fade" id="setPriceModal-@item.Booking.Id" tabindex="-1" aria-labelledby="setPriceModalLabel-@item.Booking.Id" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form asp-controller="Booking" asp-action="ApproveWithPrice" method="post">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="setPriceModalLabel-@item.Booking.Id">Approve & Set Final Price</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>You are approving the negotiable booking for <strong>@item.ServiceName</strong>.</p>
+                                        <p>Please enter the final, agreed-upon price.</p>
+                                        <input type="hidden" name="bookingId" value="@item.Booking.Id" />
+                                        <div class="form-group">
+                                            <label for="finalPrice-@item.Booking.Id" class="form-label">Final Price (BDT)</label>
+                                            <input type="number" name="finalPrice" id="finalPrice-@item.Booking.Id" class="form-control" step="0.01" min="0" required placeholder="e.g., 1500.50" />
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-success">Approve with this Price</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
             }
         </div>
     }

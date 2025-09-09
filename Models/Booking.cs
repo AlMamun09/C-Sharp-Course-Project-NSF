@@ -26,6 +26,10 @@ namespace LocalScout.Models
         [FirestoreProperty("totalPrice")]
         public double TotalPrice { get; set; }
 
+        // --- ADD THIS NEW PROPERTY ---
+        [FirestoreProperty("finalPrice")]
+        public double? FinalPrice { get; set; }
+
         [FirestoreProperty("isNegotiable")] // <-- ADD THIS
         public bool IsNegotiable { get; set; }
 

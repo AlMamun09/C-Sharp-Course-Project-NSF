@@ -47,14 +47,17 @@ H:\NSF Project\LocalScout\bin\Debug\net8.0\Newtonsoft.Json.dll
 H:\NSF Project\LocalScout\bin\Debug\net8.0\SQLitePCLRaw.batteries_v2.dll
 H:\NSF Project\LocalScout\bin\Debug\net8.0\SQLitePCLRaw.core.dll
 H:\NSF Project\LocalScout\bin\Debug\net8.0\SQLitePCLRaw.provider.e_sqlite3.dll
+H:\NSF Project\LocalScout\bin\Debug\net8.0\Stripe.net.dll
 H:\NSF Project\LocalScout\bin\Debug\net8.0\System.CodeDom.dll
 H:\NSF Project\LocalScout\bin\Debug\net8.0\System.Composition.AttributedModel.dll
 H:\NSF Project\LocalScout\bin\Debug\net8.0\System.Composition.Convention.dll
 H:\NSF Project\LocalScout\bin\Debug\net8.0\System.Composition.Hosting.dll
 H:\NSF Project\LocalScout\bin\Debug\net8.0\System.Composition.Runtime.dll
 H:\NSF Project\LocalScout\bin\Debug\net8.0\System.Composition.TypedParts.dll
+H:\NSF Project\LocalScout\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
 H:\NSF Project\LocalScout\bin\Debug\net8.0\System.Linq.Async.dll
 H:\NSF Project\LocalScout\bin\Debug\net8.0\System.Management.dll
+H:\NSF Project\LocalScout\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
 H:\NSF Project\LocalScout\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
 H:\NSF Project\LocalScout\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
 H:\NSF Project\LocalScout\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll

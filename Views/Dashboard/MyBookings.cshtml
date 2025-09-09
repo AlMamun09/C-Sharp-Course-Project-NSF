@@ -32,8 +32,8 @@
                             <div class="d-flex">
                                 <div class="flex-shrink-0">
                                     <img src="@(item.ServicePrimaryImageUrl ?? "https://placehold.co/100x100/eee/ccc?text=Service")"
-                                         class="img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;"
-                                         alt="@item.Booking.ServiceName">
+                                        class="img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;"
+                                        alt="@item.Booking.ServiceName">
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <h5 class="card-title">@item.Booking.ServiceName</h5>
@@ -46,12 +46,21 @@
                                     @* THIS IS THE CORRECTED PRICE BLOCK: *@
                                     <p class="card-text">
                                         <small><strong>Price:</strong>
-                                            @if (item.Booking.IsNegotiable)
+                                            @if (item.Booking.FinalPrice.HasValue)
                                             {
+                                                // A final price has been set by the provider
+                                                <span class="fw-bold text-success">TK
+                                                    @item.Booking.FinalPrice.Value.ToString("N2")</span>
+                                                <span class="badge bg-info text-dark">Final Price</span>
+                                            }
+                                            else if (item.Booking.IsNegotiable)
+                                            {
+                                                // Still waiting for a quote
                                                 <span class="badge bg-secondary">Negotiable</span>
                                             }
                                             else
                                             {
+                                                // Standard fixed-price
                                                 <span>TK @item.Booking.TotalPrice</span>
                                             }
                                         </small>
@@ -92,16 +101,22 @@
                                 }
                                 <span class="badge @badgeClass">@statusText</span>
                             }
-                            <div>
+                            <div class="d-flex gap-2">
                                 @if (status == "Approved")
                                 {
-                                    <a href="#" class="btn btn-sm btn-success">Pay Now</a>
+                                    <form asp-controller="Booking" asp-action="CreateCheckoutSession" method="post" class="m-0">
+                                        <input type="hidden" name="bookingId" value="@item.Booking.Id" />
+                                        <button type="submit" class="btn btn-sm btn-success">
+                                            <i class="fa-solid fa-credit-card me-2"></i>Pay Now
+                                        </button>
+                                    </form>
                                 }
                                 @if (status == "PendingApproval" || status == "Approved" || status == "Confirmed")
                                 {
                                     <a href="#" class="btn btn-sm btn-outline-danger">Cancel</a>
                                 }
                             </div>
+
                         </div>
                     </div>
                 </div>
