@@ -25,22 +25,28 @@
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a asp-controller="ServiceProvider" asp-action="Index" class="nav-link text-white">
+                    @* This link will be active on both the main profile (Index) and the EditProfile page *@
+                    <a asp-controller="ServiceProvider" asp-action="Index"
+                        class="nav-link text-white @IsLinkActive("ServiceProvider", "Index")">
                         <i class="fa-solid fa-user-tie me-2"></i> My Business Profile
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="ServiceProvider" asp-action="MyServices" class="nav-link text-white">
+                    @* This link will be active on MyServices, AddNewService, and EditService pages *@
+                    <a asp-controller="ServiceProvider" asp-action="MyServices"
+                        class="nav-link text-white @IsLinkActive("ServiceProvider", "MyServices")">
                         <i class="fa-solid fa-briefcase me-2"></i> My Services
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="ServiceProvider" asp-action="MyBookings" class="nav-link text-white">
+                    <a asp-controller="ServiceProvider" asp-action="MyBookings"
+                        class="nav-link text-white @IsLinkActive("ServiceProvider", "MyBookings")">
                         <i class="fa-solid fa-inbox me-2"></i> Client Bookings
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="ServiceProvider" asp-action="MyPurchases" class="nav-link text-white">
+                    <a asp-controller="ServiceProvider" asp-action="MyPurchases"
+                        class="nav-link text-white @IsLinkActive("ServiceProvider", "MyPurchases")">
                         <i class="fa-solid fa-shopping-cart me-2"></i> My Purchases
                     </a>
                 </li>
@@ -66,3 +72,23 @@
 </body>
 
 </html>
+
+@functions {
+    // This helper method checks if a sidebar link should be marked as "active"
+    private string? IsLinkActive(string controller, string action)
+    {
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+        // For some pages like "Edit", we want the parent link to be active.
+        // So we can just check the controller. For more specific links, we check both.
+        // Example: If we are on "EditService" page, the "MyServices" link should be active.
+        // We can make this logic more complex later if needed.
+        if (string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase))
+        {
+            return "active";
+        }
+        return null;
+    }
+}

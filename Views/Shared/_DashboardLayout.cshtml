@@ -26,12 +26,15 @@
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a asp-controller="Dashboard" asp-action="MyProfile" class="nav-link text-white">
+                    @* This link will be active on the MyProfile, UserProfile, and EditUserProfile pages *@
+                    <a asp-controller="Dashboard" asp-action="MyProfile"
+                        class="nav-link text-white @IsLinkActive("Dashboard", "UserProfile")">
                         <i class="fa-solid fa-user me-2"></i> My Profile
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="Dashboard" asp-action="MyBookings" class="nav-link text-white">
+                    <a asp-controller="Dashboard" asp-action="MyBookings"
+                        class="nav-link text-white @IsLinkActive("Dashboard", "MyBookings")">
                         <i class="fa-solid fa-calendar-check me-2"></i> My Bookings
                     </a>
                 </li>
@@ -58,3 +61,23 @@
 </body>
 
 </html>
+
+@functions {
+    // This helper method checks if a sidebar link should be marked as "active"
+    private string? IsLinkActive(string controller, string action)
+    {
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+        // For some pages like "Edit", we want the parent link to be active.
+        // So we can just check the controller. For more specific links, we check both.
+        // Example: If we are on "EditService" page, the "MyServices" link should be active.
+        // We can make this logic more complex later if needed.
+        if (string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase))
+        {
+            return "active";
+        }
+        return null;
+    }
+}

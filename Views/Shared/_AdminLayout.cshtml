@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,13 +9,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
+
 <body class="admin-body-lock">
     <div class="d-flex admin-wrapper">
         <!-- Sidebar Navigation -->
         <div class="d-flex flex-column flex-shrink-0 p-3 text-white admin-sidebar">
             <!-- UPDATED HEADER: Title on left, Back to Site button on right -->
             <div class="d-flex justify-content-between align-items-center mb-3 mb-md-0 me-md-auto w-100">
-                <a asp-controller="Admin" asp-action="Index" class="d-flex align-items-center text-white text-decoration-none">
+                <a asp-controller="Admin" asp-action="Index"
+                    class="d-flex align-items-center text-white text-decoration-none">
                     <span class="fs-4">Local Scout Admin</span>
                 </a>
                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-light" title="Back to Main Site">
@@ -23,19 +26,23 @@
             </div>
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
-                
                 <li class="nav-item">
-                    <a asp-controller="Admin" asp-action="Index" class="nav-link text-white">
+                    @* This link will now be active on the Index, Create, AND Edit pages *@
+                    <a asp-controller="Admin" asp-action="Index"
+                        class="nav-link text-white @IsLinkActive("Admin", "Index", "Create", "Edit")">
                         <i class="fa-solid fa-tags me-2"></i> Category Management
                     </a>
-                </li>                
+                </li>
                 <li>
-                    <a asp-controller="Admin" asp-action="CategoryRequests" class="nav-link text-white">
+                    <a asp-controller="Admin" asp-action="CategoryRequests"
+                        class="nav-link text-white @IsLinkActive("Admin", "CategoryRequests")">
                         <i class="fa-solid fa-inbox me-2"></i> Category Requests
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="Admin" asp-action="UserManagement" class="nav-link text-white">
+                    @* This link will now be active on the UserManagement AND UserDetails pages *@
+                    <a asp-controller="Admin" asp-action="UserManagement"
+                        class="nav-link text-white @IsLinkActive("Admin", "UserManagement", "UserDetails")">
                         <i class="fa-solid fa-users me-2"></i> User Management
                     </a>
                 </li>
@@ -60,4 +67,28 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>
+
+@functions {
+    // This is the UPGRADED helper method that can check multiple actions.
+    private string? IsLinkActive(string controller, params string[] actions)
+    {
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+        // Check if the current controller matches the one we're looking for.
+        if (string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase))
+        {
+            // Loop through all the action names we provided for this link.
+            foreach (var action in actions)
+            {
+                if (string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase))
+                {
+                    return "active"; // If we find a match, mark the link as active and stop.
+                }
+            }
+        }
+        return null;
+    }
+}

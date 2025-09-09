@@ -409,3 +409,14 @@ body.admin-body-lock {
     border-color: transparent;
     color: white;
 }
+
+/* Style for the active link in the dashboard sidebar */
+.dashboard-sidebar .nav-link.active {
+    background-color: #0d6efd; /* Example: Bootstrap primary blue - CHANGE THIS COLOR */
+    color: white;
+}
+
+/* Optional: Make the icon white too */
+.dashboard-sidebar .nav-link.active i {
+    color: white;
+}
