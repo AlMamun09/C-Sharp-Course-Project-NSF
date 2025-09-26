@@ -105,6 +105,7 @@ namespace LocalScout.Controllers
                 BusinessPhoneNumber = user.BusinessPhoneNumber ?? string.Empty,
                 BusinessAddress = user.BusinessAddress ?? string.Empty,
                 BusinessDescription = user.BusinessDescription ?? string.Empty,
+                BusinessHours = user.BusinessHours ?? string.Empty,
                 CurrentProfilePictureUrl = user.ProfilePictureUrl
             };
             return View(model);
