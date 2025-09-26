@@ -173,7 +173,7 @@ namespace LocalScout.Controllers
                 if (result.Succeeded)
                 {
                     // Redirect back to the main dashboard
-                    return RedirectToAction("Index");
+                    return RedirectToAction("MyProfile");
                 }
 
                 foreach (var error in result.Errors)
