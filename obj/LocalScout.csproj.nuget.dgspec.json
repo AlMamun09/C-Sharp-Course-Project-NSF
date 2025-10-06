@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "H:\\NSF Project\\LocalScout\\LocalScout.csproj": {}
+    "F:\\Al's Gym Website\\C-Sharp-Course-Project-NSF\\LocalScout.csproj": {}
   },
   "projects": {
-    "H:\\NSF Project\\LocalScout\\LocalScout.csproj": {
+    "F:\\Al's Gym Website\\C-Sharp-Course-Project-NSF\\LocalScout.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "H:\\NSF Project\\LocalScout\\LocalScout.csproj",
+        "projectUniqueName": "F:\\Al's Gym Website\\C-Sharp-Course-Project-NSF\\LocalScout.csproj",
         "projectName": "LocalScout",
-        "projectPath": "H:\\NSF Project\\LocalScout\\LocalScout.csproj",
+        "projectPath": "F:\\Al's Gym Website\\C-Sharp-Course-Project-NSF\\LocalScout.csproj",
         "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "H:\\NSF Project\\LocalScout\\obj\\",
+        "outputPath": "F:\\Al's Gym Website\\C-Sharp-Course-Project-NSF\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -82,24 +88,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.18, 8.0.18]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[8.0.18, 8.0.18]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.18, 8.0.18]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.18, 8.0.18]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -108,7 +96,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

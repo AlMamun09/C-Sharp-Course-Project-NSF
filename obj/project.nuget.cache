@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "yZ5hGUS48EI=",
+  "dgSpecHash": "o6xM7oOhYpw=",
   "success": true,
-  "projectFilePath": "H:\\NSF Project\\LocalScout\\LocalScout.csproj",
+  "projectFilePath": "F:\\Al's Gym Website\\C-Sharp-Course-Project-NSF\\LocalScout.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\HP\\.nuget\\packages\\cloudinarydotnet\\1.27.6\\cloudinarydotnet.1.27.6.nupkg.sha512",
     "C:\\Users\\HP\\.nuget\\packages\\google.api.commonprotos\\2.16.0\\google.api.commonprotos.2.16.0.nupkg.sha512",
@@ -128,11 +128,7 @@
     "C:\\Users\\HP\\.nuget\\packages\\system.text.regularexpressions\\4.3.1\\system.text.regularexpressions.4.3.1.nupkg.sha512",
     "C:\\Users\\HP\\.nuget\\packages\\system.threading\\4.3.0\\system.threading.4.3.0.nupkg.sha512",
     "C:\\Users\\HP\\.nuget\\packages\\system.threading.channels\\6.0.0\\system.threading.channels.6.0.0.nupkg.sha512",
-    "C:\\Users\\HP\\.nuget\\packages\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
-    "C:\\Users\\HP\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.18\\microsoft.aspnetcore.app.ref.8.0.18.nupkg.sha512",
-    "C:\\Users\\HP\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.18\\microsoft.netcore.app.host.win-x64.8.0.18.nupkg.sha512",
-    "C:\\Users\\HP\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.18\\microsoft.netcore.app.ref.8.0.18.nupkg.sha512",
-    "C:\\Users\\HP\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.18\\microsoft.windowsdesktop.app.ref.8.0.18.nupkg.sha512"
+    "C:\\Users\\HP\\.nuget\\packages\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512"
   ],
   "logs": []
 }

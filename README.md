@@ -65,5 +65,3 @@
 Final-year CSE Undergraduate | Passionate about AI, ML & Software Development
 
 ---
-
-Hello world

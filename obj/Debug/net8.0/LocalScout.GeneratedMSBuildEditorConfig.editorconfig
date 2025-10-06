@@ -9,193 +9,193 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = LocalScout
 build_property.RootNamespace = LocalScout
-build_property.ProjectDir = H:\NSF Project\LocalScout\
+build_property.ProjectDir = F:\Al's Gym Website\C-Sharp-Course-Project-NSF\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = H:\NSF Project\LocalScout
+build_property.MSBuildProjectDirectory = F:\Al's Gym Website\C-Sharp-Course-Project-NSF
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[H:/NSF Project/LocalScout/Views/Account/AccessDenied.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Account/AccessDenied.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxBY2Nlc3NEZW5pZWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Account/Login.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Account/Register.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Account/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Admin/CategoryRequests.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Admin/CategoryRequests.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ2F0ZWdvcnlSZXF1ZXN0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Admin/Create.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Admin/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Admin/Edit.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Admin/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Admin/Index.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Admin/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Admin/UserDetails.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Admin/UserDetails.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlckRldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Admin/UserManagement.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Admin/UserManagement.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlck1hbmFnZW1lbnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Admin/_ViewStart.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Admin/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Booking/Create.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Booking/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Dashboard/BecomeProvider.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Dashboard/BecomeProvider.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEJlY29tZVByb3ZpZGVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Dashboard/EditUserProfile.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Dashboard/EditUserProfile.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEVkaXRVc2VyUHJvZmlsZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Dashboard/MyBookings.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Dashboard/MyBookings.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXE15Qm9va2luZ3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Dashboard/UserProfile.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Dashboard/UserProfile.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXFVzZXJQcm9maWxlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Dashboard/_ViewStart.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Dashboard/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXF9WaWV3U3RhcnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Home/Index.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Home/Privacy.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Home/Search.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Home/Search.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTZWFyY2guY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Home/ServiceDetails.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Home/ServiceDetails.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTZXJ2aWNlRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Home/ServicesByCategory.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Home/ServicesByCategory.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTZXJ2aWNlc0J5Q2F0ZWdvcnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Home/UploadTest.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Home/UploadTest.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxVcGxvYWRUZXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/ServiceProvider/AddNewService.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/ServiceProvider/AddNewService.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VydmljZVByb3ZpZGVyXEFkZE5ld1NlcnZpY2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/ServiceProvider/EditProfile.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/ServiceProvider/EditProfile.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VydmljZVByb3ZpZGVyXEVkaXRQcm9maWxlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/ServiceProvider/EditService.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/ServiceProvider/EditService.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VydmljZVByb3ZpZGVyXEVkaXRTZXJ2aWNlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/ServiceProvider/Index.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/ServiceProvider/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VydmljZVByb3ZpZGVyXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/ServiceProvider/MyBookings.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/ServiceProvider/MyBookings.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VydmljZVByb3ZpZGVyXE15Qm9va2luZ3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/ServiceProvider/MyPurchases.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/ServiceProvider/MyPurchases.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VydmljZVByb3ZpZGVyXE15UHVyY2hhc2VzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/ServiceProvider/MyServices.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/ServiceProvider/MyServices.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VydmljZVByb3ZpZGVyXE15U2VydmljZXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/ServiceProvider/RequestNewCategory.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/ServiceProvider/RequestNewCategory.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VydmljZVByb3ZpZGVyXFJlcXVlc3ROZXdDYXRlZ29yeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/ServiceProvider/ServiceDetails.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/ServiceProvider/ServiceDetails.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VydmljZVByb3ZpZGVyXFNlcnZpY2VEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/ServiceProvider/_ViewStart.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/ServiceProvider/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VydmljZVByb3ZpZGVyXF9WaWV3U3RhcnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Shared/Error.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Shared/_AdminLayout.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Shared/_AdminLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BZG1pbkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Shared/_DashboardLayout.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Shared/_DashboardLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9EYXNoYm9hcmRMYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Shared/_LoginPartial.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Shared/_LoginPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2dpblBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Shared/_NotificationToastPartial.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Shared/_NotificationToastPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Ob3RpZmljYXRpb25Ub2FzdFBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Shared/_ProviderLayout.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Shared/_ProviderLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Qcm92aWRlckxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Shared/_ServiceCardPartial.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Shared/_ServiceCardPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TZXJ2aWNlQ2FyZFBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Shared/_ServiceGridPartial.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Shared/_ServiceGridPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TZXJ2aWNlR3JpZFBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Shared/_ToastPartial.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Shared/_ToastPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Ub2FzdFBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Shared/_ValidationScriptsPartial.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/_ViewImports.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/_ViewStart.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[H:/NSF Project/LocalScout/Views/Shared/_Layout.cshtml]
+[F:/Al's Gym Website/C-Sharp-Course-Project-NSF/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-75tbksscfm
